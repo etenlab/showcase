@@ -8,6 +8,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - name: Install Ionic CLI
+      run: npm install -g @ionic/cli
+
+    - name: Build
+      run: ionic build
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
