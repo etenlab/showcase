@@ -69,5 +69,5 @@
     "@capacitor/cli": "4.1.0",
     "@types/styled-components": "^5.1.26"
   },
-  "description": "An Ionic project"
+  "description": "Showcase for ETEN Innovation Lab APIs and components"
 }
