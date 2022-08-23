@@ -25,9 +25,9 @@ const StyledH3 = styled.h3`
   color: cornflowerblue;
 `
 
-const StyledH4 = styled.h4`
-  color: lightcyan;
-`
+// const StyledH4 = styled.h4`
+//   color: lightcyan;
+// `
 
 const DataTable = styled.table`
   padding: 13px;
@@ -52,7 +52,7 @@ export function Iso6392() {
 
     const result = await fetchAs<{}, ListResponse>('GET', 8302, `/api/iso-639-2/find-by-iso-639-2/${term}`)
 
-    if (result?.error == 'NoError' && Array.isArray(result?.items)) {
+    if (result?.error === 'NoError' && Array.isArray(result?.items)) {
       setResults(result.items)
     } else {
       console.error(result?.error)
