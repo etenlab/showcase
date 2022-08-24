@@ -1,4 +1,10 @@
 export async function fetchAs<REQ, RES>(verb: 'GET' | 'POST', port: number, path: string, data?: REQ) {
+  let host = "https://dev-showcase.etenlab.com";
+
+  if (process.env.REACT_APP_SERVER_URL !== undefined) host = process.env.REACT_APP_SERVER_URL
+
+  console.log(`host: ${host}`)
+
   if (verb === 'GET') {
     const result = await fetch(process.env.REACT_APP_SERVER_URL + `:${port}` + path, {
       method: verb,

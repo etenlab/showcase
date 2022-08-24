@@ -50,13 +50,18 @@ export function Iso6392() {
     event.preventDefault()
     event.stopPropagation()
 
+    console.log(`fetching data: ISO 639-2: ${term}`)
+
     const result = await fetchAs<{}, ListResponse>('GET', 8302, `/api/iso-639-2/find-by-iso-639-2/${term}`)
 
     if (result?.error === 'NoError' && Array.isArray(result?.items)) {
+      console.log(result.items)
       setResults(result.items)
+      return
     } else {
       console.error(result?.error)
     }
+    console.error(`Unknown Error`)
   }
 
   return (
