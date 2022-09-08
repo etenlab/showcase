@@ -1,4 +1,4 @@
-import { IonAccordion, IonAccordionGroup, IonButton, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { Iso6392 } from '../components/iso6392';
 import { CommentCount, DiscussionEmbed } from 'disqus-react';
 import './DataSetsTab.css'
