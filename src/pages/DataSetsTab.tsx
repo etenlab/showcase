@@ -1,9 +1,26 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-// import ExploreContainer from '../components/ExploreContainer';
+import { IonAccordion, IonAccordionGroup, IonButton, IonContent, IonHeader, IonLabel, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { Iso6392 } from '../components/iso6392';
-import { DiscussionEmbed } from 'disqus-react';
+import { CommentCount, DiscussionEmbed } from 'disqus-react';
+import './DataSetsTab.css'
+import { useRef } from 'react';
 
 const Tab1: React.FC = () => {
+
+  const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
+
+  const toggleAccordion = () => {
+    if (!accordionGroup.current) {
+      return;
+    }
+    const nativeEl = accordionGroup.current;
+
+    if (nativeEl.value === 'dis-1') {
+      nativeEl.value = undefined;
+    } else {
+      nativeEl.value = 'dis-1';
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -12,18 +29,41 @@ const Tab1: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <DiscussionEmbed
-          shortname='example'
-          config={
-            {
-              url: 'dev.etenlab.com',
-              identifier: 'home-1',
-              title: 'Home Page Discussion',
-              language: 'en_US' 
-            }
-          }
-        />
         <Iso6392 />
+
+        <IonButton onClick={toggleAccordion}>
+          <CommentCount
+            shortname='dev-etenlab-com'
+            config={
+              {
+                url: 'https://dev-showcase.etenlab.com',
+                identifier: 'home-1',
+                title: 'Home Page Discussion',
+              }
+            }
+          >
+            {/* Placeholder Text */}
+            Comments
+          </CommentCount>
+        </IonButton>
+
+        <IonAccordionGroup ref={accordionGroup}>
+          <IonAccordion value='dis-1'>
+            <div className='disqus-wrap' slot="content">
+              <DiscussionEmbed
+                shortname='dev-etenlab-com'
+                config={
+                  {
+                    url: 'https://dev-showcase.etenlab.com',
+                    identifier: 'home-1',
+                    title: 'Home Page Discussion',
+                  }
+                }
+              />
+            </div>
+          </IonAccordion>
+        </IonAccordionGroup>
+
       </IonContent>
     </IonPage>
   );
