@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { fetchAs } from '../common/utility';
 import styled from 'styled-components';
 import { useQuery, gql } from '@apollo/client';
