@@ -2,11 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+
 // import reportWebVitals from './reportWebVitals';
+
+const client = new ApolloClient({
+  uri: 'https://fast-heron-34.hasura.app/v1/graphql',
+  cache: new InMemoryCache(),
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

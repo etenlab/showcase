@@ -1,6 +1,8 @@
 import React, { FormEvent, useState } from 'react';
 import { fetchAs } from '../common/utility';
 import styled from 'styled-components';
+import { useQuery, gql } from '@apollo/client';
+import Table from '../common/table'
 
 type Iso6392Entry = {
   id: number
@@ -42,9 +44,88 @@ const DataTable = styled.table`
   }
 `;
 
+interface RocketInventory {
+  id: number;
+}
+
+interface RocketInventoryData {
+  iso_639_3: RocketInventory[];
+}
+
+interface RocketInventoryVars {
+  year: number;
+}
+
+const GET_ISO_639_1_DATA = gql`
+  query MyQuery {
+    iso_639_3 {
+      id
+      iso_639_3
+      part_1
+      part_2b
+      part_2t
+      ref_name
+      scope
+      entry_type
+      comment
+    }
+  }
+`;
+
+
+
 export function Iso6392() {
   const [term, setTerm] = useState("");
   const [results, setResults] = useState<Iso6392Entry[]>([])
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'ID',
+        accessor: 'id',
+      },
+      {
+        Header: 'ISO 639_3',
+        accessor: 'iso_639_3',
+      },
+      {
+        Header: 'Part 1',
+        accessor: 'part_1',
+      },
+      {
+        Header: 'Part 2b',
+        accessor: 'part_2b',
+      },
+      {
+        Header: 'Part 2t',
+        accessor: 'part_2t',
+      },
+      {
+        Header: 'Ref Name',
+        accessor: 'ref_name',
+      },
+      {
+        Header: 'Scope',
+        accessor: 'scope',
+      },
+      {
+        Header: 'Entry Type',
+        accessor: 'entry_type',
+      },
+      {
+        Header: 'Comment',
+        accessor: 'comment',
+      },
+    ],
+    []
+  )
+
+  const { loading, data } = useQuery<RocketInventoryData, RocketInventoryVars>(
+    GET_ISO_639_1_DATA,
+    { variables: { year: 2019 } }
+  );
+
+  console.log(data?.iso_639_3)
 
   async function handle_submit(event: FormEvent) {
     event.preventDefault()
@@ -69,8 +150,8 @@ export function Iso6392() {
       <StyledH3>ISO 639-2</StyledH3>
       {/* <StyledH4>Search by 639-2 Identifier</StyledH4> */}
       <form onSubmit={event => handle_submit(event)}>
-        <label htmlFor="language-identifier">ISO 639-2 Identifier</label><br/>
-        <input type="text" id="language-identifier" onChange={event => setTerm(event.target.value)}></input><br/>
+        <label htmlFor="language-identifier">ISO 639-2 Identifier</label><br />
+        <input type="text" id="language-identifier" onChange={event => setTerm(event.target.value)}></input><br />
         <button type="submit" value="Search">Search</button>
       </form>
       {
@@ -89,9 +170,12 @@ export function Iso6392() {
                 })
               }
             </tbody>
+
           </DataTable>
         })
       }
+      {data && <Table columns={columns} data={data?.iso_639_3}></Table>}
+
     </StyledWrap>
   );
 }
