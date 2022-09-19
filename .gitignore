@@ -28,3 +28,4 @@ yarn-error.log*
 .eslintcache
 
 .DS_Store
+/src/generated

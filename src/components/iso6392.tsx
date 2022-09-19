@@ -4,6 +4,7 @@ import { fetchAs } from '../common/utility';
 import styled from 'styled-components';
 import { useQuery, gql } from '@apollo/client';
 import Table from '../common/table'
+import { useIso6392Query } from '../generated/graphql';
 
 type Iso6392Entry = {
   id: number
@@ -144,6 +145,15 @@ export function Iso6392() {
       console.error(result?.error)
     }
     console.error(`Unknown Error`)
+  }
+
+  {
+    // adding this block just to get named operations working for the graphql code-gen
+    const { data, loading, error } = useIso6392Query({
+
+      variables: {
+      },
+    });
   }
 
   return (
