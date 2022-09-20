@@ -5,6 +5,8 @@ import { gql } from '@apollo/client';
 import Table from '../common/table'
 import { client } from '../common/graphql'
 
+// import { useIso6392Query } from '../generated/graphql';
+
 type Iso6392Entry = {
   id: number
   iso_639_2: string
@@ -151,10 +153,8 @@ export function Iso6392() {
     // } else {
     //   console.error(result?.error)
     // }
-    // console.error(`Unknown Error`)
+    console.error(`Unknown Error`)
   }
-
-
 
   return (
     <StyledWrap>

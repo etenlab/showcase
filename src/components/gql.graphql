@@ -1,0 +1,11 @@
+query Iso6392 {
+  iso_639_2 {
+    english_name
+    entry_type
+    french_name
+    german_name
+    id
+    iso_639_1
+    iso_639_2
+  }
+}
