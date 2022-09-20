@@ -46,7 +46,8 @@ const GET_ISO_639_1_DATA = gql`
     iso_639_3_aggregate (where: {
       _or: [
         {comment: {_ilike: $search}},
-        {ref_name: {_ilike: $search}}
+        {ref_name: {_ilike: $search}},
+        {iso_639_3: {_ilike: $search}}
       ]
     }) {
       aggregate {
@@ -56,7 +57,8 @@ const GET_ISO_639_1_DATA = gql`
     iso_639_3(limit: $limit, offset: $offset, where: {
         _or: [
           {comment: {_ilike: $search}},
-          {ref_name: {_ilike: $search}}
+          {ref_name: {_ilike: $search}},
+          {iso_639_3: {_ilike: $search}}
         ]
     }) {
       scope
