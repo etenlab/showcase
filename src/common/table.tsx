@@ -1,80 +1,47 @@
-import React from 'react'
-import styled from 'styled-components'
-import { useTable } from 'react-table'
+import { Component } from 'react'
+import MaterialTable from "material-table";
+import { ThemeProvider, createTheme } from '@mui/material';
 
-const Styles = styled.div`
-  padding: 1rem;
-
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
-interface Props {
-    columns?: any,
-    data: any
-    // any props that come into the component
+interface AppProps {
+    columns: any,
+    title: string,
+    remoteData: (query: any) => any
 }
 
-export default function Table({ columns, data }: Props) {
+class Table extends Component<AppProps, any>{
     // Use the state and functions returned from useTable to build your UI
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns,
-        data,
-    })
 
-    // Render the UI for your table
-    return (
-        <Styles>
-            <table {...getTableProps()}>
-                <thead>
-                    {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {rows.map((row, i) => {
-                        prepareRow(row)
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell => {
-                                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                                })}
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
-        </Styles>
-    )
+    constructor(props: AppProps) {
+        super(props);
+        this.state = { value: '' };
+    }
+
+    render() {
+        // const editable = this.props.data.map(o => ({ ...o }));
+        const defaultMaterialTheme = createTheme();
+        //const cloneData = structuredClone(this.props.data);
+        return (
+            <div style={{ maxWidth: "100%" }}>
+                <ThemeProvider theme={defaultMaterialTheme}>
+                    <link
+                        rel="stylesheet"
+                        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                    />
+                    <MaterialTable
+                        columns={this.props.columns}
+                        // data={cloneData}
+                        title={this.props.title}
+                        options={{
+                            paging: true,
+                            pageSize: 25,
+                            pageSizeOptions: [25, 50, 75]
+                        }}
+                        data={this.props.remoteData}
+                    />
+                </ThemeProvider>
+            </div>
+        );
+    }
 }
+
+export default Table;

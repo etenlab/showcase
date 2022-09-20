@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormEvent, useState } from 'react';
-import { fetchAs } from '../common/utility';
 import styled from 'styled-components';
-import { useQuery, gql } from '@apollo/client';
+import { gql } from '@apollo/client';
 import Table from '../common/table'
+import { client } from '../common/graphql'
 
 type Iso6392Entry = {
   id: number
@@ -15,10 +15,6 @@ type Iso6392Entry = {
   german_name: string
 };
 
-type ListResponse = {
-  error: string
-  items: Iso6392Entry[]
-};
 
 const StyledWrap = styled.div`
   padding: 20px;
@@ -28,9 +24,6 @@ const StyledH3 = styled.h3`
   color: cornflowerblue;
 `
 
-// const StyledH4 = styled.h4`
-//   color: lightcyan;
-// `
 
 const DataTable = styled.table`
   padding: 13px;
@@ -45,35 +38,56 @@ const DataTable = styled.table`
   }
 `;
 
-interface RocketInventory {
-  id: number;
-}
-
-interface RocketInventoryData {
-  iso_639_3: RocketInventory[];
-}
-
-interface RocketInventoryVars {
-  year: number;
-}
 
 const GET_ISO_639_1_DATA = gql`
-  query MyQuery {
-    iso_639_3 {
-      id
-      iso_639_3
-      part_1
-      part_2b
-      part_2t
-      ref_name
+  query MyQuery ($limit: Int, $offset: Int, $search: String) {
+    iso_639_3_aggregate (where: {
+      _or: [
+        {comment: {_ilike: $search}},
+        {ref_name: {_ilike: $search}}
+      ]
+    }) {
+      aggregate {
+        count
+      }
+    }
+    iso_639_3(limit: $limit, offset: $offset, where: {
+        _or: [
+          {comment: {_ilike: $search}},
+          {ref_name: {_ilike: $search}}
+        ]
+    }) {
       scope
+      ref_name
+      part_2t
+      part_2b
+      part_1
+      iso_639_3
+      id
       entry_type
       comment
     }
   }
 `;
 
-
+const remoteData = (query: { page: number; search: string; }) => {
+  console.log(query.search)
+  return client.query({
+    query: GET_ISO_639_1_DATA,
+    variables: {
+      offset: query.page * 25,
+      limit: 25,
+      search: query.search + "%"
+    }
+  }).then((res) => {
+    console.log(res)
+    return {
+      data: res.data.iso_639_3,
+      page: query.page,
+      totalCount: res.data.iso_639_3_aggregate.aggregate.count
+    }
+  })
+}
 
 export function Iso6392() {
   const [term, setTerm] = useState("");
@@ -82,51 +96,45 @@ export function Iso6392() {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'ID',
-        accessor: 'id',
+        title: 'ID',
+        field: 'id',
       },
       {
-        Header: 'ISO 639_3',
-        accessor: 'iso_639_3',
+        title: 'ISO 639_3',
+        field: 'iso_639_3',
       },
       {
-        Header: 'Part 1',
-        accessor: 'part_1',
+        title: 'Part 1',
+        field: 'part_1',
       },
       {
-        Header: 'Part 2b',
-        accessor: 'part_2b',
+        title: 'Part 2b',
+        field: 'part_2b',
       },
       {
-        Header: 'Part 2t',
-        accessor: 'part_2t',
+        title: 'Part 2t',
+        field: 'part_2t',
       },
       {
-        Header: 'Ref Name',
-        accessor: 'ref_name',
+        title: 'Ref Name',
+        field: 'ref_name',
       },
       {
-        Header: 'Scope',
-        accessor: 'scope',
+        title: 'Scope',
+        field: 'scope',
       },
       {
-        Header: 'Entry Type',
-        accessor: 'entry_type',
+        title: 'Entry Type',
+        field: 'entry_type',
       },
       {
-        Header: 'Comment',
-        accessor: 'comment',
+        title: 'Comment',
+        field: 'comment',
       },
     ],
     []
   )
 
-  const { loading, data } = useQuery<RocketInventoryData, RocketInventoryVars>(
-    GET_ISO_639_1_DATA,
-    { variables: { year: 2019 } }
-  );
-
-  console.log(data?.iso_639_3)
 
   async function handle_submit(event: FormEvent) {
     event.preventDefault()
@@ -134,17 +142,19 @@ export function Iso6392() {
 
     console.log(`fetching data: ISO 639-2: ${term}`)
 
-    const result = await fetchAs<{}, ListResponse>('GET', 8302, `/api/iso-639-2/find-by-iso-639-2/${term}`)
+    // const result = await fetchAs<{}, ListResponse>('GET', 8302, `/api/iso-639-2/find-by-iso-639-2/${term}`)
 
-    if (result?.error === 'NoError' && Array.isArray(result?.items)) {
-      console.log(result.items)
-      setResults(result.items)
-      return
-    } else {
-      console.error(result?.error)
-    }
-    console.error(`Unknown Error`)
+    // if (result?.error === 'NoError' && Array.isArray(result?.items)) {
+    //   console.log(result.items)
+    //   setResults(result.items)
+    //   return
+    // } else {
+    //   console.error(result?.error)
+    // }
+    // console.error(`Unknown Error`)
   }
+
+
 
   return (
     <StyledWrap>
@@ -158,12 +168,6 @@ export function Iso6392() {
       {
         results.map(value => {
           return <DataTable key={value.id}>
-            {/* <thead>
-              <tr>
-                <th>Key</th>
-                <th>Value</th>
-              </tr>
-            </thead> */}
             <tbody>
               {
                 Object.keys(value).map(key => {
@@ -171,12 +175,13 @@ export function Iso6392() {
                 })
               }
             </tbody>
-
           </DataTable>
         })
       }
-      {data && <Table columns={columns} data={data?.iso_639_3}></Table>}
 
+      <div style={{ maxWidth: "100%" }}>
+        <Table title="test" columns={columns} remoteData={remoteData} ></Table>
+      </div>
     </StyledWrap>
   );
 }
