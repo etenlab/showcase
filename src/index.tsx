@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 // import reportWebVitals from './reportWebVitals';
 
