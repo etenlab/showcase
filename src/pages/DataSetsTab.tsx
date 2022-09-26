@@ -14,9 +14,8 @@ import {
   IonItem,
   IonLabel
 } from '@ionic/react';
-import { Iso6392 } from '../components/iso6392';
-import { Iso6393 } from '../components/iso6393';
 
+import { Iso6393 } from '../components/iso6393';
 import { GlottologFamily } from '../components/GlottologFamily';
 import { GlottologLanguage } from '../components/GlottologLanguage';
 import { GSECListingOfPeopleGroups } from '../components/GSECListingOfPeopleGroups'
@@ -47,25 +46,9 @@ import { UfLanguagesWithOneStoryBibleStories } from '../components/UfLanguagesWi
 import { UfLanguagesWithOpenBibleStories } from '../components/UfLanguagesWithOpenBibleStories';
 import { UfLanguagesWithRadioBroadcast } from '../components/UfLanguagesWithRadioBroadcast';
 import { UfNetworks } from '../components/UfNetworks';
-
-
-
-
-
 import './DataSetsTab.css'
-import { useHistory } from 'react-router';
-
-const handleMenuClick = (test: string, history?:any) => {
-
-  
-  history.push("/tab1/"+test);
-  console.log("clicked" + test)
-
-}
 
 const Tab1: React.FC = () => {
-
-  const history = useHistory()
 
   return (
     <IonPage>
@@ -78,9 +61,6 @@ const Tab1: React.FC = () => {
         </IonHeader>
         <IonContent className="ion-padding">
           <IonList>
-            <IonItem href="/tab1/iso-639-2">
-              <IonLabel>ISO 639 2 </IonLabel>
-            </IonItem>
             <IonItem href="/tab1/iso-639-3" >
               <IonLabel>ISO 639 3 </IonLabel>
             </IonItem>
@@ -188,7 +168,6 @@ const Tab1: React.FC = () => {
 
       <IonContent fullscreen id="main-content" scrollY={true}>
         <IonRouterOutlet>
-          <Route path="/tab1/iso-639-2" render={() => <Iso6392 />} />
           <Route path="/tab1/iso-639-3" render={() => <Iso6393 />} />
           <Route path="/tab1/glottolog-family" render={() => <GlottologFamily />} />
           <Route path="/tab1/glottolog-language" render={() => <GlottologLanguage />} />

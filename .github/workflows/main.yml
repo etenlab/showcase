@@ -5,28 +5,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v1
 
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-    - name: Install Ionic CLI
-      run: npm install -g @ionic/cli
+      - name: react upgrade fix
+        run: npm config set legacy-peer-deps true
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install Ionic CLI
+        run: npm install -g @ionic/cli
 
-    - name: Build
-      run: ionic build
+      - name: Install dependencies
+        run: npm install
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_GITHUB_S3_PUSHER_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_GITHUB_S3_PUSHER_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+      - name: Build
+        run: ionic build
 
-    - name: Deploy static site to S3 bucket
-      run: aws s3 sync build/ s3://dev-showcase.etenlab.com
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_GITHUB_S3_PUSHER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_GITHUB_S3_PUSHER_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Deploy static site to S3 bucket
+        run: aws s3 sync build/ s3://dev-showcase.etenlab.com
