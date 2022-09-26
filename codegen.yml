@@ -1,6 +1,6 @@
 overwrite: true
-schema: "https://fast-heron-34.hasura.app/v1/graphql"
-documents: "src/**/*.graphql"
+schema: "./schema.graphql"
+#documents: "src/**/*.graphql"
 generates:
   src/generated/graphql.tsx:
     plugins:
