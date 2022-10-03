@@ -14,12 +14,11 @@ import { ellipse, square, triangle } from 'ionicons/icons';
 
 
 
-import Tab1 from './pages/DataSetsTab';
-import Tab2 from './pages/UtilityTab';
-import Tab3 from './pages/UserTab';
-import LoginPage  from './pages/LoginPage';
+import Tab1 from './DataSetsTab';
+import Tab2 from './UtilityTab';
+import Tab3 from './UserTab';
+// import LoginPage  from './pages/LoginPage';
 // import UserPage from './pages/UserPage';
-import ProtectedPage from './pages/ProtectedPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -38,16 +37,13 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css';
-import "./styles.css";
+import '../theme/variables.css';
 
-import { PrivateRoute } from './routes/utils'
+// import { PrivateRoute } from './routes/utils'
 
 setupIonicReact();
 
-
-
-const App: React.FC = () => (
+const HomePage: React.FC = () => (
   
   <IonApp>
     <Router>
@@ -62,8 +58,6 @@ const App: React.FC = () => (
           <Route path="/tab3">
             <Tab3 />
           </Route>
-          <Route path="/login" component={LoginPage} />
-          <PrivateRoute path="/protected" component={ProtectedPage} />
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>
@@ -87,4 +81,4 @@ const App: React.FC = () => (
   </IonApp>
 );
 
-export default App;
+export default HomePage;

@@ -12,9 +12,6 @@ jobs:
         with:
           node-version: 16
 
-      - name: react upgrade fix
-        run: npm config set legacy-peer-deps true
-
       - name: Install Ionic CLI
         run: npm install -g @ionic/cli
 

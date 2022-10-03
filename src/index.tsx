@@ -1,11 +1,13 @@
-import React from 'react';
 import { createRoot } from "react-dom/client";
 
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-
+import { ReactKeycloakProvider } from "@react-keycloak/web";
+import keycloak from "./Keycloak"
 // import reportWebVitals from './reportWebVitals';
+
+import "./styles.css";
 
 const client = new ApolloClient({
   uri: 'https://fast-heron-34.hasura.app/v1/graphql',
@@ -17,12 +19,30 @@ const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');
 const root = createRoot(rootElement);
 
+const eventLogger = (event: unknown, error: unknown) => {
+  console.log('onKeycloakEvent', event, error)
+}
+
+const tokenLogger = (tokens: unknown) => {
+  console.log('onKeycloakTokens', tokens)
+}
+
 root.render(
-  <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
-  </React.StrictMode>
+  <ReactKeycloakProvider 
+    // initOptions={{ onLoad: 'login-required' }}
+    authClient={keycloak}
+    onEvent={eventLogger}
+    onTokens={tokenLogger}
+  >
+    {/* <React.StrictMode> */}
+      <ApolloProvider client={client}>
+        <App />
+          
+       
+      </ApolloProvider>
+    {/* </React.StrictMode> */}
+
+  </ReactKeycloakProvider>
 );
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
