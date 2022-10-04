@@ -56,7 +56,7 @@ export function UfLanguagesWithJesusFilm() {
             <StyledWrap>
                 <StyledH3>Uf Languages With Jesus Film</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Languages With Jesus Film" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Languages With Jesus Film" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

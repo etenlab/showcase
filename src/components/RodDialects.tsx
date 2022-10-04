@@ -64,7 +64,7 @@ export function RodDialects() {
             <StyledWrap>
                 <StyledH3>Rod Dialects</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Rod Dialects" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="RoD Dialects" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

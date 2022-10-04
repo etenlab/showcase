@@ -56,7 +56,7 @@ export function SilLanguageIndex() {
             <StyledWrap>
                 <StyledH3>Sil Language Index</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Sil Language Index" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="SIL Language Index" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

@@ -56,7 +56,7 @@ export function SilLanguageCodes() {
             <StyledWrap>
                 <StyledH3>Sil Language Codes</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Sil Language Codes" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="SIL Language Codes" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

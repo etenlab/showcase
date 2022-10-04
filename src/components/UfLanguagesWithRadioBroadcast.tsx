@@ -56,7 +56,7 @@ export function UfLanguagesWithRadioBroadcast() {
             <StyledWrap>
                 <StyledH3>Uf Languages With Radio Broadcast</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Languages With Radio Broadcast" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Languages With Radio Broadcast" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

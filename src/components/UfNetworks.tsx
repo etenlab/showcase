@@ -56,7 +56,7 @@ export function UfNetworks() {
             <StyledWrap>
                 <StyledH3>Uf Networks</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Networks" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Networks" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

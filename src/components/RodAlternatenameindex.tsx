@@ -48,7 +48,7 @@ export function RodAlternatenameindex() {
             <StyledWrap>
                 <StyledH3>Rod Alternate Name Index</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Rod Alternate Name Index" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="RoD Alternate Name Index" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

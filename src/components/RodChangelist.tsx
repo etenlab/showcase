@@ -64,7 +64,7 @@ export function RodChangelist() {
             <StyledWrap>
                 <StyledH3>Rod Change List</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Rod Change List" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="RoD Change List" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

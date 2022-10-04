@@ -62,25 +62,25 @@ const Tab1: React.FC = () => {
         <IonContent className="ion-padding">
           <IonList>
             <IonItem href="/tab1/iso-639-3" >
-              <IonLabel>ISO 639 3 </IonLabel>
+              <IonLabel>ISO 639-3 </IonLabel>
             </IonItem>
             <IonItem href="/tab1/iso-639-5">
-              <IonLabel>ISO 639 5 </IonLabel>
+              <IonLabel>ISO 639-5 </IonLabel>
             </IonItem>
             <IonItem href="/tab1/iso-639-3-macrolanguages">
-              <IonLabel>ISO 639 3 Macrolanguages</IonLabel>
+              <IonLabel>ISO 639-3 Macrolanguages</IonLabel>
             </IonItem>
             <IonItem href="/tab1/iso-639-3-names">
-              <IonLabel>ISO 639 3 Names</IonLabel>
+              <IonLabel>ISO 639-3 Names</IonLabel>
             </IonItem>
             <IonItem href="/tab1/iso-639-3-retirements">
-              <IonLabel>ISO 639 3 Retirements</IonLabel>
+              <IonLabel>ISO 639-3 Retirements</IonLabel>
             </IonItem>
             <IonItem href="/tab1/glottolog-family">
-              <IonLabel>Glottolog Family</IonLabel>
+              <IonLabel>Glottolog Language Family Listing</IonLabel>
             </IonItem>
             <IonItem href="/tab1/glottolog-language">
-              <IonLabel>Glottolog Language</IonLabel>
+              <IonLabel>Glottolog Language Listing</IonLabel>
             </IonItem>
             <IonItem href="/tab1/gsec-listing-of-people-groups">
               <IonLabel>GSEC Listing Of People Groups</IonLabel>
@@ -104,55 +104,55 @@ const Tab1: React.FC = () => {
               <IonLabel>Progress Bible Language Details</IonLabel>
             </IonItem>
             <IonItem href="/tab1/rod-alternatenameindex">
-              <IonLabel>Rod Alternatename Index</IonLabel>
+              <IonLabel>RoD Alternatename Index</IonLabel>
             </IonItem>
             <IonItem href="/tab1/rod-changelist">
-              <IonLabel>Rod Change List</IonLabel>
+              <IonLabel>RoD Change List</IonLabel>
             </IonItem>
             <IonItem href="/tab1/rod-dialects">
-              <IonLabel>Rod Dialects</IonLabel>
+              <IonLabel>RoD Dialects</IonLabel>
             </IonItem>
             <IonItem href="/tab1/sil-country-codes">
-              <IonLabel>Sil Country Codes</IonLabel>
+              <IonLabel>SIL Country Codes</IonLabel>
             </IonItem>
             <IonItem href="/tab1/sil-language-codes">
-              <IonLabel>Sil Language Codes</IonLabel>
+              <IonLabel>SIL Language Codes</IonLabel>
             </IonItem>
             <IonItem href="/tab1/sil-language-index">
-              <IonLabel>Sil Language Index</IonLabel>
+              <IonLabel>SIL Language Index</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-additional-languages">
-              <IonLabel>Uf Additional Languages</IonLabel>
+              <IonLabel>unfoldingWord Additional Languages</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-countries-list">
-              <IonLabel>Uf Countries List</IonLabel>
+              <IonLabel>unfoldingWord Countries List</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-langnames">
-              <IonLabel>Uf Lang Names</IonLabel>
+              <IonLabel>unfoldingWord Language Names</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages">
-              <IonLabel>Uf Languages</IonLabel>
+              <IonLabel>unfoldingWord Languages</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages-with-bible-portions">
-              <IonLabel>Uf Languages With Bible Portions</IonLabel>
+              <IonLabel>unfoldingWord Languages With Bible Portions</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages-with-gospel-recording">
-              <IonLabel>Uf Languages With Gospel Recording</IonLabel>
+              <IonLabel>unfoldingWord Languages With Gospel Recording</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages-with-jesus-film">
-              <IonLabel>Uf Languages With Jesus Film</IonLabel>
+              <IonLabel>unfoldingWord Languages With Jesus Film</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages-with-one-story-bible-stories">
-              <IonLabel>Uf Languages With One Story Bible Stories</IonLabel>
+              <IonLabel>unfoldingWord Languages With One Story Bible Stories</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages-with-open-bible-stories">
-              <IonLabel>Uf Languages With Open Bible Stories</IonLabel>
+              <IonLabel>unfoldingWord Languages With Open Bible Stories</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-languages-with-radio-broadcast">
-              <IonLabel>Uf Languages With Radio Broadcast</IonLabel>
+              <IonLabel>unfoldingWord Languages With Radio Broadcast</IonLabel>
             </IonItem>
             <IonItem href="/tab1/uf-networks">
-              <IonLabel>Uf Networks</IonLabel>
+              <IonLabel>unfoldingWord Networks</IonLabel>
             </IonItem>
           </IonList>
         </IonContent>
