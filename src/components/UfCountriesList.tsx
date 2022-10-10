@@ -64,7 +64,7 @@ export function UfCountriesList() {
             <StyledWrap>
                 <StyledH3>Uf Countries List</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Countries List" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Countries List" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

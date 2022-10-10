@@ -52,7 +52,7 @@ export function SilCountryCodes() {
             <StyledWrap>
                 <StyledH3>Sil Country Codes</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Sil Country Codes" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="SIL Country Codes" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

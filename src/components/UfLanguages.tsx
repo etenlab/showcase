@@ -72,7 +72,7 @@ export function UfLanguages() {
             <StyledWrap>
                 <StyledH3>Uf Languages</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Languages" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Languages" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

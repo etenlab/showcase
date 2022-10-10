@@ -57,7 +57,7 @@ export function UfLanguagesWithOpenBibleStories() {
             <StyledWrap>
                 <StyledH3>Uf Languages With Open Bible Stories</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Languages With Open Bible Stories" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Languages With Open Bible Stories" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

@@ -56,7 +56,7 @@ export function UfLanguagesWithBiblePortions() {
             <StyledWrap>
                 <StyledH3>Uf Languages With Bible Portions</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Languages With Bible Portions" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Languages With Bible Portions" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

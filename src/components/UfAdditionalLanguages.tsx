@@ -68,7 +68,7 @@ export function UfAdditionalLanguages() {
             <StyledWrap>
                 <StyledH3>Uf Additional Languages</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Additional Languages" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Additional Languages" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>

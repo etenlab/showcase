@@ -52,7 +52,7 @@ export function UfLanguagesWithOneStoryBibleStories() {
             <StyledWrap>
                 <StyledH3>Uf Languages With One Story Bible Stories</StyledH3>
                 <div style={{ maxWidth: "100%" }}>
-                    <Table title="Uf Languages With One Story Bible Stories" columns={columns} remoteData={remoteData} ></Table>
+                    <Table title="unfoldingWord Languages With One Story Bible Stories" columns={columns} remoteData={remoteData} ></Table>
                 </div>
             </StyledWrap>
         </IonContent>
