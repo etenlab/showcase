@@ -1,8 +1,10 @@
-import * as React from 'react'
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from '@emotion/react'
 import { useCallback } from 'react'
 import { Redirect, useLocation } from 'react-router-dom'
-
 import { useKeycloak } from '@react-keycloak/web'
+import { styles } from '../common/styles'
 
 const LoginPage = () => {
   const location = useLocation<{ [key: string]: unknown }>()
@@ -23,8 +25,8 @@ const LoginPage = () => {
     return <Redirect to={currentLocationState?.from as string} />
 
   return (
-    <div className="form-wrapper">
-      <button type="button" onClick={login}>
+    <div css={styles.formWrapper}>
+      <button css={styles.formButton} type="button" onClick={login}>
         Login
       </button>
     </div>

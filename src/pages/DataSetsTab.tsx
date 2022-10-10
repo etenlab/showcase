@@ -46,7 +46,6 @@ import { UfLanguagesWithOneStoryBibleStories } from '../components/UfLanguagesWi
 import { UfLanguagesWithOpenBibleStories } from '../components/UfLanguagesWithOpenBibleStories';
 import { UfLanguagesWithRadioBroadcast } from '../components/UfLanguagesWithRadioBroadcast';
 import { UfNetworks } from '../components/UfNetworks';
-import './DataSetsTab.css'
 
 const Tab1: React.FC = () => {
 
