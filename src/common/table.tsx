@@ -37,6 +37,22 @@ class Table extends Component<AppProps, any>{
                             pageSizeOptions: [25, 50, 75]
                         }}
                         data={this.props.remoteData}
+                        detailPanel={(rowData:any) => {
+                            if(rowData.iso_639_3 === "aab"){
+                                console.log("rowData")
+                                console.log(rowData.iso_639_3)
+                                console.log("rowData")
+                                return (
+                                <div>
+                                    <h1>Test</h1>
+                                </div>
+                                )
+                            }
+                            else{
+                                return false
+                            }
+                          }}
+                        // onRowClick={(event, rowData, togglePanel) => togglePanel()}
                     />
                 </ThemeProvider>
             </div>
