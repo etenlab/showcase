@@ -1,5 +1,6 @@
 schema {
   query: query_root
+  mutation: mutation_root
   subscription: subscription_root
 }
 
@@ -5307,7 +5308,45 @@ type progress_bible_language_details_variance_fields {
   id: Float
 }
 
+# SHOWCASE OUTPUTS
+
+type AppItemOutput {
+  appItem: AppItem!
+}
+
+type SiteTextOutput {
+  siteText: SiteText!
+}
+
+type SiteTextTranslationOutput {
+  siteTextTranslation: SiteTextTranslation!
+}
+
+
+type mutation_root {
+  createAppItem(input: AppItemInput!): AppItemOutput!
+  createSiteText(input: SiteTextInput!): SiteTextOutput!
+  createSiteTextTranslation(input: SiteTextTranslationInput!): SiteTextTranslationOutput!
+}
+
 type query_root {
+  #SHOWCASE
+  """
+  fetch apps
+  """
+  appItems: [AppItem!]!
+
+
+  """
+  fetch site texts
+  """
+  siteTexts: [SiteText!]!
+
+  """
+  fetch site text translations
+  """
+  siteTextTranslations: [SiteTextTranslation!]!
+
   """
   fetch data from the table: "glottolog_family"
   """
@@ -7005,6 +7044,28 @@ input rod_changelist_order_by {
   id: order_by
   new_language_code: order_by
   prev_language_code: order_by
+}
+
+# SHOWCASE INPUTS
+
+input AppItemInput {
+  app_name: String!
+}
+
+input SiteTextInput {
+  app: Int!
+  description: String!
+  language_id: Int
+  language_table: String
+  site_text_key: String!
+}
+
+input SiteTextTranslationInput {
+  language_id: Int
+  language_table: String
+  site_text: Int!
+  site_text_translation: String!
+  user_id: String!
 }
 
 """
@@ -11481,3 +11542,27 @@ type uf_networks_variance_fields {
   id: Float
 }
 
+# SHOWCASE TYPES
+
+type AppItem {
+  app_name: String!
+  id: Int!
+}
+
+type SiteText {
+  app: Int!
+  description: String!
+  id: Int!
+  language_id: Int!
+  language_table: String!
+  site_text_key: String!
+}
+
+type SiteTextTranslation {
+  id: Int!
+  language_id: Int!
+  language_table: String!
+  site_text: Int!
+  site_text_translation: String!
+  user_id: String!
+}

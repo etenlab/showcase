@@ -10,7 +10,7 @@ import keycloak from "./Keycloak"
 import "./styles.css";
 
 const client = new ApolloClient({
-  uri: 'https://fast-heron-34.hasura.app/v1/graphql',
+  uri: 'http://localhost:3001/graphql',
   cache: new InMemoryCache(),
 });
 
