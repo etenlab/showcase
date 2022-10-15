@@ -13,7 +13,7 @@ if(process.env.NODE_ENV === "production"){
     keycloak = new Keycloak({
         url: "https://sso.dev.lab.eten.bible:8443", //"http://localhost:8080",
         realm: "showcase",
-        clientId: "showcase-auth"
+        clientId: "showcase-auth", 
     });
 }
 
