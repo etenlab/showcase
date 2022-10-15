@@ -1300,3 +1300,51 @@ export const ufNetworksQuery = gql`
     }
 `;
 
+// iso6393NamesQuery.loc?.source.locationOffset.line.toString()
+
+// export const iso6393NamesQuery1 = gql`
+//     query MyQuery ($limit: Int, $offset: Int, $search: String) {
+//         iso_639_3_names_aggregate (where: {
+//             _or: [
+//                 {inverted_name: {_ilike: $search}},
+//                 {iso_639_3: {_ilike: $search}},
+//                 {print_name: {_ilike: $search}}
+//             ]
+//         }) {
+//         aggregate {
+//             count
+//         }
+//     }
+//     iso_639_3_names(limit: $limit, offset: $offset, where: {
+//             _or: [
+//                 {inverted_name: {_ilike: $search}},
+//                 {iso_639_3: {_ilike: $search}},
+//                 {print_name: {_ilike: $search}}
+//             ]
+//         }) {
+//             id
+//             inverted_name
+//             iso_639_3
+//             print_name
+//         }
+//     }
+// `;
+
+export function buildQuery(query: any){
+
+    // var fields = ['id', 'inverted_name', 'iso_639_3', 'print_name'];
+    var table = 'iso_639_3_names';
+    // var filters = ['inverted_name', 'iso_639_3', 'print_name'];
+
+    var qry = 'query MyQuery ($limit: Int, $offset: Int, $search: String) {'
+    qry+=`${table}_aggregate`;
+    
+
+    console.log(qry);
+ 
+    const mainQueryStr = query.loc.source.body;
+    console.log("mainQueryStr")
+    console.log(mainQueryStr)
+    console.log(mainQueryStr.MyQuery )
+
+}

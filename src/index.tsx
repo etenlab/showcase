@@ -29,7 +29,7 @@ const tokenLogger = (tokens: unknown) => {
 
 root.render(
   <ReactKeycloakProvider 
-    // initOptions={{ onLoad: 'login-required' }}
+    initOptions={{ checkLoginIframe: false }}
     authClient={keycloak}
     onEvent={eventLogger}
     onTokens={tokenLogger}

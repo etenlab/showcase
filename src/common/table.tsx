@@ -5,6 +5,8 @@ import { ThemeProvider, createTheme } from '@mui/material';
 interface AppProps {
     columns: any,
     title: string,
+    detailsPanel?: boolean,
+    remoteSubData?: any ,
     remoteData: (query: any) => any
 }
 
@@ -27,7 +29,7 @@ class Table extends Component<AppProps, any>{
                         rel="stylesheet"
                         href="https://fonts.googleapis.com/icon?family=Material+Icons"
                     />
-                    <MaterialTable
+                    { this.props.detailsPanel ? <MaterialTable
                         columns={this.props.columns}
                         // data={cloneData}
                         title={this.props.title}
@@ -37,23 +39,30 @@ class Table extends Component<AppProps, any>{
                             pageSizeOptions: [25, 50, 75]
                         }}
                         data={this.props.remoteData}
-                        detailPanel={(rowData:any) => {
-                            if(rowData.iso_639_3 === "aab"){
-                                console.log("rowData")
-                                console.log(rowData.iso_639_3)
-                                console.log("rowData")
-                                return (
-                                <div>
-                                    <h1>Test</h1>
-                                </div>
-                                )
+                        detailPanel={[
+                            {
+                            //disabled: true,
+                            tooltip: 'Show Name',
+                            render: (rowData:any) => {
+                                return this.props.remoteSubData(rowData) || false
+                                }
                             }
-                            else{
-                                return false
-                            }
-                          }}
+                        ]}
+                        
                         // onRowClick={(event, rowData, togglePanel) => togglePanel()}
-                    />
+                    /> : <MaterialTable
+                    columns={this.props.columns}
+                    // data={cloneData}
+                    title={this.props.title}
+                    options={{
+                        paging: true,
+                        pageSize: 25,
+                        pageSizeOptions: [25, 50, 75]
+                    }}
+                    data={this.props.remoteData}                   
+                    // onRowClick={(event, rowData, togglePanel) => togglePanel()}
+                /> }
+                    
                 </ThemeProvider>
             </div>
         );
