@@ -18,6 +18,7 @@ import {
 import { useMutation, useQuery } from "@apollo/client";
 import { useMemo, useState } from "react";
 import { IAppItem } from "./AppList";
+import { useHistory } from "react-router-dom";
 
 export interface ISiteText {
     id: number;
@@ -46,6 +47,8 @@ const SiteText: React.FC = () => {
         () => data,
         [data]
     );
+
+    const history = useHistory();
 
     const handleSubmitForm = () => {
         createSiteText({
@@ -164,7 +167,16 @@ const SiteText: React.FC = () => {
                     <IonList lines="none">
                         {siteTextData &&
                             siteTextData.siteTexts.map((item: ISiteText) => (
-                                <IonItem key={item.id}>
+                                <IonItem
+                                    key={item.id}
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                        history.push({
+                                            pathname: `/tab4/site-text-translation`,
+                                            search: `?app_id=${item.app}&site_text_id=${item.id}`,
+                                        })
+                                    }
+                                >
                                     {item.site_text_key} - {item.description}
                                 </IonItem>
                             ))}

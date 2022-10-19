@@ -5322,11 +5322,15 @@ type SiteTextTranslationOutput {
   siteTextTranslation: SiteTextTranslation!
 }
 
+type LanguageProficiencyOutput {
+  languageProficiency: LanguageProficiency!
+}
 
 type mutation_root {
   createAppItem(input: AppItemInput!): AppItemOutput!
   createSiteText(input: SiteTextInput!): SiteTextOutput!
   createSiteTextTranslation(input: SiteTextTranslationInput!): SiteTextTranslationOutput!
+  createLanguageProficiency(input: LanguageProficiencyInput!): LanguageProficiencyOutput!
 }
 
 type query_root {
@@ -5346,6 +5350,11 @@ type query_root {
   fetch site text translations
   """
   siteTextTranslations: [SiteTextTranslation!]!
+
+  """
+  fetch language profiencies
+  """
+  languageProficiencies: [LanguageProficiency!]!
 
   """
   fetch data from the table: "glottolog_family"
@@ -6901,6 +6910,14 @@ enum rod_alternatenameindex_select_column {
   variant_name
 }
 
+enum LanguageProficiencyEnum {
+  Conversational
+  Fluent
+  Proficient
+  RecognizeWords
+  StartedLearning
+}
+
 """aggregate stddev on columns"""
 type rod_alternatenameindex_stddev_fields {
   id: Float
@@ -7067,6 +7084,13 @@ input SiteTextTranslationInput {
   site_text_translation: String!
   user_id: String!
 }
+
+input LanguageProficiencyInput {
+  language_id: Int!
+  language_table: String!
+  skill_level: LanguageProficiencyEnum!
+  user_id: String!
+} 
 
 """
 select columns of table "rod_changelist"
@@ -11564,5 +11588,13 @@ type SiteTextTranslation {
   language_table: String!
   site_text: Int!
   site_text_translation: String!
+  user_id: String!
+}
+
+type LanguageProficiency {
+  id: Int!
+  language_id: Int!
+  language_table: String!
+  skill_level: LanguageProficiencyEnum!
   user_id: String!
 }

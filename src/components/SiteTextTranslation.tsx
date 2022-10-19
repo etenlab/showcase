@@ -16,9 +16,11 @@ import {
     siteTextTranslationsQuery,
 } from "../common/query";
 import { useMutation, useQuery } from "@apollo/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IAppItem } from "./AppList";
 import { ISiteText } from "./SiteText";
+import { useLocation } from "react-router";
+import queryString from "query-string";
 
 export interface ISiteTextTranslation {
     id: number;
@@ -37,13 +39,20 @@ const SiteTextTranslation: React.FC = () => {
 
     const appItemsRequest = useQuery(appItemsQuery);
 
+    const { search } = useLocation();
+
+    const params = queryString.parse(search);
+
     const appData: { appItems: IAppItem[] } = useMemo(
         () => appItemsRequest.data,
         [appItemsRequest.data]
     );
+
     const siteTextRequest = useQuery(siteTextsByAppIdQuery, {
         skip: app?.id === undefined,
-        variables: { siteTextsByAppIdId: app?.id },
+        variables: {
+            siteTextsByAppIdId: app?.id ?? +params.app_id!,
+        },
     });
 
     const siteTextData: { siteTextsByAppId: ISiteText[] } = useMemo(
@@ -60,6 +69,21 @@ const SiteTextTranslation: React.FC = () => {
     const [createSiteTextTranslation] = useMutation(
         createSiteTextTranslationMutation
     );
+
+    useEffect(() => {
+        if (params.app_id! && params.site_text_id!) {
+            const appItem = appData?.appItems.filter(
+                (appItem) => appItem.id === +params.app_id!
+            )[0];
+
+            const siteTextItem = siteTextData?.siteTextsByAppId.filter(
+                (siteTextItem) => siteTextItem.id === +params.site_text_id!
+            )[0];
+
+            setApp(appItem);
+            setSiteText(siteTextItem);
+        }
+    }, [appData?.appItems, params, siteTextData?.siteTextsByAppId]);
 
     const handleSubmitForm = () => {
         createSiteTextTranslation({

@@ -15,6 +15,7 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { Route } from "react-router";
 import AppList from "../components/AppList";
+import LanguageProficiency from "../components/LanguageProficiency";
 import SiteText from "../components/SiteText";
 import SiteTextTranslation from "../components/SiteTextTranslation";
 
@@ -39,6 +40,9 @@ const Tab4: React.FC = () => {
                             <IonItem href="/tab4/site-text-translation">
                                 <IonLabel>Site Text Translation</IonLabel>
                             </IonItem>
+                            <IonItem href="/tab4/language-proficiency">
+                                <IonLabel>Language Proficiency</IonLabel>
+                            </IonItem>
                         </IonList>
                     </IonContent>
                 </IonMenu>
@@ -61,8 +65,12 @@ const Tab4: React.FC = () => {
                             render={() => <SiteText />}
                         />
                         <Route
-                            path="/tab4/site-text-translation"
+                            path="/tab4/site-text-translation/:app_id?/:site_text_id?"
                             render={() => <SiteTextTranslation />}
+                        />
+                        <Route
+                            path="/tab4/language-proficiency"
+                            render={() => <LanguageProficiency />}
                         />
                     </IonRouterOutlet>
                 </IonContent>

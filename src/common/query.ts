@@ -1382,3 +1382,15 @@ export const createSiteTextTranslationMutation = gql`
     }    
 } 
 `
+export const languageProficienciesQuery = gql`
+   query LanguageProficiencies {
+        languageProficiencies {
+            id
+            language_id
+            language_table
+            skill_level
+            user_id
+        }
+    }
+
+`
