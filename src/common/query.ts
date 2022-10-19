@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
 export const iso6392Query = gql`
     query MyQuery ($limit: Int, $offset: Int, $search: String) {
@@ -67,10 +68,6 @@ export const iso6393Query = gql`
         }
     }
 `;
-
-// export const iso6392 = gql``;
-// export const iso6393 = gql``
-
 
 export const glottologFamilyQuery = gql`
     query MyQuery ($limit: Int, $offset: Int, $search: String) {
@@ -1300,51 +1297,76 @@ export const ufNetworksQuery = gql`
     }
 `;
 
-// iso6393NamesQuery.loc?.source.locationOffset.line.toString()
+interface tableFields{
+    [key: string]: string[]
+}
+interface rowFields{
+    [key: string]: string
+}
 
-// export const iso6393NamesQuery1 = gql`
-//     query MyQuery ($limit: Int, $offset: Int, $search: String) {
-//         iso_639_3_names_aggregate (where: {
-//             _or: [
-//                 {inverted_name: {_ilike: $search}},
-//                 {iso_639_3: {_ilike: $search}},
-//                 {print_name: {_ilike: $search}}
-//             ]
-//         }) {
-//         aggregate {
-//             count
-//         }
-//     }
-//     iso_639_3_names(limit: $limit, offset: $offset, where: {
-//             _or: [
-//                 {inverted_name: {_ilike: $search}},
-//                 {iso_639_3: {_ilike: $search}},
-//                 {print_name: {_ilike: $search}}
-//             ]
-//         }) {
-//             id
-//             inverted_name
-//             iso_639_3
-//             print_name
-//         }
-//     }
-// `;
+export interface RequestArgs {
+    tableNames: string[],
+    aggregateTable?: string,
+    fields: tableFields,
+    limit?: number,
+    offset?: number,
+    filterValue?: string,
+    filterColumns?: string[],
+    getRow?: boolean,
+    getRowField?: rowFields,
+    getRowValue?: string
+};
 
-export function buildQuery(query: any){
-
-    // var fields = ['id', 'inverted_name', 'iso_639_3', 'print_name'];
-    var table = 'iso_639_3_names';
-    // var filters = ['inverted_name', 'iso_639_3', 'print_name'];
-
-    var qry = 'query MyQuery ($limit: Int, $offset: Int, $search: String) {'
-    qry+=`${table}_aggregate`;
-    
-
-    console.log(qry);
- 
-    const mainQueryStr = query.loc.source.body;
-    console.log("mainQueryStr")
-    console.log(mainQueryStr)
-    console.log(mainQueryStr.MyQuery )
-
+export function buildQuery(request: RequestArgs){  
+    var query = `{"query":{`;
+    if(!request.getRow){
+        if(request.aggregateTable){
+            query+=`"${request.aggregateTable}_aggregate":{`
+            if(request.filterValue!=="" && request.filterColumns!.length > 0){
+                query+=`"__args":{"where":{"_or":[`
+                request.filterColumns!.forEach((fc, index) => {
+                    if(index > 0){
+                        query+=`,`
+                    }
+                    query+=`{"${fc}":{"_ilike": "${request.filterValue}"}}`
+                })
+                query+=`]}},`
+            }
+            query+=`"aggregate":{"count":"true"}},`  
+        }   
+    }
+    if(request.tableNames.length){
+        request.tableNames.forEach((tableName, tblIndex) => {
+            if(tblIndex > 0){
+                query+=`,`
+            }
+            query+=`"${tableName}":{`
+            if(request.getRow && request.getRowField![tableName]){
+                query+=`"__args":{"where":{"${request.getRowField![tableName]}":{"_eq":"${request.getRowValue}"}}},`
+            }
+            else{
+                query+=`"__args":{"limit":${request.limit},"offset":${request.offset},"where":{"_or":[`
+                request.filterColumns!.forEach((fc, index) => {
+                    if(index > 0){
+                        query+=`,`
+                    }
+                    query+=`{"${fc}":{"_ilike":"${request.filterValue}"}}`
+                })
+                query+=`]}},`
+            }
+            if(request.fields[tableName].length){
+                request.fields[tableName].forEach((column, index) => {
+                    if(index > 0){
+                        query+=`, `
+                    }
+                    query+=`"${column}":"true"`
+                })
+            }
+        query+=`}`
+        })
+    }
+    query+=`}}`
+    let jsonObject = JSON.parse(query); 
+    var gqlQuery = jsonToGraphQLQuery(jsonObject, { pretty: true })
+    return gql`${gqlQuery}`
 }

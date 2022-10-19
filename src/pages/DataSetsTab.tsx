@@ -167,7 +167,7 @@ const Tab1: React.FC = () => {
 
       <IonContent fullscreen id="main-content" scrollY={true}>
         <IonRouterOutlet>
-          <Route path="/tab1/iso-639-3" render={() => <Iso6393 />} />
+          <Route path="/tab1/iso-639-3" component={Iso6393}  />
           <Route path="/tab1/glottolog-family" render={() => <GlottologFamily />} />
           <Route path="/tab1/glottolog-language" render={() => <GlottologLanguage />} />
           <Route path="/tab1/gsec-listing-of-people-groups" render={() => <GSECListingOfPeopleGroups />} />

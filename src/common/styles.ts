@@ -20,5 +20,23 @@ export const styles = {
         background: 'gray',
         color: '#fff',
         fontWeight: '600'
+    }),
+    detailsPanelWrapper: css({
+        display: 'flex',
+    }),
+    detailsPanelBox: css({
+        padding: '15px'
     })
 }
+
+export const StyledTable = styled.table`
+  padding: 13px;
+  margin: 15px;
+  table, th, tr, td {
+    border: 1px solid #000;
+    color: #000;
+  }
+  td, th {
+    padding: 10px;
+  }
+`;

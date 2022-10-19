@@ -6,28 +6,29 @@ import { StyledWrap, StyledH3 } from '../common/styles';
 import { iso6395Query } from '../common/query';
 
 
-const remoteData = (query: { page: number; search: string; }) => {
-    console.log(query.search)
-    return client.query({
-        query: iso6395Query,
-        variables: {
-            offset: query.page * 25,
-            limit: 25,
-            search: query.search + "%"
-        }
-    }).then((res) => {
-        console.log(res)
-        return {
-            data: res.data.iso_639_5,
-            page: query.page,
-            totalCount: res.data.iso_639_5_aggregate.aggregate.count
-        }
-    })
-}
 
+export class Iso6395 extends React.Component{
 
-export function Iso6395() {
-    const columns = React.useMemo(
+    remoteData = (query: { page: number; search: string; }) => {
+        console.log(query.search)
+        return client.query({
+            query: iso6395Query,
+            variables: {
+                offset: query.page * 25,
+                limit: 25,
+                search: query.search + "%"
+            }
+        }).then((res) => {
+            console.log(res)
+            return {
+                data: res.data.iso_639_5,
+                page: query.page,
+                totalCount: res.data.iso_639_5_aggregate.aggregate.count
+            }
+        })
+    }
+    
+    columns = React.useMemo(
         () => [
             {
                 title: 'ID',
@@ -61,14 +62,18 @@ export function Iso6395() {
         []
     )
 
-    return (
-        <IonContent>
-            <StyledWrap>
-                <StyledH3>ISO 639 5</StyledH3>
-                <div style={{ maxWidth: "100%" }}>
-                    <Table title="ISO 639 5" columns={columns} remoteData={remoteData} ></Table>
-                </div>
-            </StyledWrap>
-        </IonContent>
-    );
+    render(){
+        return (
+            <IonContent>
+                <StyledWrap>
+                    <StyledH3>ISO 639 5</StyledH3>
+                    <div style={{ maxWidth: "100%" }}>
+                        <Table title="ISO 639 5" columns={this.columns} remoteData={this.remoteData} ></Table>
+                    </div>
+                </StyledWrap>
+            </IonContent>
+        );
+    }
+
+        
 }

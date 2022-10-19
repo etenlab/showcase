@@ -7,11 +7,14 @@ interface AppProps {
     title: string,
     detailsPanel?: boolean,
     remoteSubData?: any ,
-    remoteData: (query: any) => any
+    // dataLoaded?: boolean,
+    remoteData?: (query: any) => any
 }
 
 class Table extends Component<AppProps, any>{
     // Use the state and functions returned from useTable to build your UI
+
+    initDetails = false;
 
     constructor(props: AppProps) {
         super(props);
@@ -36,20 +39,18 @@ class Table extends Component<AppProps, any>{
                         options={{
                             paging: true,
                             pageSize: 25,
-                            pageSizeOptions: [25, 50, 75]
+                            pageSizeOptions: [25, 50, 75],
+                            detailPanelType: "single"
                         }}
-                        data={this.props.remoteData}
-                        detailPanel={[
-                            {
-                            //disabled: true,
-                            tooltip: 'Show Name',
-                            render: (rowData:any) => {
+                        data={this.props.remoteData!}
+                        detailPanel={(rowData:any) => {
+                            console.log("INSIDE TABLE COMPONENT REMOTE SUBDATA");
+                            // console.log(this.props.dataLoaded)
+                            // if(!this.props.dataLoaded){
                                 return this.props.remoteSubData(rowData) || false
-                                }
-                            }
-                        ]}
-                        
-                        // onRowClick={(event, rowData, togglePanel) => togglePanel()}
+                                // }
+                            }}
+                        // onRowClick={(event, rowData, togglePanel) => togglePanel}
                     /> : <MaterialTable
                     columns={this.props.columns}
                     // data={cloneData}
@@ -59,7 +60,7 @@ class Table extends Component<AppProps, any>{
                         pageSize: 25,
                         pageSizeOptions: [25, 50, 75]
                     }}
-                    data={this.props.remoteData}                   
+                    data={this.props.remoteData!}                   
                     // onRowClick={(event, rowData, togglePanel) => togglePanel()}
                 /> }
                     
