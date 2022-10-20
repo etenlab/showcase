@@ -115,18 +115,14 @@ export function Iso6393 () {
                                 <table>
                                     <tr>
                                         <th>ID</th>
-                                        <td>{res.data.iso_639_3_names[0].id}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Inverted Name</th>
-                                        <td>{res.data.iso_639_3_names[0].inverted_name}</td>
-                                    </tr>
-                                    <tr>
                                         <th>ISO 639 3</th>
-                                        <td>{res.data.iso_639_3_names[0].iso_639_3}</td>
+                                        <th>Print Name</th>
                                     </tr>
                                     <tr>
-                                        <th>Print Name</th>
+                                        <td>{res.data.iso_639_3_names[0].id}</td>
+                                        <td>{res.data.iso_639_3_names[0].inverted_name}</td>
+                                        <td>{res.data.iso_639_3_names[0].iso_639_3}</td>
                                         <td>{res.data.iso_639_3_names[0].print_name}</td>
                                     </tr>
                                 </table>
@@ -136,124 +132,73 @@ export function Iso6393 () {
                                 <table>
                                     <tr>
                                         <th>ID</th>
-                                        <td>{res.data.iso_639_3_retirements[0].id}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Change To</th>
-                                        <td>{res.data.iso_639_3_retirements[0].change_to}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Effective</th>
-                                        <td>{res.data.iso_639_3_retirements[0].effective}</td>
-                                    </tr>
-                                    <tr>
                                         <th>ISO 639 3</th>
-                                        <td>{res.data.iso_639_3_retirements[0].iso_639_3}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Ref Name</th>
-                                        <td>{res.data.iso_639_3_retirements[0].ref_name}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Ret Reason</th>
-                                        <td>{res.data.iso_639_3_retirements[0].ret_reason}</td>
+                                        <th>Ret Remedy</th>
                                     </tr>
                                     <tr>
-                                        <th>Ret Remedy</th>
+                                        <td>{res.data.iso_639_3_retirements[0].id}</td>
+                                        <td>{res.data.iso_639_3_retirements[0].change_to}</td>
+                                        <td>{res.data.iso_639_3_retirements[0].effective}</td>
+                                        <td>{res.data.iso_639_3_retirements[0].iso_639_3}</td>
+                                        <td>{res.data.iso_639_3_retirements[0].ref_name}</td>
+                                        <td>{res.data.iso_639_3_retirements[0].ret_reason}</td>
                                         <td>{res.data.iso_639_3_retirements[0].ret_remedy}</td>
                                     </tr>
                                 </table>
                             </div>}
                             {res.data.progress_bible_language_details.length > 0 && <div css={styles.detailsPanelBox}>
-                                <h4>ISO 639 3 Retirements</h4>
+                                <h4>Progress Bible Language Details</h4>
                                 <table>
                                     <tr>
                                         <th>ID</th>
-                                        <td>{res.data.progress_bible_language_details[0].id}</td>
-                                    </tr>
-                                    <tr>
                                         <th>How To Fix</th>
-                                        <td>{res.data.progress_bible_language_details[0].how_to_fix}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Ethnologue Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].ethnologue_name}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Code Status</th>
-                                        <td>{res.data.progress_bible_language_details[0].code_status}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Is Sign Language</th>
-                                        <td>{res.data.progress_bible_language_details[0].is_sign_language}</td>
-                                    </tr>
-                                    <tr>
                                         <th>ISO 639 3 Code</th>
-                                        <td>{res.data.progress_bible_language_details[0].iso_639_3_code}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Language Scope</th>
-                                        <td>{res.data.progress_bible_language_details[0].language_scope}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Language Status</th>
-                                        <td>{res.data.progress_bible_language_details[0].language_status}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Primary Continent</th>
-                                        <td>{res.data.progress_bible_language_details[0].primary_continent}</td>
-                                    </tr>
-
-                                    <tr>
                                         <th>Primary Country Code</th>
-                                        <td>{res.data.progress_bible_language_details[0].primary_country_code}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Primary Country Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].primary_country_name}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Retired Date</th>
-                                        <td>{res.data.progress_bible_language_details[0].retired_date}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Retirement Explanation</th>
-                                        <td>{res.data.progress_bible_language_details[0].retirement_explanation}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Show Active Dialect</th>
-                                        <td>{res.data.progress_bible_language_details[0].show_active_dialect}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Show Active Language</th>
-                                        <td>{res.data.progress_bible_language_details[0].show_active_language}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Show Retired Dialect</th>
-                                        <td>{res.data.progress_bible_language_details[0].show_retired_dialect}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Show Retired Language</th>
-                                        <td>{res.data.progress_bible_language_details[0].show_retired_language}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Show Sign Language</th>
-                                        <td>{res.data.progress_bible_language_details[0].show_sign_language}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Unit Code</th>
-                                        <td>{res.data.progress_bible_language_details[0].unit_code}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Unit Full Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].unit_full_name}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Unit Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].unit_name}</td>
+                                        <th>Unit Type</th>
                                     </tr>
                                     <tr>
-                                        <th>Unit Type</th>
+                                        <td>{res.data.progress_bible_language_details[0].id}</td>
+                                        <td>{res.data.progress_bible_language_details[0].how_to_fix}</td>
+                                        <td>{res.data.progress_bible_language_details[0].ethnologue_name}</td>
+                                        <td>{res.data.progress_bible_language_details[0].code_status}</td>
+                                        <td>{res.data.progress_bible_language_details[0].is_sign_language}</td>
+                                        <td>{res.data.progress_bible_language_details[0].iso_639_3_code}</td>
+                                        <td>{res.data.progress_bible_language_details[0].language_scope}</td>
+                                        <td>{res.data.progress_bible_language_details[0].language_status}</td>
+                                        <td>{res.data.progress_bible_language_details[0].primary_continent}</td>
+                                        <td>{res.data.progress_bible_language_details[0].primary_country_code}</td>
+                                        <td>{res.data.progress_bible_language_details[0].primary_country_name}</td>
+                                        <td>{res.data.progress_bible_language_details[0].retired_date}</td>
+                                        <td>{res.data.progress_bible_language_details[0].retirement_explanation}</td>
+                                        <td>{res.data.progress_bible_language_details[0].show_active_dialect}</td>
+                                        <td>{res.data.progress_bible_language_details[0].show_active_language}</td>
+                                        <td>{res.data.progress_bible_language_details[0].show_retired_dialect}</td>
+                                        <td>{res.data.progress_bible_language_details[0].show_retired_language}</td>
+                                        <td>{res.data.progress_bible_language_details[0].show_sign_language}</td>
+                                        <td>{res.data.progress_bible_language_details[0].unit_code}</td>
+                                        <td>{res.data.progress_bible_language_details[0].unit_full_name}</td>
+                                        <td>{res.data.progress_bible_language_details[0].unit_name}</td>
                                         <td>{res.data.progress_bible_language_details[0].unit_type}</td>
                                     </tr>
                                 </table>
@@ -263,38 +208,24 @@ export function Iso6393 () {
                                 <table>
                                     <tr>
                                         <th>ID</th>
-                                        <td>{res.data.progress_bible_language_details[0].id}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].name}</td>
-                                    </tr>
-                                    <tr>
                                         <th>ISO 639 3</th>
-                                        <td>{res.data.progress_bible_language_details[0].iso_639_3}</td>
-                                    </tr>
-                                    <tr>
                                         <th>GW</th>
-                                        <td>{res.data.progress_bible_language_details[0].gw}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Gateway Language</th>
-                                        <td>{res.data.progress_bible_language_details[0].gateway_language}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Country</th>
-                                        <td>{res.data.progress_bible_language_details[0].country}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Code</th>
-                                        <td>{res.data.progress_bible_language_details[0].code}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Anglicized Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].anglicized_name}</td>
+                                        <th>Alternate Name</th>
                                     </tr>
                                     <tr>
-                                        <th>Alternate Name</th>
+                                        <td>{res.data.progress_bible_language_details[0].id}</td>
+                                        <td>{res.data.progress_bible_language_details[0].name}</td>
+                                        <td>{res.data.progress_bible_language_details[0].iso_639_3}</td>
+                                        <td>{res.data.progress_bible_language_details[0].gw}</td>
+                                        <td>{res.data.progress_bible_language_details[0].gateway_language}</td>
+                                        <td>{res.data.progress_bible_language_details[0].country}</td>
+                                        <td>{res.data.progress_bible_language_details[0].code}</td>
+                                        <td>{res.data.progress_bible_language_details[0].anglicized_name}</td>
                                         <td>{res.data.progress_bible_language_details[0].alternate_name}</td>
                                     </tr>
                                 </table>
@@ -304,38 +235,24 @@ export function Iso6393 () {
                                 <table>
                                     <tr>
                                         <th>ID</th>
-                                        <td>{res.data.progress_bible_language_details[0].id}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Child Dialects</th>
-                                        <td>{res.data.progress_bible_language_details[0].child_dialects}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Glottocode</th>
-                                        <td>{res.data.progress_bible_language_details[0].glottocode}</td>
-                                    </tr>
-                                    <tr>
                                         <th>ISO 639 3</th>
-                                        <td>{res.data.progress_bible_language_details[0].iso_639_3}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Latitude</th>
-                                        <td>{res.data.progress_bible_language_details[0].latitude}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Longitude</th>
-                                        <td>{res.data.progress_bible_language_details[0].longitude}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Macro Area</th>
-                                        <td>{res.data.progress_bible_language_details[0].macro_area}</td>
-                                    </tr>
-                                    <tr>
                                         <th>Name</th>
-                                        <td>{res.data.progress_bible_language_details[0].name}</td>
+                                        <th>Top Level Family</th>
                                     </tr>
                                     <tr>
-                                        <th>Top Level Family</th>
+                                        <td>{res.data.progress_bible_language_details[0].id}</td>
+                                        <td>{res.data.progress_bible_language_details[0].child_dialects}</td>
+                                        <td>{res.data.progress_bible_language_details[0].glottocode}</td>
+                                        <td>{res.data.progress_bible_language_details[0].iso_639_3}</td>
+                                        <td>{res.data.progress_bible_language_details[0].latitude}</td>
+                                        <td>{res.data.progress_bible_language_details[0].longitude}</td>
+                                        <td>{res.data.progress_bible_language_details[0].macro_area}</td>
+                                        <td>{res.data.progress_bible_language_details[0].name}</td>
                                         <td>{res.data.progress_bible_language_details[0].top_level_family}</td>
                                     </tr>
                                 </table>
