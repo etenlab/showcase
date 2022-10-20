@@ -11597,4 +11597,5 @@ type LanguageProficiency {
   language_table: String!
   skill_level: LanguageProficiencyEnum!
   user_id: String!
+  ref_name: String!
 }

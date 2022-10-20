@@ -21,6 +21,8 @@ import { IAppItem } from "./AppList";
 import { ISiteText } from "./SiteText";
 import { useLocation } from "react-router";
 import queryString from "query-string";
+import { Autocomplete, TextField } from "@mui/material";
+import { iso_639_3_enum } from "../common/iso_639_3_enum";
 
 export interface ISiteTextTranslation {
     id: number;
@@ -36,6 +38,7 @@ const SiteTextTranslation: React.FC = () => {
     const [app, setApp] = useState<IAppItem | undefined>(undefined);
     const [siteText, setSiteText] = useState<ISiteText | undefined>(undefined);
     const [siteTextTranslation, setSiteTextTranslation] = useState<string>("");
+    const [languageId, setLanguageId] = useState<string>("");
 
     const appItemsRequest = useQuery(appItemsQuery);
 
@@ -70,6 +73,8 @@ const SiteTextTranslation: React.FC = () => {
         createSiteTextTranslationMutation
     );
 
+    // Add languages filter (userId)
+
     useEffect(() => {
         if (params.app_id! && params.site_text_id!) {
             const appItem = appData?.appItems.filter(
@@ -85,13 +90,26 @@ const SiteTextTranslation: React.FC = () => {
         }
     }, [appData?.appItems, params, siteTextData?.siteTextsByAppId]);
 
+    const iso_639_3_options = useMemo(() => Object.keys(iso_639_3_enum), []);
+
+    const handleChange = (iso: string) => {
+        if (iso === null) setLanguageId("");
+        let query = iso.toLowerCase();
+
+        setLanguageId(
+            iso_639_3_options.filter(
+                (i) => i.toLowerCase().indexOf(query) > -1
+            )[0]
+        );
+    };
+
     const handleSubmitForm = () => {
         createSiteTextTranslation({
             variables: {
                 input: {
                     site_text: siteText?.id,
                     site_text_translation: siteTextTranslation,
-                    language_id: 2,
+                    language_id: languageId,
                     language_table: "language_table",
                     user_id: "user_id",
                 },
@@ -113,6 +131,12 @@ const SiteTextTranslation: React.FC = () => {
                         ],
                     },
                 });
+            },
+            onCompleted: () => {
+                setApp(undefined);
+                setSiteText(undefined);
+                setSiteTextTranslation("");
+                setLanguageId("");
             },
         });
 
@@ -206,6 +230,31 @@ const SiteTextTranslation: React.FC = () => {
 
                         <Controller
                             control={control}
+                            name="ISO 693-3 Code"
+                            render={() => (
+                                <Autocomplete
+                                    value={languageId}
+                                    disablePortal
+                                    id="ISO 693-3 Code"
+                                    options={iso_639_3_options}
+                                    sx={{
+                                        py: 2,
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="ISO 693-3 Code"
+                                        />
+                                    )}
+                                    onChange={(_, isoCode) =>
+                                        handleChange(isoCode!)
+                                    }
+                                />
+                            )}
+                        />
+
+                        <Controller
+                            control={control}
                             name="siteTextTranslation"
                             render={() => (
                                 <IonInput
@@ -226,7 +275,12 @@ const SiteTextTranslation: React.FC = () => {
                         <IonButton
                             fill="outline"
                             type="submit"
-                            disabled={!app || !siteText || !siteTextTranslation}
+                            disabled={
+                                !app ||
+                                !siteText ||
+                                !siteTextTranslation ||
+                                !languageId
+                            }
                         >
                             Submit
                         </IonButton>

@@ -1390,7 +1390,21 @@ export const languageProficienciesQuery = gql`
             language_table
             skill_level
             user_id
+            ref_name
         }
     }
+`
 
+export const createLanguageProficiencyMutation = gql`
+    mutation Mutation($input: LanguageProficiencyInput!) {
+        createLanguageProficiency(input: $input) {
+            languageProficiency {
+                id
+                language_id
+                language_table
+                user_id
+                skill_level
+            }
+        }
+    }
 `
