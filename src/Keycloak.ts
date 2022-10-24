@@ -17,6 +17,11 @@ if(process.env.NODE_ENV === "production"){
     });
 }
 
+// keycloak.init({}).success(function(authenticated) {
+//     alert(authenticated ? 'authenticated' : 'not authenticated');
+// }).error(function() {
+//     alert('failed to initialize');
+// });
 // keycloak.init({
 //     onLoad: 'login-required'
 // })

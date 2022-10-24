@@ -21,6 +21,8 @@ const LoginPage = () => {
     keycloak?.login()
   }, [keycloak])
 
+  console.log(keycloak);
+
   if (keycloak?.authenticated)
     return <Redirect to={currentLocationState?.from as string} />
 

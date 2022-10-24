@@ -9,11 +9,16 @@ import keycloak from "./Keycloak"
 
 import "./styles.css";
 
+var darkMode = localStorage.getItem('dark-mode');
+if(darkMode){
+  document.body.classList.toggle('dark');
+}
 const client = new ApolloClient({
   uri: 'https://fast-heron-34.hasura.app/v1/graphql',
   cache: new InMemoryCache(),
 });
 
+console.log(process.env);
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element');

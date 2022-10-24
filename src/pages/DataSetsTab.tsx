@@ -1,3 +1,7 @@
+
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import { jsx } from '@emotion/react'
 import { Redirect, Route } from 'react-router-dom';
 import { IonReactRouter } from '@ionic/react-router';
 import {
@@ -46,18 +50,21 @@ import { UfLanguagesWithOneStoryBibleStories } from '../components/UfLanguagesWi
 import { UfLanguagesWithOpenBibleStories } from '../components/UfLanguagesWithOpenBibleStories';
 import { UfLanguagesWithRadioBroadcast } from '../components/UfLanguagesWithRadioBroadcast';
 import { UfNetworks } from '../components/UfNetworks';
+import { AccountMenu } from '../common/AccountMenu';
 
 const Tab1: React.FC = () => {
+
+  
 
   return (
     <IonPage>
       <IonReactRouter>
-      <IonMenu contentId="main-content">
+      <IonMenu css={{'--width': '480px'}} contentId="main-content">
         <IonHeader>
           <IonToolbar>
             <IonTitle>Data Sets</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+              </IonToolbar>
+            </IonHeader>
         <IonContent className="ion-padding">
           <IonList>
             <IonItem href="/tab1/iso-639-3" >
@@ -161,7 +168,10 @@ const Tab1: React.FC = () => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Data Sets</IonTitle>
+          <IonTitle>Data Sets A</IonTitle>
+          <IonButtons slot="primary">
+            <AccountMenu />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 

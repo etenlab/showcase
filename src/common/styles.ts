@@ -26,6 +26,18 @@ export const styles = {
     }),
     detailsPanelBox: css({
         padding: '15px'
+    }),
+    accountMenuWrapper: css({
+      marginRight: '20px',
+      display: 'flex',
+      alignItems: 'center'
+    }),
+    accountButton: css({
+      fontSize: '16px',
+      padding: '10px 5px',
+      color: '#000',
+      backgroundColor: '#fff',
+      margin: '0px 2px'
     })
 }
 
