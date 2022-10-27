@@ -51,6 +51,7 @@ import { UfLanguagesWithOpenBibleStories } from '../components/UfLanguagesWithOp
 import { UfLanguagesWithRadioBroadcast } from '../components/UfLanguagesWithRadioBroadcast';
 import { UfNetworks } from '../components/UfNetworks';
 import { AccountMenu } from '../common/AccountMenu';
+import Discussion from '../components/discussion/Discussion';
 
 const Tab1: React.FC = () => {
 
@@ -63,8 +64,8 @@ const Tab1: React.FC = () => {
         <IonHeader>
           <IonToolbar>
             <IonTitle>Data Sets</IonTitle>
-              </IonToolbar>
-            </IonHeader>
+          </IonToolbar>
+        </IonHeader>
         <IonContent className="ion-padding">
           <IonList>
             <IonItem href="/tab1/iso-639-3" >
@@ -208,6 +209,7 @@ const Tab1: React.FC = () => {
           <Route path="/tab1/uf-languages-with-open-bible-stories" render={() => <UfLanguagesWithOpenBibleStories />} />
           <Route path="/tab1/uf-languages-with-radio-broadcast" render={() => <UfLanguagesWithRadioBroadcast />} />
           <Route path="/tab1/uf-networks" render={() => <UfNetworks />} />
+          <Route path="/tab1/discussion/:table_name/:row" render={() => <Discussion />} />
           <Route exact path="/tab1">
             <Redirect to="/tab1/iso-639-2" />
           </Route>
