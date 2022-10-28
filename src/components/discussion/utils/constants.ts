@@ -9,4 +9,4 @@ export const DefaultDiscussion: IDiscussion = {
   posts: []
 };
 
-export const UESERID = "worker";
+export const UESERID = "Super User";

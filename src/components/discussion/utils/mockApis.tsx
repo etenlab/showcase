@@ -3,54 +3,68 @@ import type { IDiscussionDB, IPostDB, IReactionDB } from "./types";
 let MockDiscussionTable: Array<IDiscussionDB> = [];
 let MockPostTable: Array<IPostDB> = [];
 let MockReactionTable: Array<IReactionDB> = [];
-let uniqueId = 0;
 
-export function getUniqueId(): number {
-  return ++uniqueId;
+function getUniqueIdGenerator() {
+  let uniqueId: number = 0;
+
+  return (): number => {
+    return ++uniqueId;
+  };
 }
 
+export const getUniqueId = getUniqueIdGenerator();
+
+/**
+ * Get Discussions with the same 'table_name' and 'row' attributes as the inputed data from the discussion table in the DB.
+ */
 export function getDiscussions(
-  tableName: string,
-  rowId: number
+  table_name: string,
+  row: number
 ): Array<IDiscussionDB> {
   return MockDiscussionTable.filter(
-    ({ table_name, row }: IDiscussionDB): boolean =>
-      table_name === tableName && row === rowId
+    (discussion: IDiscussionDB): boolean =>
+    discussion.table_name === table_name && discussion.row === row
   );
 }
 
-export function createDiscusion(
-  tableName: string,
-  rowId: number
-): IDiscussionDB {
+/**
+ * Create a new Discussion with 'table_name' and row' in Discussion Table and return it.
+ */
+export function createDiscusion(table_name: string, row: number): IDiscussionDB {
   const discussion: IDiscussionDB = {
     id: getUniqueId(),
     app: getUniqueId(),
     org: getUniqueId(),
-    table_name: tableName,
-    row: rowId,
+    table_name,
+    row,
   };
   MockDiscussionTable.push(discussion);
 
   return discussion;
 }
 
-export function getPosts(discussionId: number = 0): Array<IPostDB> {
+/**
+ * Get a matched Post with the same 'discussion_id' as the inputed value from the Post Table in the DB.
+ */
+export function getPosts(discussion_id: number = 0): Array<IPostDB> {
   return MockPostTable.filter(
-    ({ discussion_id }: IPostDB): boolean => discussion_id === discussionId
+    (post: IPostDB): boolean => post.discussion_id === discussion_id
   );
 }
 
+/**
+ * Create a new Post with 'discussion_id', 'user_id', 'quill_text' in the Post Table in the DB and return it.
+ */
 export function createPost(
-  discussionId: number,
-  userId: string,
-  quillText: string
+  discussion_id: number,
+  user_id: string,
+  quill_text: string
 ): IPostDB {
   const post: IPostDB = {
     id: getUniqueId(),
-    discussion_id: discussionId,
-    user_id: userId,
-    quill_text: quillText,
+    discussion_id,
+    user_id,
+    quill_text,
     plain_text: "",
     postgres_language: "",
     created_at: new Date(),
@@ -60,18 +74,25 @@ export function createPost(
   return post;
 }
 
-export function deletePost(post_id: number) {
-  MockPostTable = MockPostTable.filter(
-    (post: IPostDB): boolean => post.id !== post_id
-  );
+/**
+ * Delete a Post with the same 'id' as inputed data from the Post Table in the DB.
+ */
+export function deletePost(id: number) {
+  MockPostTable = MockPostTable.filter((post: IPostDB): boolean => post.id !== id);
 }
 
-export function getReactions(postId: number): Array<IReactionDB> {
+/**
+ * Get Reactions with the same 'post_id' as the inputed data from the Reaction Table in the DB.
+ */
+export function getReactions(post_id: number): Array<IReactionDB> {
   return MockReactionTable.filter(
-    ({ post_id }: IReactionDB): boolean => post_id === postId
+    (reaction: IReactionDB): boolean => reaction.post_id === post_id
   );
 }
 
+/**
+ * Create a new Reaction with 'post_id', 'user_id', 'content' in the Reaction Table and return it.
+ */
 export function createReaction(
   post_id: number,
   user_id: string,
@@ -88,8 +109,9 @@ export function createReaction(
   return reaction;
 }
 
-export function deleteReaction(reaction_id: number): void {
-  MockReactionTable = MockReactionTable.filter(
-    (reaction: IReactionDB): boolean => reaction.id !== reaction_id
-  );
+/**
+ * Delete a Reaction with the same 'id' as the inputed data from the Reaction Table in the DB.
+ */
+export function deleteReaction(id: number): void {
+  MockReactionTable = MockReactionTable.filter((reaction: IReactionDB): boolean => reaction.id !== id);
 }

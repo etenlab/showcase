@@ -1,15 +1,6 @@
 import { useRef, useLayoutEffect, useState, MouseEvent } from "react";
-import Reaction from "../Reaction";
 import EmojiPicker, { Theme, EmojiClickData } from "emoji-picker-react";
 
-import {
-  EmojiController,
-  PostContainer,
-  DateViewer,
-  AddReactionIconButton,
-} from "./styled";
-
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
@@ -17,6 +8,9 @@ import IconButton from "@mui/material/IconButton";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+
+import { EmojiController, PostContainer, DateViewer } from "./styled";
+import { ReactionList } from "../Reaction";
 import { IPost } from "../utils/types";
 
 interface PostProps extends IPost {
@@ -25,6 +19,9 @@ interface PostProps extends IPost {
   deletePost(post_id: number): void;
 }
 
+/**
+ * This component basically renders Post, ReactionList, and Emoji Picker.
+ */
 export default function Post({
   id,
   user_id,
@@ -69,17 +66,15 @@ export default function Post({
         {user_id}
         <DateViewer>{created_at.toDateString()}</DateViewer>
       </h3>
+
       <p ref={postElement}></p>
-      {reactions?.length > 0 ? (
-        <Stack direction="row" sx={{ flexWrap: "wrap" }}>
-          {reactions?.map((reaction) => (
-            <Reaction key={reaction.id} {...reaction} deleteReaction={deleteReaction} />
-          ))}
-          <AddReactionIconButton onClick={handleOpenEmojiPicker}>
-            <AddReactionOutlinedIcon />
-          </AddReactionIconButton>
-        </Stack>
-      ) : null}
+
+      <ReactionList
+        reactions={reactions}
+        openEmojiPicker={handleOpenEmojiPicker}
+        deleteReaction={deleteReaction}
+      />
+
       <EmojiController className="emoji-controller">
         <Button
           onClick={handleOpenEmojiPicker}
@@ -97,6 +92,7 @@ export default function Post({
           <MoreVertOutlinedIcon />
         </IconButton>
       </EmojiController>
+
       <Popover
         open={openEmojiPicker}
         anchorEl={anchorEl}

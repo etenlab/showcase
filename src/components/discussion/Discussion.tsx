@@ -1,15 +1,19 @@
 import { useState, KeyboardEvent, useEffect } from "react";
 import { useParams } from "react-router";
-import ReactQuill from "react-quill";
+
 import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
 import { IonContent } from "@ionic/react";
-import Post from "./Post";
+
+import Stack from "@mui/material/Stack";
+
 import {
   QuillContainer,
   DiscussionHeader,
   DiscussionContainer,
 } from "./styled";
-import Stack from "@mui/material/Stack";
+
+import { DefaultDiscussion, UESERID } from "./utils/constants";
 
 import {
   getDiscussions,
@@ -21,7 +25,7 @@ import {
   createReaction,
   deleteReaction,
 } from "./utils/mockApis";
-import { DefaultDiscussion, UESERID } from "./utils/constants";
+
 import type {
   IPost,
   IDiscussion,
@@ -30,19 +34,24 @@ import type {
   IDiscussionDB,
 } from "./utils/types";
 
-type QuizParams = {
+import Post from "./Post";
+
+type DiscussionRouteQuizParams = {
   table_name?: string;
   row?: string;
 };
 
+/**
+ * Fetch or Create a Discussion by 'table_name' and 'row', then transform it to 'IDiscussion' type.
+ */
 function calcDiscussion(table_name: string, row: number): IDiscussion {
-  const temp = getDiscussions(table_name, +row);
+  const dbDiscussions = getDiscussions(table_name, row);
   let updatedDiscussion: IDiscussionDB;
 
-  if (temp?.length === 0) {
-    updatedDiscussion = createDiscusion(table_name, +row);
+  if (dbDiscussions?.length === 0) {
+    updatedDiscussion = createDiscusion(table_name, row);
   } else {
-    updatedDiscussion = temp[0];
+    updatedDiscussion = dbDiscussions[0];
   }
 
   let posts: Array<IPostDB>;
@@ -60,8 +69,12 @@ function calcDiscussion(table_name: string, row: number): IDiscussion {
   return { ...updatedDiscussion, posts } as IDiscussion;
 }
 
-export default function DiscussionComponent() {
-  const { table_name, row } = useParams<QuizParams>();
+/**
+ * This component will mounted once users route to '/tab1/discussion/:table_name/:row'.
+ * The responsibility is to control Discussion Page and interact with server such as fetching, saving, deleting discussion data.
+ */
+export default function Discussion() {
+  const { table_name, row } = useParams<DiscussionRouteQuizParams>();
   const [quillText, setQuillText] = useState<string>("");
   const [discussion, setDiscussion] = useState<IDiscussion>(DefaultDiscussion);
 
@@ -124,6 +137,7 @@ export default function DiscussionComponent() {
         sx={{ height: "calc(100vh - 75px)", padding: "60px 20px 0px" }}
       >
         <DiscussionHeader>Discussion</DiscussionHeader>
+
         <DiscussionContainer>
           {discussion?.posts?.map((post: IPost) => (
             <Post
@@ -135,6 +149,7 @@ export default function DiscussionComponent() {
             />
           ))}
         </DiscussionContainer>
+
         <QuillContainer>
           <ReactQuill
             theme="snow"

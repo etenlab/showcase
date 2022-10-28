@@ -1,18 +1,26 @@
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 
 import Tooltip from "@mui/material/Tooltip";
-import { IReaction } from "../utils/types";
 
 import { EmojiWrapper } from "./styled";
+import { IReaction } from "../utils/types";
 
 interface ReactionProps extends IReaction {
   deleteReaction(reaction_id: number): void;
 }
 
-export default function Reaction({ id, user_id, content, deleteReaction }: ReactionProps) {
+/**
+ * This component render a Reaction with Emoji icon.
+ */
+export default function Reaction({
+  id,
+  user_id,
+  content,
+  deleteReaction,
+}: ReactionProps) {
   const handleDeleteReaction = () => {
     deleteReaction(id);
-  }
+  };
 
   return (
     <Tooltip title={user_id}>
