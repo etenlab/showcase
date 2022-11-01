@@ -1,3 +1,8 @@
+export type APIReturnType<T = any> = {
+  success: boolean;
+  data?: T;
+};
+
 export interface IDiscussionDB {
   id: number;
   app?: number;
@@ -8,7 +13,7 @@ export interface IDiscussionDB {
 
 export interface IPostDB {
   id: number;
-  discussion_id: number;
+  discussion: IDiscussionDB;
   user_id: string;
   quill_text: string;
   plain_text: string;
@@ -18,7 +23,7 @@ export interface IPostDB {
 
 export interface IReactionDB {
   id: number;
-  post_id: number;
+  post: IPostDB;
   user_id: string;
   content: string;
 }

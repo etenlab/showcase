@@ -23,7 +23,7 @@ export const typeDefs = gql`
   }
 `;
 
-export const GET_DISCUSSIONS = gql`
+export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
   query GetDiscussionByTableNameAndRow($table_name: String!, $row: Int!) {
     discussions(table_name: $table_name, row: $row) {
       id
@@ -53,7 +53,7 @@ export const DELETE_DISCUSSION = gql`
   }
 `;
 
-export const GET_POSTS = gql`
+export const GET_POSTS_BY_DISCUSSION_ID = gql`
   query GetPosts($discussionId: Int!) {
     postsByDiscussionId(discussionId: $discussionId) {
       id
@@ -105,7 +105,7 @@ export const DELETE_POSTS_BY_DISCUSSION_ID = gql`
   }
 `;
 
-export const GET_REACTIONS = gql`
+export const GET_REACTION_BY_POST_ID = gql`
   query GetReactionsByPostId($postId: Int!) {
     reactionsByPostId(postId: $postId) {
       id
