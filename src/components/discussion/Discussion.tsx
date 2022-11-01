@@ -16,21 +16,20 @@ import {
 import { DefaultDiscussion, UESERID } from "./utils/constants";
 
 import {
-  getDiscussions,
+  getDiscussionsByTableNameAndRow,
+  getPostsByDiscussionId,
+  getReactionsByPostId,
   createDiscusion,
-  getPosts,
   createPost,
-  deletePost,
-  getReactions,
   createReaction,
+  deletePost,
   deleteReaction,
-} from "./utils/mockApis";
+} from "src/components/discussion/utils/apiService";
 
 import type {
   IPost,
   IDiscussion,
   IReaction,
-  IPostDB,
   IDiscussionDB,
 } from "./utils/types";
 
@@ -44,27 +43,63 @@ type DiscussionRouteQuizParams = {
 /**
  * Fetch or Create a Discussion by 'table_name' and 'row', then transform it to 'IDiscussion' type.
  */
-function calcDiscussion(table_name: string, row: number): IDiscussion {
-  const dbDiscussions = getDiscussions(table_name, row);
-  let updatedDiscussion: IDiscussionDB;
-
-  if (dbDiscussions?.length === 0) {
-    updatedDiscussion = createDiscusion(table_name, row);
-  } else {
-    updatedDiscussion = dbDiscussions[0];
+async function loadDiscussion(
+  table_name: string | undefined,
+  row: string | undefined
+): Promise<IDiscussion | null> {
+  if (table_name === undefined || row === undefined) {
+    return null;
   }
 
-  let posts: Array<IPostDB>;
-  posts = getPosts(updatedDiscussion.id || 0);
+  const dbDiscussions = await getDiscussionsByTableNameAndRow(table_name, +row);
+  let updatedDiscussion: IDiscussionDB;
 
-  posts = posts.map((post: IPostDB): IPost => {
-    let reactions: Array<IReaction> = getReactions(post.id);
+  if (dbDiscussions.success) {
+    if (dbDiscussions.data && dbDiscussions.data?.length > 0) {
+      updatedDiscussion = dbDiscussions.data[0];
+    } else {
+      return null;
+    }
+  } else {
+    const newDiscussion = await createDiscusion(table_name, +row);
 
-    return {
-      ...post,
-      reactions,
-    };
-  });
+    if (newDiscussion.success && newDiscussion.data) {
+      updatedDiscussion = newDiscussion.data;
+    } else {
+      return null;
+    }
+  }
+
+  let posts: Array<IPost> = [];
+  const dbPosts = await getPostsByDiscussionId(updatedDiscussion.id);
+
+  if (dbPosts.success === false) {
+    return null;
+  }
+
+  if (dbPosts.data) {
+    for (let post of dbPosts.data) {
+      let reactions: Array<IReaction>;
+      const dbReactions = await getReactionsByPostId(post.id);
+
+      if (dbReactions.success) {
+        if (dbReactions.data) {
+          reactions = dbReactions.data;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+
+      posts.push({
+        ...post,
+        reactions,
+      });
+    }
+  } else {
+    return null;
+  }
 
   return { ...updatedDiscussion, posts } as IDiscussion;
 }
@@ -78,55 +113,67 @@ export default function Discussion() {
   const [quillText, setQuillText] = useState<string>("");
   const [discussion, setDiscussion] = useState<IDiscussion>(DefaultDiscussion);
 
-  useEffect(() => {
-    if (table_name && row) {
-      setDiscussion(calcDiscussion(table_name, +row));
+  const reloadDiscussion = async (
+    table_name: string | undefined,
+    row: string | undefined
+  ) => {
+    const reloadedDiscussion = await loadDiscussion(table_name, row);
+
+    if (reloadedDiscussion === null) {
+      return;
     }
+
+    setDiscussion(reloadedDiscussion);
+  };
+
+  useEffect(() => {
+    reloadDiscussion(table_name, row);
   }, [table_name, row]);
 
   const handleQuillChange = (text: string) => {
     setQuillText(text);
   };
 
-  const handleKeyEvent = (event: KeyboardEvent<HTMLElement>) => {
+  const handleKeyEvent = async (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
 
       const currentQuillText = quillText.slice(0, -11);
-      createPost(discussion.id, UESERID, currentQuillText);
+      const result = await createPost(discussion.id, UESERID, currentQuillText);
 
-      if (table_name && row) {
-        setDiscussion(calcDiscussion(table_name, +row));
+      if (result.success) {
+        alert("creating post is successful")
+        reloadDiscussion(table_name, row);
         setQuillText("");
       }
     }
   };
 
-  const handleAddReaction = (
+  const handleAddReaction = async (
     post_id: number,
     user_id: string,
     content: string
-  ): void => {
-    createReaction(post_id, user_id, content);
+  ): Promise<void> => {
+    const result = await createReaction(post_id, user_id, content);
 
-    if (table_name && row) {
-      setDiscussion(calcDiscussion(table_name, +row));
+    if (result.success) {
+      reloadDiscussion(table_name, row);
     }
   };
 
-  const handleDeletePost = (post_id: number): void => {
-    deletePost(post_id);
+  const handleDeletePost = async (post_id: number): Promise<void> => {
+    const result = await deletePost(post_id);
 
-    if (table_name && row) {
-      setDiscussion(calcDiscussion(table_name, +row));
+    if (result.success) {
+      reloadDiscussion(table_name, row);
     }
   };
 
-  const handleDeleteReaction = (reaction_id: number): void => {
-    deleteReaction(reaction_id);
+  const handleDeleteReaction = async (reaction_id: number): Promise<void> => {
+    const result = await deleteReaction(reaction_id);
 
-    if (table_name && row) {
-      setDiscussion(calcDiscussion(table_name, +row));
+    if (result.success) {
+      reloadDiscussion(table_name, row);
     }
   };
 
