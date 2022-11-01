@@ -1,48 +1,31 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-interface Discussion {
-  id?: number;
-  app: number;
-  org: number;
-  table_name: string;
-  row: string;
-}
+export const typeDefs = gql`
+  extend input NewDiscussionInput {
+    app: Int
+    org: Int
+    row: Int!
+    table_name: String!
+  }
 
-interface Post {
-  id?: number;
-  discussion: Discussion;
-  user_id: string;
-  quill_text: string;
-  plain_text: string;
-  postgres_language: string;
-  created_at: Date;
-}
+  extend input NewPostInput {
+    discussion_id: Int!
+    plain_text: String!
+    postgres_language: String = "simple"
+    quill_text: String!
+    user_id: String!
+  }
 
-interface Reaction {
-  id?: number;
-  post: Post;
-  user_id: string;
-  content: string;
-}
+  input NewReactionInput {
+    content: String!
+    post_id: Int!
+    user_id: String!
+  }
+`;
 
 export const GET_DISCUSSIONS = gql`
-  query GetDiscussionByTableAndRow($limit: Int, $offset: Int, $tableName: String, $rowId: Int) {
-    discussions_aggregate(where: {
-      _and: [
-          {table_name: $tableName},
-          {row: $rowId}
-      ]
-    }) {
-      aggregate {
-        count
-      }
-    }
-    discussions(limit: $limit, offset: $offset, where: {
-      _and: [
-          {table_name: $tableName},
-          {row: $rowId}
-      ]
-    }) {
+  query GetDiscussionByTableNameAndRow($table_name: String!, $row: Int!) {
+    discussions(table_name: $table_name, row: $row) {
       id
       app
       org
@@ -53,8 +36,8 @@ export const GET_DISCUSSIONS = gql`
 `;
 
 export const CREATE_DISCUSSION = gql`
-  mutation CreateDiscussion($discussion: Discussion) {
-    addDiscussion(discussion: $discussion) {
+  mutation CreateDiscussion($discussion: NewDiscussionInput!) {
+    createDiscussion(newDiscussionData: $discussion) {
       id
       app
       org
@@ -71,15 +54,16 @@ export const DELETE_DISCUSSION = gql`
 `;
 
 export const GET_POSTS = gql`
-  query GetPosts($limit: Int, $offset: Int, $discussion_id: Int) {
-    posts_aggregate(discussion_id: $discussion_id) {
-      aggregate {
-        count
-      }
-    }
-    posts(limit: $limit, offset: $offset, discussion_id: $discussion_id) {
+  query GetPosts($discussionId: Int!) {
+    postsByDiscussionId(discussionId: $discussionId) {
       id
-      discussion
+      discussion {
+        id
+        app
+        org
+        table_name
+        row
+      }
       user_id
       quill_text
       plain_text
@@ -90,10 +74,16 @@ export const GET_POSTS = gql`
 `;
 
 export const CREATE_POST = gql`
-  mutation CreatePost($post: Post) {
-    addPost(post: $post) {
+  mutation CreatePost($post: NewPostInput!) {
+    createPost(newPostData: $post) {
       id
-      discussion
+      discussion {
+        id
+        app
+        org
+        table_name
+        row
+      }
       user_id
       quill_text
       plain_text
@@ -109,16 +99,31 @@ export const DELETE_POST = gql`
   }
 `;
 
+export const DELETE_POSTS_BY_DISCUSSION_ID = gql`
+  mutation DeletePostsByDiscussionId($discussionId: Int!) {
+    deletePostsByDiscussionId(discussionId: $discussionId)
+  }
+`;
+
 export const GET_REACTIONS = gql`
-  query GetReactions($limit: Int, $offset: Int, $post_id: Int) {
-    reactions_aggregate(post_id: $post_id) {
-      aggregate {
-        count
-      }
-    }
-    reactions(limit: $limit, offset: $offset, post_id: $post_id) {
+  query GetReactionsByPostId($postId: Int!) {
+    reactionsByPostId(postId: $postId) {
       id
-      post
+      post {
+        id
+        discussion {
+          id
+          app
+          org
+          table_name
+          row
+        }
+        user_id
+        quill_text
+        plain_text
+        postgres_language
+        created_at
+      }
       user_id
       content
     }
@@ -126,10 +131,24 @@ export const GET_REACTIONS = gql`
 `;
 
 export const CREATE_REACTION = gql`
-  mutation CreateReaction($reaction: Reaction) {
-    addReaction(reaction: $reaction) {
+  mutation CreateReaction($reaction: NewReactionInput!) {
+    createReaction(newReactionData: $reaction) {
       id
-      post
+      post {
+        id
+        discussion {
+          id
+          app
+          org
+          table_name
+          row
+        }
+        user_id
+        quill_text
+        plain_text
+        postgres_language
+        created_at
+      }
       user_id
       content
     }

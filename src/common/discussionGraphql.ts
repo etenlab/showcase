@@ -2,6 +2,8 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 
+import { typeDefs } from './discussionQuery';
+
 // Instantiate required constructor fields
 const cache = new InMemoryCache();
 const link = new HttpLink({
@@ -22,4 +24,5 @@ export const client = new ApolloClient({
       fetchPolicy: 'cache-and-network',
     },
   },
+  typeDefs
 });
