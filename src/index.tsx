@@ -1,3 +1,4 @@
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import App from "./App";
@@ -39,11 +40,11 @@ root.render(
     onEvent={eventLogger}
     onTokens={tokenLogger}
   >
-    {/* <React.StrictMode> */}
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
-    {/* </React.StrictMode> */}
+    <StrictMode>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </StrictMode>
   </ReactKeycloakProvider>
 );
 // If you want your app to work offline and load faster, you can change
