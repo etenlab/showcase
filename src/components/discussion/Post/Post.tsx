@@ -1,8 +1,6 @@
-import { useRef, useLayoutEffect, useState, MouseEvent } from "react";
-import EmojiPicker, { Theme, EmojiClickData } from "emoji-picker-react";
+import { useRef, useLayoutEffect, MouseEvent } from "react";
 
 import Button from "@mui/material/Button";
-import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -14,13 +12,13 @@ import { ReactionList } from "../Reaction";
 import { IPost } from "../utils/types";
 
 interface PostProps extends IPost {
-  addReaction(post_id: number, user_id: string, content: string): void;
+  openEmojiPicker(anchorEl: HTMLButtonElement, postId: number): void;
   deleteReaction(reaction_id: number): void;
   deletePost(post_id: number): void;
 }
 
 /**
- * This component basically renders Post, ReactionList, and Emoji Picker.
+ * This component basically renders Post, ReactionList.
  */
 export default function Post({
   id,
@@ -28,12 +26,11 @@ export default function Post({
   quill_text,
   created_at,
   reactions,
-  addReaction,
   deleteReaction,
   deletePost,
+  openEmojiPicker,
 }: PostProps) {
   const postElement = useRef<HTMLParagraphElement>(null);
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   useLayoutEffect(() => {
     if (postElement.current) {
@@ -41,30 +38,22 @@ export default function Post({
     }
   }, [quill_text]);
 
-  const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseEmojiPicker = () => {
-    setAnchorEl(null);
-  };
-
-  const handleEmojiClick = (emojiData: EmojiClickData) => {
-    handleCloseEmojiPicker();
-    addReaction(id, user_id, emojiData.unified);
-  };
-
   const handleDeletePostClick = () => {
     deletePost(id);
   };
 
-  const openEmojiPicker = Boolean(anchorEl);
+  const handleOpenEmojiPicker = (event: MouseEvent<HTMLButtonElement>) => {
+    openEmojiPicker(event.currentTarget, id);
+  };
+
+  const created_at_date =
+    typeof created_at === "string" ? new Date(created_at) : created_at;
 
   return (
     <PostContainer>
       <h3>
         {user_id}
-        <DateViewer>{created_at.toDateString()}</DateViewer>
+        <DateViewer>{created_at_date.toDateString()}</DateViewer>
       </h3>
 
       <p ref={postElement}></p>
@@ -92,23 +81,6 @@ export default function Post({
           <MoreVertOutlinedIcon />
         </IconButton>
       </EmojiController>
-
-      <Popover
-        open={openEmojiPicker}
-        anchorEl={anchorEl}
-        onClose={handleCloseEmojiPicker}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <EmojiPicker
-          onEmojiClick={handleEmojiClick}
-          autoFocusSearch={true}
-          lazyLoadEmojis={true}
-          theme={Theme.AUTO}
-        />
-      </Popover>
     </PostContainer>
   );
 }

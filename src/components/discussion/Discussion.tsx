@@ -1,11 +1,17 @@
-import { useState, KeyboardEvent, useEffect } from "react";
+import { useState, KeyboardEvent, useEffect, useRef } from "react";
 import { useParams } from "react-router";
+import { useSubscription } from "@apollo/client";
 
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { IonContent } from "@ionic/react";
 
 import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Popover from "@mui/material/Popover";
+
+import EmojiPicker, { Theme, EmojiClickData } from "emoji-picker-react";
 
 import {
   QuillContainer,
@@ -17,8 +23,6 @@ import { DefaultDiscussion, UESERID } from "./utils/constants";
 
 import {
   getDiscussionsByTableNameAndRow,
-  getPostsByDiscussionId,
-  getReactionsByPostId,
   createDiscusion,
   createPost,
   createReaction,
@@ -26,12 +30,13 @@ import {
   deleteReaction,
 } from "src/components/discussion/utils/apiService";
 
-import type {
-  IPost,
-  IDiscussion,
-  IReaction,
-  IDiscussionDB,
-} from "./utils/types";
+import { client } from "src/common/discussionGraphql";
+import {
+  POST_ADDED_SUBSCRIPTION,
+  POST_DELETED_SUBSCRIPTION,
+} from "src/common/discussionQuery";
+
+import type { IPost, IDiscussion } from "./utils/types";
 
 import Post from "./Post";
 
@@ -40,95 +45,130 @@ type DiscussionRouteQuizParams = {
   row?: string;
 };
 
-/**
- * Fetch or Create a Discussion by 'table_name' and 'row', then transform it to 'IDiscussion' type.
- */
-async function loadDiscussion(
-  table_name: string | undefined,
-  row: string | undefined
-): Promise<IDiscussion | null> {
-  if (table_name === undefined || row === undefined) {
-    return null;
-  }
+interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: "success" | "error" | "warning" | "info";
+}
 
-  const dbDiscussions = await getDiscussionsByTableNameAndRow(table_name, +row);
-  let updatedDiscussion: IDiscussionDB;
+interface EmojiPopoverState {
+  anchorEl: Element | null;
+  postId: number;
+}
 
-  if (dbDiscussions.success) {
-    if (dbDiscussions.data && dbDiscussions.data?.length > 0) {
-      updatedDiscussion = dbDiscussions.data[0];
-    } else {
-      return null;
-    }
-  } else {
-    const newDiscussion = await createDiscusion(table_name, +row);
+interface PostAddedData {
+  postAdded: IPost;
+}
 
-    if (newDiscussion.success && newDiscussion.data) {
-      updatedDiscussion = newDiscussion.data;
-    } else {
-      return null;
-    }
-  }
-
-  let posts: Array<IPost> = [];
-  const dbPosts = await getPostsByDiscussionId(updatedDiscussion.id);
-
-  if (dbPosts.success === false) {
-    return null;
-  }
-
-  if (dbPosts.data) {
-    for (let post of dbPosts.data) {
-      let reactions: Array<IReaction>;
-      const dbReactions = await getReactionsByPostId(post.id);
-
-      if (dbReactions.success) {
-        if (dbReactions.data) {
-          reactions = dbReactions.data;
-        } else {
-          return null;
-        }
-      } else {
-        return null;
-      }
-
-      posts.push({
-        ...post,
-        reactions,
-      });
-    }
-  } else {
-    return null;
-  }
-
-  return { ...updatedDiscussion, posts } as IDiscussion;
+interface PostDeletedData {
+  postDeleted: number;
 }
 
 /**
- * This component will mounted once users route to '/tab1/discussion/:table_name/:row'.
+ * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
  * The responsibility is to control Discussion Page and interact with server such as fetching, saving, deleting discussion data.
  */
 export default function Discussion() {
   const { table_name, row } = useParams<DiscussionRouteQuizParams>();
   const [quillText, setQuillText] = useState<string>("");
   const [discussion, setDiscussion] = useState<IDiscussion>(DefaultDiscussion);
+  const [emojiPopoverState, setEmojiPopoverState] = useState<EmojiPopoverState>(
+    {
+      anchorEl: null,
+      postId: 0,
+    }
+  );
+  const [snackbarState, setSnackbarState] = useState<SnackbarState>({
+    open: false,
+    message: "This is a success message!",
+    severity: "success",
+  });
+  const discussionRef = useRef<HTMLDivElement>(null);
+  const { data: postAddedData } = useSubscription<PostAddedData>(
+    POST_ADDED_SUBSCRIPTION,
+    {
+      client,
+    }
+  );
+  const { data: postDeletedData } = useSubscription<PostDeletedData>(
+    POST_DELETED_SUBSCRIPTION,
+    {
+      client,
+    }
+  );
 
+  // This function will reload discussion from server.
   const reloadDiscussion = async (
     table_name: string | undefined,
     row: string | undefined
   ) => {
-    const reloadedDiscussion = await loadDiscussion(table_name, row);
-
-    if (reloadedDiscussion === null) {
-      return;
+    if (table_name === undefined || row === undefined) {
+      setSnackbarState((state) => ({
+        open: true,
+        message: "#Table Name, and #Row is undefined!",
+        severity: "warning",
+      }));
+      return null;
     }
 
-    setDiscussion(reloadedDiscussion);
+    const dbDiscussions = await getDiscussionsByTableNameAndRow(
+      table_name,
+      +row
+    );
+    let updatedDiscussion: IDiscussion;
+
+    if (dbDiscussions.success) {
+      if (dbDiscussions.data && dbDiscussions.data?.length > 0) {
+        updatedDiscussion = dbDiscussions.data[0];
+      } else {
+        setSnackbarState({
+          open: true,
+          message: "Oops, something went to wrong, please try again!",
+          severity: "error",
+        });
+        return null;
+      }
+    } else {
+      const newDiscussion = await createDiscusion(table_name, +row);
+
+      if (newDiscussion.success && newDiscussion.data) {
+        updatedDiscussion = newDiscussion.data;
+      } else {
+        setSnackbarState({
+          open: true,
+          message: newDiscussion.message,
+          severity: "error",
+        });
+        return null;
+      }
+    }
+
+    setDiscussion(updatedDiscussion);
   };
 
   useEffect(() => {
     reloadDiscussion(table_name, row);
   }, [table_name, row]);
+
+  useEffect(() => {
+    if (postAddedData) {
+      setDiscussion((discussion) => ({
+        ...discussion,
+        posts: [...discussion.posts, postAddedData.postAdded],
+      }));
+    }
+  }, [postAddedData]);
+
+  useEffect(() => {
+    if (postDeletedData) {
+      setDiscussion((discussion) => ({
+        ...discussion,
+        posts: discussion.posts.filter(
+          (post) => post.id !== postDeletedData.postDeleted
+        ),
+      }));
+    }
+  }, [postDeletedData]);
 
   const handleQuillChange = (text: string) => {
     setQuillText(text);
@@ -139,12 +179,17 @@ export default function Discussion() {
       event.preventDefault();
 
       const currentQuillText = quillText.slice(0, -11);
+      setQuillText("");
       const result = await createPost(discussion.id, UESERID, currentQuillText);
 
       if (result.success) {
-        alert("creating post is successful")
-        reloadDiscussion(table_name, row);
-        setQuillText("");
+      } else {
+        setQuillText(currentQuillText);
+        setSnackbarState({
+          open: true,
+          message: result.message,
+          severity: "error",
+        });
       }
     }
   };
@@ -158,14 +203,24 @@ export default function Discussion() {
 
     if (result.success) {
       reloadDiscussion(table_name, row);
+    } else {
+      setSnackbarState({
+        open: true,
+        message: "Unable to create a new Reaction!",
+        severity: "error",
+      });
     }
   };
 
   const handleDeletePost = async (post_id: number): Promise<void> => {
     const result = await deletePost(post_id);
 
-    if (result.success) {
-      reloadDiscussion(table_name, row);
+    if (result.success === false) {
+      setSnackbarState({
+        open: true,
+        message: result.message,
+        severity: "error",
+      });
     }
   };
 
@@ -174,8 +229,44 @@ export default function Discussion() {
 
     if (result.success) {
       reloadDiscussion(table_name, row);
+    } else {
+      setSnackbarState({
+        open: true,
+        message: result.message,
+        severity: "error",
+      });
     }
   };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarState((state) => ({ ...state, open: false }));
+  };
+
+  const handleOpenEmojiPicker = (
+    anchorEl: HTMLButtonElement,
+    postId: number
+  ) => {
+    setEmojiPopoverState({
+      anchorEl,
+      postId,
+    });
+  };
+
+  const handleCloseEmojiPicker = () => {
+    setEmojiPopoverState({
+      anchorEl: null,
+      postId: 0,
+    });
+  };
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    if (emojiPopoverState) {
+      handleCloseEmojiPicker();
+      handleAddReaction(emojiPopoverState.postId, UESERID, emojiData.unified);
+    }
+  };
+
+  const openEmojiPicker = Boolean(emojiPopoverState?.anchorEl);
 
   return (
     <IonContent>
@@ -185,14 +276,14 @@ export default function Discussion() {
       >
         <DiscussionHeader>Discussion</DiscussionHeader>
 
-        <DiscussionContainer>
+        <DiscussionContainer ref={discussionRef}>
           {discussion?.posts?.map((post: IPost) => (
             <Post
               key={post.id}
               {...post}
-              addReaction={handleAddReaction}
               deleteReaction={handleDeleteReaction}
               deletePost={handleDeletePost}
+              openEmojiPicker={handleOpenEmojiPicker}
             />
           ))}
         </DiscussionContainer>
@@ -206,6 +297,49 @@ export default function Discussion() {
           />
         </QuillContainer>
       </Stack>
+
+      <Popover
+        open={discussionRef.current !== null}
+        anchorEl={
+          emojiPopoverState.anchorEl === null
+            ? discussionRef.current
+            : emojiPopoverState.anchorEl
+        }
+        onClose={handleCloseEmojiPicker}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        sx={{
+          display: openEmojiPicker ? "inherit" : "none",
+        }}
+      >
+        <EmojiPicker
+          onEmojiClick={handleEmojiClick}
+          autoFocusSearch={true}
+          lazyLoadEmojis={true}
+          theme={Theme.AUTO}
+        />
+      </Popover>
+
+      <Snackbar
+        open={snackbarState.open}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        key="bottom-right"
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarState.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </IonContent>
   );
 }
