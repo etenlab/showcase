@@ -11,7 +11,7 @@ import {
   DELETE_REACTION,
 } from "src/common/discussionQuery";
 import type {
-  IDiscussionDB,
+  IDiscussion,
   IPostDB,
   IReactionDB,
   APIReturnType,
@@ -23,7 +23,7 @@ import type {
 export async function getDiscussionsByTableNameAndRow(
   table_name: string,
   row: number
-): Promise<APIReturnType<Array<IDiscussionDB>>> {
+): Promise<APIReturnType<Array<IDiscussion>>> {
   try {
     const { data } = await client.query({
       query: GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW,
@@ -37,18 +37,21 @@ export async function getDiscussionsByTableNameAndRow(
     if (data.discussions.length === 0) {
       return {
         success: false,
+        message: "No discussions in the server"
       };
     }
 
     return {
       success: true,
-      data: data.discussions as Array<IDiscussionDB>,
+      message: "Success",
+      data: data.discussions as Array<IDiscussion>,
     };
   } catch (err) {
     console.error("get discussions", err);
 
     return {
       success: false,
+      message: ""
     };
   }
 }
@@ -59,7 +62,7 @@ export async function getDiscussionsByTableNameAndRow(
 export async function createDiscusion(
   table_name: string,
   row: number
-): Promise<APIReturnType<IDiscussionDB>> {
+): Promise<APIReturnType<IDiscussion>> {
   try {
     const { data } = await client.mutate({
       mutation: CREATE_DISCUSSION,
@@ -75,13 +78,18 @@ export async function createDiscusion(
 
     return {
       success: true,
-      data: data.createDiscussion as IDiscussionDB,
+      message: "Success",
+      data: {
+        ...data.createDiscussion,
+        posts: []
+      } as IDiscussion,
     };
   } catch (err) {
     console.error("create discussion", err);
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -100,12 +108,14 @@ export async function deleteDiscussion(id: number): Promise<APIReturnType> {
 
     return {
       success: true,
+      message: "Success",
     };
   } catch (err) {
     console.error("delete discussions", err);
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -127,6 +137,7 @@ export async function getPostsByDiscussionId(
 
     return {
       success: true,
+      message: "Success",
       data: data.postsByDiscussionId.map(
         (post: IPostDB): IPostDB => ({
           ...post,
@@ -139,6 +150,7 @@ export async function getPostsByDiscussionId(
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -167,6 +179,7 @@ export async function createPost(
 
     return {
       success: true,
+      message: "Success",
       data: {
         ...data.createPost,
         created_at: new Date(data.createPost.created_at),
@@ -177,6 +190,7 @@ export async function createPost(
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -195,12 +209,14 @@ export async function deletePost(id: number): Promise<APIReturnType> {
 
     return {
       success: true,
+      message: "Success"
     };
   } catch (err) {
     console.error("delete post", err);
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -222,6 +238,7 @@ export async function getReactionsByPostId(
 
     return {
       success: true,
+      message: "Success",
       data: data.reactionsByPostId as Array<IReactionDB>,
     };
   } catch (err) {
@@ -229,6 +246,7 @@ export async function getReactionsByPostId(
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -255,6 +273,7 @@ export async function createReaction(
 
     return {
       success: true,
+      message: "Success",
       data: data.createReaction as IReactionDB,
     };
   } catch (err) {
@@ -262,6 +281,7 @@ export async function createReaction(
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }
@@ -280,12 +300,14 @@ export async function deleteReaction(id: number): Promise<APIReturnType> {
 
     return {
       success: true,
+      message: "Success"
     };
   } catch (err) {
     console.error("delete reaction", err);
 
     return {
       success: false,
+      message: "Oops, something went to wrong, Check your network connection!",
     };
   }
 }

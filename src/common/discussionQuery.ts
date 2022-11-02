@@ -31,6 +31,19 @@ export const GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW = gql`
       org
       table_name
       row
+      posts {
+        id
+        user_id
+        plain_text
+        quill_text
+        postgres_language
+        created_at
+        reactions {
+          id
+          user_id
+          content
+        }
+      }
     }
   }
 `;
@@ -88,6 +101,32 @@ export const CREATE_POST = gql`
       quill_text
       plain_text
       postgres_language
+      reactions {
+        id
+        user_id
+        content
+      }
+      created_at
+    }
+  }
+`;
+
+export const POST_ADDED_SUBSCRIPTION = gql`
+  subscription OnPostAdded {
+    postAdded {
+      id
+      discussion {
+        id
+      }
+      user_id
+      quill_text
+      plain_text
+      postgres_language
+      reactions {
+        id
+        user_id
+        content
+      }
       created_at
     }
   }
@@ -96,6 +135,12 @@ export const CREATE_POST = gql`
 export const DELETE_POST = gql`
   mutation DeletePost($id: Int!) {
     deletePost(id: $id)
+  }
+`;
+
+export const POST_DELETED_SUBSCRIPTION = gql`
+  subscription OnPostDeleted {
+    postDeleted
   }
 `;
 
