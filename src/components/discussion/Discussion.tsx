@@ -1,17 +1,21 @@
-import { useState, KeyboardEvent, useEffect, useRef } from "react";
+import React, {
+  useState,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { useParams } from "react-router";
 import { useSubscription } from "@apollo/client";
 
-import "react-quill/dist/quill.snow.css";
-import ReactQuill from "react-quill";
+import { EmojiClickData } from "emoji-picker-react";
+
 import { IonContent } from "@ionic/react";
 
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Popover from "@mui/material/Popover";
-
-import EmojiPicker, { Theme, EmojiClickData } from "emoji-picker-react";
 
 import {
   QuillContainer,
@@ -38,6 +42,8 @@ import {
 
 import type { IPost, IDiscussion } from "./utils/types";
 
+import { ReactQuill } from "src/common/ReactQuill";
+import { EmojiPicker } from "src/common/EmojiPicker";
 import Post from "./Post";
 
 type DiscussionRouteQuizParams = {
@@ -63,6 +69,11 @@ interface PostAddedData {
 interface PostDeletedData {
   postDeleted: number;
 }
+
+const Watcher = React.memo(function Watcher() {
+  console.log("watcher reloaded");
+  return <div></div>;
+});
 
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
@@ -98,57 +109,57 @@ export default function Discussion() {
   );
 
   // This function will reload discussion from server.
-  const reloadDiscussion = async (
-    table_name: string | undefined,
-    row: string | undefined
-  ) => {
-    if (table_name === undefined || row === undefined) {
-      setSnackbarState((state) => ({
-        open: true,
-        message: "#Table Name, and #Row is undefined!",
-        severity: "warning",
-      }));
-      return null;
-    }
-
-    const dbDiscussions = await getDiscussionsByTableNameAndRow(
-      table_name,
-      +row
-    );
-    let updatedDiscussion: IDiscussion;
-
-    if (dbDiscussions.success) {
-      if (dbDiscussions.data && dbDiscussions.data?.length > 0) {
-        updatedDiscussion = dbDiscussions.data[0];
-      } else {
-        setSnackbarState({
+  const reloadDiscussion = useCallback(
+    async (table_name: string | undefined, row: string | undefined) => {
+      if (table_name === undefined || row === undefined) {
+        setSnackbarState((state) => ({
           open: true,
-          message: "Oops, something went to wrong, please try again!",
-          severity: "error",
-        });
+          message: "#Table Name, and #Row is undefined!",
+          severity: "warning",
+        }));
         return null;
       }
-    } else {
-      const newDiscussion = await createDiscusion(table_name, +row);
 
-      if (newDiscussion.success && newDiscussion.data) {
-        updatedDiscussion = newDiscussion.data;
+      const dbDiscussions = await getDiscussionsByTableNameAndRow(
+        table_name,
+        +row
+      );
+      let updatedDiscussion: IDiscussion;
+
+      if (dbDiscussions.success) {
+        if (dbDiscussions.data && dbDiscussions.data?.length > 0) {
+          updatedDiscussion = dbDiscussions.data[0];
+        } else {
+          setSnackbarState({
+            open: true,
+            message: "Oops, something went to wrong, please try again!",
+            severity: "error",
+          });
+          return null;
+        }
       } else {
-        setSnackbarState({
-          open: true,
-          message: newDiscussion.message,
-          severity: "error",
-        });
-        return null;
-      }
-    }
+        const newDiscussion = await createDiscusion(table_name, +row);
 
-    setDiscussion(updatedDiscussion);
-  };
+        if (newDiscussion.success && newDiscussion.data) {
+          updatedDiscussion = newDiscussion.data;
+        } else {
+          setSnackbarState({
+            open: true,
+            message: newDiscussion.message,
+            severity: "error",
+          });
+          return null;
+        }
+      }
+
+      setDiscussion(updatedDiscussion);
+    },
+    []
+  );
 
   useEffect(() => {
     reloadDiscussion(table_name, row);
-  }, [table_name, row]);
+  }, [table_name, row, reloadDiscussion]);
 
   useEffect(() => {
     if (postAddedData) {
@@ -194,23 +205,26 @@ export default function Discussion() {
     }
   };
 
-  const handleAddReaction = async (
-    post_id: number,
-    user_id: string,
-    content: string
-  ): Promise<void> => {
-    const result = await createReaction(post_id, user_id, content);
+  const handleAddReaction = useCallback(
+    async (
+      post_id: number,
+      user_id: string,
+      content: string
+    ): Promise<void> => {
+      const result = await createReaction(post_id, user_id, content);
 
-    if (result.success) {
-      reloadDiscussion(table_name, row);
-    } else {
-      setSnackbarState({
-        open: true,
-        message: "Unable to create a new Reaction!",
-        severity: "error",
-      });
-    }
-  };
+      if (result.success) {
+        reloadDiscussion(table_name, row);
+      } else {
+        setSnackbarState({
+          open: true,
+          message: "Unable to create a new Reaction!",
+          severity: "error",
+        });
+      }
+    },
+    [table_name, row, reloadDiscussion]
+  );
 
   const handleDeletePost = async (post_id: number): Promise<void> => {
     const result = await deletePost(post_id);
@@ -252,19 +266,22 @@ export default function Discussion() {
     });
   };
 
-  const handleCloseEmojiPicker = () => {
+  const handleCloseEmojiPicker = useCallback(() => {
     setEmojiPopoverState({
       anchorEl: null,
       postId: 0,
     });
-  };
+  }, []);
 
-  const handleEmojiClick = (emojiData: EmojiClickData) => {
-    if (emojiPopoverState) {
-      handleCloseEmojiPicker();
-      handleAddReaction(emojiPopoverState.postId, UESERID, emojiData.unified);
-    }
-  };
+  const handleEmojiClick = useCallback(
+    (emojiData: EmojiClickData) => {
+      if (emojiPopoverState) {
+        handleCloseEmojiPicker();
+        handleAddReaction(emojiPopoverState.postId, UESERID, emojiData.unified);
+      }
+    },
+    [emojiPopoverState, handleCloseEmojiPicker, handleAddReaction]
+  );
 
   const openEmojiPicker = Boolean(emojiPopoverState?.anchorEl);
 
@@ -290,7 +307,6 @@ export default function Discussion() {
 
         <QuillContainer>
           <ReactQuill
-            theme="snow"
             value={quillText}
             onKeyUp={handleKeyEvent}
             onChange={handleQuillChange}
@@ -314,12 +330,7 @@ export default function Discussion() {
           display: openEmojiPicker ? "inherit" : "none",
         }}
       >
-        <EmojiPicker
-          onEmojiClick={handleEmojiClick}
-          autoFocusSearch={true}
-          lazyLoadEmojis={true}
-          theme={Theme.AUTO}
-        />
+        <EmojiPicker onEmojiClick={handleEmojiClick} />
       </Popover>
 
       <Snackbar
@@ -340,6 +351,7 @@ export default function Discussion() {
           {snackbarState.message}
         </Alert>
       </Snackbar>
+      <Watcher />
     </IonContent>
   );
 }
