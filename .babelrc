@@ -1,3 +1,9 @@
 {
-    "presets": ["@emotion/babel-preset-css-prop"]
+  "presets": ["@emotion/babel-preset-css-prop"],
+  "plugins": [
+    [
+      "babel-plugin-direct-import",
+      { "modules": ["@mui/material", "@mui/icons-material"] }
+    ]
+  ]
 }
