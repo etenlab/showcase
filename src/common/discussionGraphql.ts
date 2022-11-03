@@ -2,7 +2,6 @@ import { split, HttpLink, ApolloClient, InMemoryCache, from } from "@apollo/clie
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { onError } from '@apollo/client/link/error';
-import { RetryLink } from '@apollo/client/link/retry';
 import { createClient } from "graphql-ws";
 
 import { typeDefs } from "./discussionQuery";
@@ -16,8 +15,6 @@ const wsLink = new GraphQLWsLink(
     url: "ws://localhost:3001/graphql",
   })
 );
-
-const retryLink = new RetryLink();
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
@@ -43,7 +40,7 @@ const splitLink = split(
 );
 
 export const client = new ApolloClient({
-  link: from([errorLink, retryLink, splitLink]),
+  link: from([errorLink, splitLink]),
   cache: new InMemoryCache(),
 
   // Provide some optional constructor fields

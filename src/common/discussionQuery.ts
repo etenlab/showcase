@@ -60,6 +60,31 @@ export const CREATE_DISCUSSION = gql`
   }
 `;
 
+export const DISCUSSION_CREAETD_SUBSCRIPTION = gql`
+  subscription OnDiscussionCreated {
+    discussionCreated {
+      id
+      app
+      org
+      table_name
+      row
+      posts {
+        id
+        user_id
+        plain_text
+        quill_text
+        postgres_language
+        created_at
+        reactions {
+          id
+          user_id
+          content
+        }
+      }
+    }
+  }
+`;
+
 export const DELETE_DISCUSSION = gql`
   mutation DeleteDiscussion($id: Int!) {
     deleteDiscussion(id: $id)

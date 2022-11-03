@@ -5,16 +5,19 @@ import React, {
   useRef,
   useCallback,
 } from "react";
-import { useParams } from "react-router";
-import { useSubscription } from "@apollo/client";
+import { useParams, useHistory } from "react-router";
+import { useSubscription, useMutation, useLazyQuery } from "@apollo/client";
 import { EmojiClickData } from "emoji-picker-react";
 
 import { IonContent } from "@ionic/react";
 
 import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Popover from "@mui/material/Popover";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 
 import {
   QuillContainer,
@@ -27,21 +30,19 @@ import { EmojiPicker } from "src/common/EmojiPicker";
 
 import { DefaultDiscussion, UESERID } from "./utils/constants";
 
-import {
-  getDiscussionsByTableNameAndRow,
-  createDiscusion,
-  createPost,
-  createReaction,
-  deletePost,
-  deleteReaction,
-} from "src/components/discussion/utils/apiService";
-
 import { client } from "src/common/discussionGraphql";
 import {
   POST_CREATED_SUBSCRIPTION,
   POST_DELETED_SUBSCRIPTION,
   REACTION_CREATED_SUBSCRIPTION,
   REACTION_DELETED_SUBSCRIPTION,
+  DISCUSSION_CREAETD_SUBSCRIPTION,
+  CREATE_DISCUSSION,
+  CREATE_POST,
+  DELETE_POST,
+  CREATE_REACTION,
+  DELETE_REACTION,
+  GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW,
 } from "src/common/discussionQuery";
 
 import type {
@@ -50,6 +51,7 @@ import type {
   DiscussionRouteQuizParams,
   EmojiPopoverState,
   SnackbarState,
+  DiscussionCreatedData,
   PostCreatedData,
   PostDeletedData,
   ReactionCreatedData,
@@ -63,8 +65,10 @@ import Post from "./Post";
  * The responsibility is to control Discussion Page and interact with server such as fetching, saving, deleting discussion data.
  */
 export default function Discussion() {
+  const history = useHistory();
   const { table_name, row } = useParams<DiscussionRouteQuizParams>();
   const [quillText, setQuillText] = useState<string>("");
+  const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
   const [discussion, setDiscussion] = useState<IDiscussion>(DefaultDiscussion);
   const [emojiPopoverState, setEmojiPopoverState] = useState<EmojiPopoverState>(
     {
@@ -78,101 +82,156 @@ export default function Discussion() {
     severity: "success",
   });
   const discussionRef = useRef<HTMLDivElement>(null);
-  const { data: postCreatedData } = useSubscription<PostCreatedData>(
-    POST_CREATED_SUBSCRIPTION,
-    {
+  const { data: discussionCreatedData, error: discussionCreatedError } =
+    useSubscription<DiscussionCreatedData>(DISCUSSION_CREAETD_SUBSCRIPTION, {
       client,
-    }
-  );
-  const { data: postDeletedData } = useSubscription<PostDeletedData>(
-    POST_DELETED_SUBSCRIPTION,
-    {
+    });
+  const { data: postCreatedData, error: postCreatedError } =
+    useSubscription<PostCreatedData>(POST_CREATED_SUBSCRIPTION, {
       client,
-    }
-  );
-  const { data: reactionCreatedData } = useSubscription<ReactionCreatedData>(
-    REACTION_CREATED_SUBSCRIPTION,
-    {
+    });
+  const { data: postDeletedData, error: postDeletedError } =
+    useSubscription<PostDeletedData>(POST_DELETED_SUBSCRIPTION, {
       client,
-    }
-  );
-  const { data: reactionDeletedData } = useSubscription<ReactionDeletedData>(
-    REACTION_DELETED_SUBSCRIPTION,
-    {
+    });
+  const { data: reactionCreatedData, error: reactionCreatedError } =
+    useSubscription<ReactionCreatedData>(REACTION_CREATED_SUBSCRIPTION, {
       client,
-    }
+    });
+  const { data: reactionDeletedData, error: reactionDeletedError } =
+    useSubscription<ReactionDeletedData>(REACTION_DELETED_SUBSCRIPTION, {
+      client,
+    });
+  const [createDiscussion, { error: createDiscussionError }] = useMutation(
+    CREATE_DISCUSSION,
+    { client }
   );
+  const [createPost, { error: createPostError, loading: createPostLoading }] =
+    useMutation(CREATE_POST, {
+      client,
+    });
+  const [deletePost, { error: deletePostError }] = useMutation(DELETE_POST, {
+    client,
+  });
+  const [createReaction, { error: createReactionError }] = useMutation(
+    CREATE_REACTION,
+    { client }
+  );
+  const [deleteReaction, { error: deleteReactionError }] = useMutation(
+    DELETE_REACTION,
+    { client }
+  );
+  // const {
+  //   loading: discussionLoading,
+  //   error: discussionError,
+  //   data: discussionData,
+  //   refetch: discussionRefetch,
+  // } = useQuery(GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW, {
+  //   fetchPolicy: "no-cache",
+  //   client,
+  // });
 
-  // This function will reload discussion from server.
-  const reloadDiscussion = useCallback(
-    async (table_name: string | undefined, row: string | undefined) => {
-      if (table_name === undefined || row === undefined) {
-        setSnackbarState((state) => ({
-          open: true,
-          message: "#Table Name, and #Row is undefined!",
-          severity: "warning",
-        }));
-        return null;
-      }
-
-      const dbDiscussions = await getDiscussionsByTableNameAndRow(
-        table_name,
-        +row
-      );
-      let updatedDiscussion: IDiscussion;
-
-      if (dbDiscussions.success) {
-        if (dbDiscussions.data && dbDiscussions.data?.length > 0) {
-          updatedDiscussion = dbDiscussions.data[0];
-        } else {
-          setSnackbarState({
-            open: true,
-            message: "Oops, something went to wrong, please try again!",
-            severity: "error",
-          });
-          return null;
-        }
-      } else {
-        const newDiscussion = await createDiscusion(table_name, +row);
-
-        if (newDiscussion.success && newDiscussion.data) {
-          updatedDiscussion = newDiscussion.data;
-        } else {
-          setSnackbarState({
-            open: true,
-            message: newDiscussion.message,
-            severity: "error",
-          });
-          return null;
-        }
-      }
-
-      setDiscussion(updatedDiscussion);
+  const [
+    getDiscussionsByTableNameAndRow,
+    {
+      called: discussionCalled,
+      loading: discussionLoading,
+      error: discussionError,
+      data: discussionData,
     },
-    []
-  );
+  ] = useLazyQuery(GET_DISCUSSIONS_BY_TABLE_NAME_AND_ROW, {
+    fetchPolicy: "no-cache",
+    client,
+  });
+
+  console.log({ discussionLoading, discussionError, discussionData });
 
   useEffect(() => {
-    reloadDiscussion(table_name, row);
-  }, [table_name, row, reloadDiscussion]);
+    if (table_name === undefined || row === undefined) {
+      setSnackbarState((state) => ({
+        open: true,
+        message: "#Table Name, and #Row is undefined!",
+        severity: "warning",
+      }));
+    } else {
+      getDiscussionsByTableNameAndRow({
+        variables: {
+          table_name,
+          row: +row,
+        },
+      });
+    }
+  }, [table_name, row, getDiscussionsByTableNameAndRow]);
 
   useEffect(() => {
-    if (postCreatedData) {
+    if (
+      discussionError === undefined &&
+      discussionLoading === false &&
+      discussionCalled === true &&
+      discussionData
+    ) {
+      if (discussionData.discussions.length > 0) {
+        setDiscussion(discussionData.discussions[0]);
+      } else {
+        if (table_name && row) {
+          createDiscussion({
+            variables: {
+              discussion: {
+                app: 0,
+                org: 0,
+                row: +row,
+                table_name,
+              },
+            },
+          });
+        }
+      }
+    }
+  }, [
+    discussionError,
+    discussionLoading,
+    discussionCalled,
+    discussionData,
+    createDiscussion,
+    table_name,
+    row,
+  ]);
+
+  useEffect(() => {
+    if (table_name && row) {
+      if (discussionCreatedData && discussionCreatedError === undefined) {
+        const newDiscussion = discussionCreatedData.discussionCreated;
+        if (
+          newDiscussion.table_name === table_name &&
+          newDiscussion.row === +row
+        ) {
+          setDiscussion(newDiscussion);
+        }
+      }
+    }
+  }, [discussionCreatedData, discussionCreatedError, table_name, row]);
+
+  useEffect(() => {
+    if (postCreatedData && postCreatedError === undefined) {
       setDiscussion((discussion) => {
-        if (discussion.posts.find((post) => post.id === postCreatedData.postCreated.id)) {
+        if (
+          discussion.posts.find(
+            (post) => post.id === postCreatedData.postCreated.id
+          )
+        ) {
           return discussion;
         } else {
           return {
             ...discussion,
             posts: [...discussion.posts, postCreatedData.postCreated],
-          }
+          };
         }
       });
     }
-  }, [postCreatedData]);
+  }, [postCreatedData, postCreatedError]);
 
   useEffect(() => {
-    if (postDeletedData) {
+    if (postDeletedData && postDeletedError === undefined) {
       setDiscussion((discussion) => ({
         ...discussion,
         posts: discussion.posts.filter(
@@ -180,11 +239,12 @@ export default function Discussion() {
         ),
       }));
     }
-  }, [postDeletedData]);
+  }, [postDeletedData, postDeletedError]);
 
   useEffect(() => {
-    if (reactionCreatedData) {
-      const discussion_id = reactionCreatedData.reactionCreated.post.discussion.id;
+    if (reactionCreatedData && reactionCreatedError === undefined) {
+      const discussion_id =
+        reactionCreatedData.reactionCreated.post.discussion.id;
       const post_id = reactionCreatedData.reactionCreated.post.id;
       const reaction_id = reactionCreatedData.reactionCreated.id;
 
@@ -194,7 +254,9 @@ export default function Discussion() {
             ...discussion,
             posts: discussion.posts.map((post) => {
               if (post.id === post_id) {
-                if (post.reactions.find((reaction) => reaction.id === reaction_id)) {
+                if (
+                  post.reactions.find((reaction) => reaction.id === reaction_id)
+                ) {
                   return post;
                 } else {
                   return {
@@ -209,16 +271,16 @@ export default function Discussion() {
                 return post;
               }
             }),
-          }
+          };
         } else {
           return discussion;
         }
       });
     }
-  }, [reactionCreatedData]);
+  }, [reactionCreatedData, reactionCreatedError]);
 
   useEffect(() => {
-    if (reactionDeletedData) {
+    if (reactionDeletedData && reactionDeletedError === undefined) {
       setDiscussion((discussion) => ({
         ...discussion,
         posts: discussion.posts.map((post) => ({
@@ -229,7 +291,51 @@ export default function Discussion() {
         })),
       }));
     }
-  }, [reactionDeletedData]);
+  }, [reactionDeletedData, reactionDeletedError]);
+
+  useEffect(() => {
+    if (!!createPostError && createPostLoading === false && !!prevQuillText) {
+      setQuillText(prevQuillText);
+      setPrevQuillText(null);
+    }
+  }, [createPostError, createPostLoading, prevQuillText]);
+
+  useEffect(() => {
+    const errors = [
+      postCreatedError,
+      postDeletedError,
+      reactionCreatedError,
+      reactionDeletedError,
+      deletePostError,
+      deleteReactionError,
+      createPostError,
+      createReactionError,
+      createDiscussionError,
+      discussionError,
+    ];
+    const isError = errors.reduce(
+      (isExistError, error) => !!error || isExistError,
+      false
+    );
+    if (isError) {
+      setSnackbarState({
+        open: true,
+        message: `Oops, Something went to wrong, Check your network connection`,
+        severity: "error",
+      });
+    }
+  }, [
+    postCreatedError,
+    postDeletedError,
+    reactionCreatedError,
+    reactionDeletedError,
+    deletePostError,
+    deleteReactionError,
+    createPostError,
+    createReactionError,
+    createDiscussionError,
+    discussionError,
+  ]);
 
   const handleQuillChange = (text: string) => {
     setQuillText(text);
@@ -237,22 +343,28 @@ export default function Discussion() {
 
   const handleKeyEvent = async (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-
-      const currentQuillText = quillText.slice(0, -11);
+      createPost({
+        variables: {
+          post: {
+            discussion_id: discussion.id,
+            plain_text: "",
+            postgres_language: "simple",
+            quill_text: quillText,
+            user_id: UESERID,
+          },
+        },
+      });
+      setPrevQuillText(quillText);
       setQuillText("");
-      const result = await createPost(discussion.id, UESERID, currentQuillText);
-
-      if (result.success) {
-      } else {
-        setQuillText(currentQuillText);
-        setSnackbarState({
-          open: true,
-          message: result.message,
-          severity: "error",
-        });
-      }
     }
+  };
+
+  const handleDeletePost = async (post_id: number): Promise<void> => {
+    deletePost({
+      variables: {
+        id: post_id,
+      },
+    });
   };
 
   const handleAddReaction = useCallback(
@@ -261,43 +373,25 @@ export default function Discussion() {
       user_id: string,
       content: string
     ): Promise<void> => {
-      const result = await createReaction(post_id, user_id, content);
-
-      if (result.success === false) {
-        setSnackbarState({
-          open: true,
-          message: "Unable to create a new Reaction!",
-          severity: "error",
-        });
-      }
+      createReaction({
+        variables: {
+          reaction: {
+            post_id,
+            content,
+            user_id,
+          },
+        },
+      });
     },
-    []
+    [createReaction]
   );
 
-  const handleDeletePost = async (post_id: number): Promise<void> => {
-    const result = await deletePost(post_id);
-
-    if (result.success === false) {
-      setSnackbarState({
-        open: true,
-        message: result.message,
-        severity: "error",
-      });
-    }
-  };
-
   const handleDeleteReaction = async (reaction_id: number): Promise<void> => {
-    const result = await deleteReaction(reaction_id);
-
-    if (result.success) {
-      reloadDiscussion(table_name, row);
-    } else {
-      setSnackbarState({
-        open: true,
-        message: result.message,
-        severity: "error",
-      });
-    }
+    deleteReaction({
+      variables: {
+        id: reaction_id,
+      },
+    });
   };
 
   const handleCloseSnackbar = () => {
@@ -339,7 +433,18 @@ export default function Discussion() {
         justifyContent="space-between"
         sx={{ height: "calc(100vh - 75px)", padding: "60px 20px 0px" }}
       >
-        <DiscussionHeader>Discussion</DiscussionHeader>
+        <DiscussionHeader>
+          <Stack direction="row" justifyContent="space-between">
+            <span>Discussion</span>
+            <Button
+              onClick={() => {
+                history.goBack();
+              }}
+            >
+              Go Back
+            </Button>
+          </Stack>
+        </DiscussionHeader>
 
         <DiscussionContainer ref={discussionRef}>
           {discussion?.posts?.map((post: IPost) => (
@@ -399,6 +504,18 @@ export default function Discussion() {
           {snackbarState.message}
         </Alert>
       </Snackbar>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: 1000 }}
+        open={discussionLoading && discussionCalled}
+      >
+        <Stack justifyContent="center">
+          <div style={{ margin: "auto" }}>
+            <CircularProgress color="inherit" />
+          </div>
+          <div>LOADING</div>
+        </Stack>
+      </Backdrop>
     </IonContent>
   );
 }

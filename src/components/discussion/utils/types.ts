@@ -55,6 +55,10 @@ export interface EmojiPopoverState {
   postId: number;
 }
 
+export interface DiscussionCreatedData {
+  discussionCreated: IDiscussion;
+}
+
 export interface PostCreatedData {
   postCreated: IPost;
 }
