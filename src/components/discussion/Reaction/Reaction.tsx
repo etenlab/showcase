@@ -1,6 +1,6 @@
 import { Emoji, EmojiStyle } from "emoji-picker-react";
 
-import Tooltip from "@mui/material/Tooltip";
+import { Tooltip } from "@mui/material";
 
 import { EmojiWrapper } from "./styled";
 import { IReaction } from "../utils/types";
@@ -12,7 +12,7 @@ interface ReactionProps extends IReaction {
 /**
  * This component render a Reaction with Emoji icon.
  */
-export default function Reaction({
+export function Reaction({
   id,
   user_id,
   content,

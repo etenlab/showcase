@@ -1,11 +1,11 @@
 import { MouseEvent } from "react";
 
-import Stack from "@mui/material/Stack";
+import { Stack } from "@mui/material";
 import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
 
 import { AddReactionIconButton } from "./styled";
 import { IReaction } from "../utils/types";
-import Reaction from "./Reaction";
+import { Reaction } from "./Reaction";
 
 interface ReactionListProps {
   reactions: Array<IReaction> | [];
@@ -16,7 +16,7 @@ interface ReactionListProps {
 /**
  * This component render Reactions with from unified strings.
  */
-export default function ReactionList({
+export function ReactionList({
   reactions,
   openEmojiPicker,
   deleteReaction,

@@ -51,7 +51,7 @@ import { UfLanguagesWithOpenBibleStories } from '../components/UfLanguagesWithOp
 import { UfLanguagesWithRadioBroadcast } from '../components/UfLanguagesWithRadioBroadcast';
 import { UfNetworks } from '../components/UfNetworks';
 import { AccountMenu } from '../common/AccountMenu';
-import Discussion from '../components/discussion/Discussion';
+import { Discussion } from '../components/discussion/Discussion';
 
 const Tab1: React.FC = () => {
 

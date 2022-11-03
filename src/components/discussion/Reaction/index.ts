@@ -1,3 +1,2 @@
-export { default as Reaction } from "./Reaction";
-
-export { default as ReactionList } from "./ReactionList";
+export { Reaction } from "./Reaction";
+export { ReactionList } from "./ReactionList";

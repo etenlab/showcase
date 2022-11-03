@@ -1,7 +1,9 @@
 import { useRef, useLayoutEffect, MouseEvent } from "react";
 
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
+import { 
+  Button,
+  IconButton
+} from "@mui/material";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
@@ -20,7 +22,7 @@ interface PostProps extends IPost {
 /**
  * This component basically renders Post, ReactionList.
  */
-export default function Post({
+export function Post({
   id,
   user_id,
   quill_text,
