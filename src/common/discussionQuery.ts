@@ -111,9 +111,9 @@ export const CREATE_POST = gql`
   }
 `;
 
-export const POST_ADDED_SUBSCRIPTION = gql`
-  subscription OnPostAdded {
-    postAdded {
+export const POST_CREATED_SUBSCRIPTION = gql`
+  subscription OnPostCreated {
+    postCreated {
       id
       discussion {
         id
@@ -200,8 +200,30 @@ export const CREATE_REACTION = gql`
   }
 `;
 
+export const REACTION_CREATED_SUBSCRIPTION = gql`
+  subscription OnReactionCreated {
+    reactionCreated {
+      id
+      post {
+        id
+        discussion {
+          id
+        }
+      }
+      user_id
+      content
+    }
+  }
+`;
+
 export const DELETE_REACTION = gql`
   mutation DeleteReaction($id: Int!) {
     deleteReaction(id: $id)
+  }
+`;
+
+export const REACTION_DELETED_SUBSCRIPTION = gql`
+  subscription OnReactionDeleted {
+    reactionDeleted
   }
 `;

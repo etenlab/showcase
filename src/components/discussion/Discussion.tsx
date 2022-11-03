@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { useParams } from "react-router";
 import { useSubscription } from "@apollo/client";
-
 import { EmojiClickData } from "emoji-picker-react";
 
 import { IonContent } from "@ionic/react";
@@ -23,6 +22,9 @@ import {
   DiscussionContainer,
 } from "./styled";
 
+import { ReactQuill } from "src/common/ReactQuill";
+import { EmojiPicker } from "src/common/EmojiPicker";
+
 import { DefaultDiscussion, UESERID } from "./utils/constants";
 
 import {
@@ -36,44 +38,25 @@ import {
 
 import { client } from "src/common/discussionGraphql";
 import {
-  POST_ADDED_SUBSCRIPTION,
+  POST_CREATED_SUBSCRIPTION,
   POST_DELETED_SUBSCRIPTION,
+  REACTION_CREATED_SUBSCRIPTION,
+  REACTION_DELETED_SUBSCRIPTION,
 } from "src/common/discussionQuery";
 
-import type { IPost, IDiscussion } from "./utils/types";
+import type {
+  IPost,
+  IDiscussion,
+  DiscussionRouteQuizParams,
+  EmojiPopoverState,
+  SnackbarState,
+  PostCreatedData,
+  PostDeletedData,
+  ReactionCreatedData,
+  ReactionDeletedData,
+} from "./utils/types";
 
-import { ReactQuill } from "src/common/ReactQuill";
-import { EmojiPicker } from "src/common/EmojiPicker";
 import Post from "./Post";
-
-type DiscussionRouteQuizParams = {
-  table_name?: string;
-  row?: string;
-};
-
-interface SnackbarState {
-  open: boolean;
-  message: string;
-  severity: "success" | "error" | "warning" | "info";
-}
-
-interface EmojiPopoverState {
-  anchorEl: Element | null;
-  postId: number;
-}
-
-interface PostAddedData {
-  postAdded: IPost;
-}
-
-interface PostDeletedData {
-  postDeleted: number;
-}
-
-const Watcher = React.memo(function Watcher() {
-  console.log("watcher reloaded");
-  return <div></div>;
-});
 
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
@@ -95,14 +78,26 @@ export default function Discussion() {
     severity: "success",
   });
   const discussionRef = useRef<HTMLDivElement>(null);
-  const { data: postAddedData } = useSubscription<PostAddedData>(
-    POST_ADDED_SUBSCRIPTION,
+  const { data: postCreatedData } = useSubscription<PostCreatedData>(
+    POST_CREATED_SUBSCRIPTION,
     {
       client,
     }
   );
   const { data: postDeletedData } = useSubscription<PostDeletedData>(
     POST_DELETED_SUBSCRIPTION,
+    {
+      client,
+    }
+  );
+  const { data: reactionCreatedData } = useSubscription<ReactionCreatedData>(
+    REACTION_CREATED_SUBSCRIPTION,
+    {
+      client,
+    }
+  );
+  const { data: reactionDeletedData } = useSubscription<ReactionDeletedData>(
+    REACTION_DELETED_SUBSCRIPTION,
     {
       client,
     }
@@ -162,13 +157,19 @@ export default function Discussion() {
   }, [table_name, row, reloadDiscussion]);
 
   useEffect(() => {
-    if (postAddedData) {
-      setDiscussion((discussion) => ({
-        ...discussion,
-        posts: [...discussion.posts, postAddedData.postAdded],
-      }));
+    if (postCreatedData) {
+      setDiscussion((discussion) => {
+        if (discussion.posts.find((post) => post.id === postCreatedData.postCreated.id)) {
+          return discussion;
+        } else {
+          return {
+            ...discussion,
+            posts: [...discussion.posts, postCreatedData.postCreated],
+          }
+        }
+      });
     }
-  }, [postAddedData]);
+  }, [postCreatedData]);
 
   useEffect(() => {
     if (postDeletedData) {
@@ -180,6 +181,55 @@ export default function Discussion() {
       }));
     }
   }, [postDeletedData]);
+
+  useEffect(() => {
+    if (reactionCreatedData) {
+      const discussion_id = reactionCreatedData.reactionCreated.post.discussion.id;
+      const post_id = reactionCreatedData.reactionCreated.post.id;
+      const reaction_id = reactionCreatedData.reactionCreated.id;
+
+      setDiscussion((discussion) => {
+        if (discussion.id === discussion_id) {
+          return {
+            ...discussion,
+            posts: discussion.posts.map((post) => {
+              if (post.id === post_id) {
+                if (post.reactions.find((reaction) => reaction.id === reaction_id)) {
+                  return post;
+                } else {
+                  return {
+                    ...post,
+                    reactions: [
+                      ...post.reactions,
+                      reactionCreatedData.reactionCreated,
+                    ],
+                  };
+                }
+              } else {
+                return post;
+              }
+            }),
+          }
+        } else {
+          return discussion;
+        }
+      });
+    }
+  }, [reactionCreatedData]);
+
+  useEffect(() => {
+    if (reactionDeletedData) {
+      setDiscussion((discussion) => ({
+        ...discussion,
+        posts: discussion.posts.map((post) => ({
+          ...post,
+          reactions: post.reactions.filter(
+            (reaction) => reaction.id !== reactionDeletedData.reactionDeleted
+          ),
+        })),
+      }));
+    }
+  }, [reactionDeletedData]);
 
   const handleQuillChange = (text: string) => {
     setQuillText(text);
@@ -213,9 +263,7 @@ export default function Discussion() {
     ): Promise<void> => {
       const result = await createReaction(post_id, user_id, content);
 
-      if (result.success) {
-        reloadDiscussion(table_name, row);
-      } else {
+      if (result.success === false) {
         setSnackbarState({
           open: true,
           message: "Unable to create a new Reaction!",
@@ -223,7 +271,7 @@ export default function Discussion() {
         });
       }
     },
-    [table_name, row, reloadDiscussion]
+    []
   );
 
   const handleDeletePost = async (post_id: number): Promise<void> => {
@@ -351,7 +399,6 @@ export default function Discussion() {
           {snackbarState.message}
         </Alert>
       </Snackbar>
-      <Watcher />
     </IonContent>
   );
 }

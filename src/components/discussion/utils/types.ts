@@ -38,3 +38,35 @@ export interface IPost extends IPostDB {
 export interface IDiscussion extends IDiscussionDB {
   posts: Array<IPost> | [];
 }
+
+export type DiscussionRouteQuizParams = {
+  table_name?: string;
+  row?: string;
+};
+
+export interface SnackbarState {
+  open: boolean;
+  message: string;
+  severity: "success" | "error" | "warning" | "info";
+}
+
+export interface EmojiPopoverState {
+  anchorEl: Element | null;
+  postId: number;
+}
+
+export interface PostCreatedData {
+  postCreated: IPost;
+}
+
+export interface PostDeletedData {
+  postDeleted: number;
+}
+
+export interface ReactionCreatedData {
+  reactionCreated: IReaction;
+}
+
+export interface ReactionDeletedData {
+  reactionDeleted: number;
+}
