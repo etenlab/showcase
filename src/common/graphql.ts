@@ -4,15 +4,20 @@ import { HttpLink } from 'apollo-link-http';
 
 // Instantiate required constructor fields
 const cache = new InMemoryCache();
-const link = new HttpLink({
-  uri: 'https://fast-heron-34.hasura.app/v1/graphql',
+var link = new HttpLink({
+  uri: 'http://localhost:8081/v1/graphql',
 });
+
+if(process.env.NODE_ENV === "production"){
+  link = new HttpLink({
+    uri: 'https://fast-heron-34.hasura.app/v1/graphql',
+  });
+}
 
 export const client = new ApolloClient({
   // Provide required constructor fields
   cache: cache,
   link: link,
-
   // Provide some optional constructor fields
   name: 'react-web-client',
   version: '1.3',

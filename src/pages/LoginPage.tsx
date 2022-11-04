@@ -8,6 +8,7 @@ import { styles } from '../common/styles'
 
 const LoginPage = () => {
   const location = useLocation<{ [key: string]: unknown }>()
+  
   console.log("location.state start");
   console.log(location);
   console.log("location.state end");
