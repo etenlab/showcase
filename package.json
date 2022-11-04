@@ -43,13 +43,16 @@
         "babel-preset-es2015": "^6.24.1",
         "caniuse-lite": "^1.0.30001397",
         "disqus-react": "^1.1.3",
+        "emoji-picker-react": "^4.4.3",
         "graphql": "^16.6.0",
+        "graphql-ws": "^5.11.2",
         "ionicons": "^5.4.0",
         "json-to-graphql-query": "^2.2.4",
         "keycloak-js": "^19.0.2",
         "material-table": "^2.0.3",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-quill": "^2.0.0",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "^5.0.0",
@@ -71,9 +74,10 @@
         "workbox-streams": "^5.1.4"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
+        "analyze": "source-map-explorer 'build/static/js/*.js'",
+        "start": "react-app-rewired start",
+        "build": "react-app-rewired build",
+        "test": "react-app-rewired test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
         "eject": "react-scripts eject",
         "codegen": "graphql-codegen --config codegen.yml",
         "generate": "graphql-codegen --config codegen.js"
@@ -99,6 +103,7 @@
     "devDependencies": {
         "@capacitor/cli": "4.1.0",
         "@emotion/babel-plugin": "^11.10.2",
+        "@emotion/babel-preset-css-prop": "^11.10.0",
         "@graphql-codegen/cli": "^2.12.1",
         "@graphql-codegen/fragment-matcher": "3.3.1",
         "@graphql-codegen/introspection": "^2.2.1",
@@ -110,7 +115,11 @@
         "@types/react-table": "^7.7.12",
         "@types/styled-components": "^5.1.26",
         "@types/styled-components-react-native": "^5.1.3",
-        "apollo": "^2.34.0"
+        "apollo": "^2.34.0",
+        "babel-plugin-direct-import": "^1.0.0",
+        "customize-cra": "^1.0.0",
+        "react-app-rewired": "^2.2.1",
+        "source-map-explorer": "^2.5.3"
     },
     "peerDependencies": {
         "react": "^18.2.0",

@@ -19,39 +19,9 @@ import {
   IonLabel
 } from '@ionic/react';
 
-// import { Iso6393 } from '../components/iso6393';
-// import { GlottologFamily } from '../components/GlottologFamily';
-// import { GlottologLanguage } from '../components/GlottologLanguage';
-// import { GSECListingOfPeopleGroups } from '../components/GSECListingOfPeopleGroups'
-// import { GSECListingOfUnengagedUnreachedPeopleGroups } from '../components/GSECListingOfUnengagedUnreachedPeopleGroups';
-// import { GSECListingOfUnreachedPeopleGroups } from '../components/GSECListingOfUnreachedPeopleGroups';
-// import { GSECListingOfUUPG100k } from '../components/GSECListingOfUUPG100k';
-// import { GSECListingOfUUPG100kRemovals } from '../components/GSECListingOfUUPG100kRemovals';
-// import { Iso6393Macrolanguages } from '../components/Iso6393Macrolanguages';
-// import { Iso6393Names } from '../components/Iso6393Names';
-// import { Iso6393Retirements } from '../components/Iso6393Retirements';
-// import { Iso6395 } from '../components/Iso6395';
-// import { PeopleGroupsDataOnly } from '../components/PeopleGroupsDataOnly';
-// import { ProgressBibleLanguageDetails } from '../components/ProgressBibleLanguageDetails';
-// import { RodAlternatenameindex } from '../components/RodAlternatenameindex';
-// import { RodChangelist } from '../components/RodChangelist';
-// import { RodDialects } from '../components/RodDialects';
-// import { SilCountryCodes } from '../components/SilCountryCodes';
-// import { SilLanguageCodes } from '../components/SilLanguageCodes';
-// import { SilLanguageIndex } from '../components/SilLanguageIndex';
-// import { UfAdditionalLanguages } from '../components/UfAdditionalLanguages';
-// import { UfCountriesList } from '../components/UfCountriesList';
-// import { UfLangnames } from '../components/UfLangnames';
-// import { UfLanguages } from '../components/UfLanguages';
-// import { UfLanguagesWithBiblePortions } from '../components/UfLanguagesWithBiblePortions';
-// import { UfLanguagesWithGospelRecording } from '../components/UfLanguagesWithGospelRecording';
-// import { UfLanguagesWithJesusFilm } from '../components/UfLanguagesWithJesusFilm';
-// import { UfLanguagesWithOneStoryBibleStories } from '../components/UfLanguagesWithOneStoryBibleStories';
-// import { UfLanguagesWithOpenBibleStories } from '../components/UfLanguagesWithOpenBibleStories';
-// import { UfLanguagesWithRadioBroadcast } from '../components/UfLanguagesWithRadioBroadcast';
-// import { UfNetworks } from '../components/UfNetworks';
 import { AccountMenu } from '../common/AccountMenu';
 import { Dataset } from '../components/Dataset';
+// import { Discussion } from '../components/discussion/Discussion';
 
 const Tab1: React.FC = () => {
 
@@ -64,8 +34,8 @@ const Tab1: React.FC = () => {
         <IonHeader>
           <IonToolbar>
             <IonTitle>Data Sets</IonTitle>
-              </IonToolbar>
-            </IonHeader>
+          </IonToolbar>
+        </IonHeader>
         <IonContent className="ion-padding">
           <IonList>
             <IonItem href="/tab1/iso-639-3" >
