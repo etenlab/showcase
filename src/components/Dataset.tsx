@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import { useEffect, useState, ReactNode, JSXElementConstructor, ReactElement, ReactFragment } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import { useParams } from 'react-router';
 import { IonContent } from '@ionic/react';
 import Table from '../common/table'
@@ -9,7 +9,6 @@ import { client } from '../common/graphql'
 import { StyledWrap, StyledH3, StyledTable, styles } from '../common/styles';
 import { buildQuery } from '../common/query'
 import { TablesMeta } from '../common/DataTableObjects';
-import { JSX } from '@emotion/react/jsx-runtime';
 
 interface tableFields{
     [key: string]: string[]
@@ -77,10 +76,7 @@ export function Dataset() {
                     query: detailsPanelQuery,
                 }).then((res) => {
                     let html: ReactNode;
-                    // var subDataTables: JSX.Element[];
                     var subDataTables = [];
-                    // console.log(TablesMeta[tName].detailsPanel!.tableNames);
-                    // console.log(tbl);
                     for (var i = 0; i < TablesMeta[tName].detailsPanel!.tableNames!.length; i++) {
                         if(res.data[TablesMeta[tName].detailsPanel!.tableNames![i]].length > 0){
                             let tableData = res.data[TablesMeta[tName].detailsPanel!.tableNames![i]][0];
