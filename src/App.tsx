@@ -18,6 +18,8 @@ import Tab1 from './pages/DataSetsTab';
 import Tab2 from './pages/UtilityTab';
 import Tab3 from './pages/UserTab';
 import LoginPage  from './pages/LoginPage';
+import { Discussion } from './components/discussion';
+import { FileUpload } from './components/fileUpload';
 // import UserPage from './pages/UserPage';
 import ProtectedPage from './pages/ProtectedPage';
 
@@ -63,6 +65,8 @@ const App: React.FC = () => (
             <Tab3 />
           </Route>
           <Route path="/login" component={LoginPage} />
+          <Route path="/discussion/:table_name/:row" component={Discussion} />
+          <Route path="/file-upload" component={FileUpload} />
           <PrivateRoute path="/protected" component={ProtectedPage} />
           <Route exact path="/">
             <Redirect to="/tab1" />

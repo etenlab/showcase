@@ -39,6 +39,7 @@
         "apollo-cache-inmemory": "^1.6.6",
         "apollo-client": "^2.6.10",
         "apollo-link-http": "^1.5.17",
+        "apollo-upload-client": "^17.0.0",
         "axios": "^0.27.2",
         "babel-preset-es2015": "^6.24.1",
         "caniuse-lite": "^1.0.30001397",
