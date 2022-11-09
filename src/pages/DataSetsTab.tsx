@@ -21,7 +21,6 @@ import {
 
 import { AccountMenu } from '../common/AccountMenu';
 import { Dataset } from '../components/Dataset';
-// import { Discussion } from '../components/discussion/Discussion';
 
 const Tab1: React.FC = () => {
 
@@ -150,7 +149,7 @@ const Tab1: React.FC = () => {
         <IonRouterOutlet>
           <Route path="/tab1/:table" component={Dataset}  />
           <Route exact path="/tab1">
-            <Redirect to="/tab1/iso-639-2" />
+            <Redirect to="/tab1/iso-639-3" />
           </Route>
         </IonRouterOutlet>
       </IonContent>

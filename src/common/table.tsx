@@ -27,7 +27,7 @@ class Table extends Component<AppRouterProps, any> {
   handleRowClick(event: any, rowData: any) {
     const tableName = this.props.location.pathname.slice(6);
     const row = +rowData.id;
-    this.props.history.push(`/tab1/discussion/${tableName}/${row}`);
+    this.props.history.push(`/discussion/${tableName}/${row}`);
   }
 
   render() {
