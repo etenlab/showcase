@@ -5,7 +5,7 @@ import { decodeToken, isAutherized } from './LoginUtils'
 // import keycloak  from '../Keycloak'
 
 interface PrivateRouteParams extends RouteProps {
-    roles: any
+    roles?: any
     component:
       | React.ComponentType<RouteComponentProps<any>>
       | React.ComponentType<any>

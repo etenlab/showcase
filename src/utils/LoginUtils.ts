@@ -37,13 +37,18 @@ export function checkTokenValidity(_token: any){
     }
 }
 
-export const isAutherized = (tokenObj:any, roles: any) => {
+export const isAutherized = (tokenObj:any, roles?: any) => {
     if (tokenObj && checkTokenValidity(tokenObj)) {
-        return roles.some((r: any) => {
-            const realm = tokenObj.realm_access.roles.includes(r); // keycloak.hasRealmRole(r);
-            const resource = tokenObj.resource_access.account.roles.includes(r);
-            return realm || resource;
-        });
+        if(roles){
+            return roles.some((r: any) => {
+                const realm = tokenObj.realm_access.roles.includes(r); // keycloak.hasRealmRole(r);
+                const resource = tokenObj.resource_access.account.roles.includes(r);
+                return realm || resource;
+            });
+        }
+        else{
+            return true;
+        }
         // return true;
     }
     return false;
