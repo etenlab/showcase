@@ -41,14 +41,11 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import "./styles.css";
 
-import { PrivateRoute } from './routes/utils'
+import { PrivateRoute } from './utils/PrivateRoute'
 
 setupIonicReact();
 
-
-
 const App: React.FC = () => (
-  
   <IonApp>
     <Router>
       <IonTabs>
@@ -63,7 +60,7 @@ const App: React.FC = () => (
             <Tab3 />
           </Route>
           <Route path="/login" component={LoginPage} />
-          <PrivateRoute path="/protected" component={ProtectedPage} />
+          <PrivateRoute roles={['showcase-user']} path="/protected" component={ProtectedPage} />
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>

@@ -1,6 +1,8 @@
-import { useKeycloak } from '@react-keycloak/web';
+// import { useKeycloak } from '@react-keycloak/web';
 import React from 'react';
 import { Route, Redirect, RouteComponentProps, RouteProps } from 'react-router-dom'
+import { decodeToken, isAutherized } from './LoginUtils'
+// import keycloak  from '../Keycloak'
 
 interface PrivateRouteParams extends RouteProps {
     roles: any
@@ -10,28 +12,21 @@ interface PrivateRouteParams extends RouteProps {
   }
 
 export function PrivateRoute({ component: Component, roles, ...rest }: PrivateRouteParams) {
-    const { keycloak } = useKeycloak()
+    // const { keycloak } = useKeycloak()
+    let authToken = localStorage.getItem("authToken");
+    var tokenObj: any
+    if(authToken){
+        tokenObj  = decodeToken(authToken);
+    }
+    console.log(tokenObj)   
 
-    const isAutherized = (roles: any) => {
-        if (keycloak && roles) {
-            return roles.some((r: any) => {
-                const realm =  keycloak.hasRealmRole(r);
-                const resource = keycloak.hasResourceRole(r);
-                return realm || resource;
-            });
-        }
-        return false;
-       }
-    
-   
-
-   return (
+    return (
       <Route 
         {...rest}
         render={props => {
-            return isAutherized(roles)
+            return isAutherized(tokenObj, roles)
                 ? <Component {...props} />
-                : <Redirect to={{ pathname: '/', }} />
+                : <Redirect to={{ pathname: '/login', }} />
         }}
       />
     )

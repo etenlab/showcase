@@ -13,6 +13,11 @@ export const styles = {
         marginTop: '200px',
         textAlign: 'center'
     }),
+    loginFormWrapper: css({
+      margin: '200px auto',
+      width: '220px',
+      textAlign: 'center'
+    }),
     formButton: css({
         width: '100px',
         fontSize: '16px',

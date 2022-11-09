@@ -1,13 +1,15 @@
-import { useCallback } from 'react'
-import { useKeycloak } from '@react-keycloak/web'
+import { useHistory } from 'react-router-dom'
 
 const ProtectedPage = () => {
  
-    const { keycloak } = useKeycloak()
-
-    const logout = useCallback(() => {
-        keycloak?.logout()
-      }, [keycloak])
+  const history = useHistory();
+    // const logout = useCallback(() => {
+    //     keycloak?.logout()
+    //   }, [keycloak])
+    const logout = () => {
+      localStorage.clear();
+      history.push('/login');
+    };
 
     return (
       <div className="form-wrapper">
