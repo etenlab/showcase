@@ -1,5 +1,3 @@
-
-
 export function decodeToken(str: string) {
     str = str.split('.')[1];
 

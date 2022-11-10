@@ -19,6 +19,9 @@ import Tab2 from './pages/UtilityTab';
 import Tab3 from './pages/UserTab';
 import LoginPage  from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import { Discussion } from './components/discussion';
+import { FileUpload } from './components/fileUpload';
+
 // import UserPage from './pages/UserPage';
 import ProtectedPage from './pages/ProtectedPage';
 
@@ -62,6 +65,8 @@ const App: React.FC = () => (
           </Route>
           <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegisterPage} />
+          <Route path="/discussion/:table_name/:row" component={Discussion} />
+          <Route path="/file-upload" component={FileUpload} />
           <PrivateRoute roles={['showcase-user']} path="/protected" component={ProtectedPage} />
           <Route exact path="/">
             <Redirect to="/tab1" />

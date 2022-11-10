@@ -158,10 +158,14 @@ export function Discussion() {
     <IonContent>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "calc(100vh - 75px)", padding: "60px 20px 0px" }}
+        sx={{ height: "calc(100vh - 75px)", padding: "0px 20px" }}
       >
         <DiscussionHeader>
-          <Stack direction="row" justifyContent="space-between">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <span>Discussion</span>
             <Button
               onClick={() => {

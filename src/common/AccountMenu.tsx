@@ -30,6 +30,7 @@ export function AccountMenu() {
         history.push('/login');
     };
 
+
     const toggleTheme = useCallback(() => {
         setDarkTheme(darkTheme===true?false:true);
     }, [darkTheme])
