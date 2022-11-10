@@ -3,33 +3,39 @@
 import { jsx } from '@emotion/react'
 import { styles } from '../common/styles';
 import { useCallback } from 'react'
-import { useKeycloak } from '@react-keycloak/web'
+import { useHistory } from 'react-router-dom'
 import {
     IonButton,
     IonIcon
 } from '@ionic/react';
 import { moonSharp, moonOutline } from 'ionicons/icons';
 import { useState, useEffect } from 'react';
-
+import { decodeToken, isAutherized } from '../utils/LoginUtils'
 
 export function AccountMenu() {
 
-    const { keycloak } = useKeycloak()
+    const history = useHistory();
     const [ darkTheme,setDarkTheme]=useState<boolean>(false); 
     var darkMode = localStorage.getItem('dark-mode');
     // setDarkTheme(!darkMode);
+    let authToken = localStorage.getItem("authToken");
+    var tokenObj: any
+    if(authToken){
+        tokenObj  = decodeToken(authToken);
+    }
 
-    const login = useCallback(() => {
-        keycloak?.login()
-    }, [keycloak])
+    const logout = () => {
+        localStorage.clear();
+        history.push('/login');
+    };
 
-    const register = useCallback(() => {
-        keycloak?.register()
-    }, [keycloak])
+    const login = () => {
+        history.push('/login');
+    };
 
-    const logout = useCallback(() => {
-        keycloak?.logout()
-    }, [keycloak])
+    const register = () => {
+
+    }
 
     const toggleTheme = useCallback(() => {
         setDarkTheme(!darkTheme);
@@ -37,17 +43,14 @@ export function AccountMenu() {
         localStorage.setItem('dark-mode', String(darkTheme));
     }, [darkTheme])
 
-    // const toggleDarkModeHandler = () => document.body.classList.toggle('dark');
-    // const avatar = keycloak?.
 
-    // console.log(keycloak);
 
     useEffect(() => {
         return setDarkTheme(Boolean(darkMode));
     }, [darkMode]);
 
 
-    if(keycloak?.authenticated){
+    if(isAutherized(tokenObj)){
         return (
             <div css={styles.accountMenuWrapper}>
 

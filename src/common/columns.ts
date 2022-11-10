@@ -1,6 +1,6 @@
 
 
-const Columns = { 
+const Columns = {
 
     Iso6393: [
         {
