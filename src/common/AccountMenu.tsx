@@ -15,9 +15,10 @@ import { decodeToken, isAutherized } from '../utils/LoginUtils'
 export function AccountMenu() {
 
     const history = useHistory();
-    const [ darkTheme,setDarkTheme]=useState<boolean>(false); 
-    var darkMode = localStorage.getItem('dark-mode');
-    // setDarkTheme(!darkMode);
+    var test = localStorage.getItem('dark-mode')
+    var darkMode = JSON.parse(test!);
+    const [ darkTheme, setDarkTheme]=useState<boolean>(darkMode); 
+
     let authToken = localStorage.getItem("authToken");
     var tokenObj: any
     if(authToken){
@@ -29,31 +30,26 @@ export function AccountMenu() {
         history.push('/login');
     };
 
-    const login = () => {
-        history.push('/login');
-    };
-
-    const register = () => {
-
-    }
-
     const toggleTheme = useCallback(() => {
-        setDarkTheme(!darkTheme);
-        document.body.classList.toggle('dark');
-        localStorage.setItem('dark-mode', String(darkTheme));
+        setDarkTheme(darkTheme===true?false:true);
     }, [darkTheme])
 
-
-
     useEffect(() => {
-        return setDarkTheme(Boolean(darkMode));
-    }, [darkMode]);
-
+        localStorage.setItem('dark-mode', JSON.stringify(darkTheme));
+        if(darkTheme){
+            document.body.classList.add('dark');
+        }
+        else{
+            document.body.classList.remove('dark');
+        }
+    }, [darkTheme]);
 
     if(isAutherized(tokenObj)){
         return (
             <div css={styles.accountMenuWrapper}>
-
+                <IonButton onClick={toggleTheme}>
+                    <IonIcon icon={!darkTheme?moonOutline:moonSharp} />
+                </IonButton>
                 <button css={styles.accountButton} type="button" onClick={logout}>Logout</button>
             </div>
         );
@@ -65,12 +61,12 @@ export function AccountMenu() {
                 <IonButton onClick={toggleTheme}>
                     <IonIcon icon={!darkTheme?moonOutline:moonSharp} />
                 </IonButton>
-                <button css={styles.accountButton} type="button" onClick={register} >
+                <a css={styles.accountButton} href="/register" >
                   Register
-                </button>
-                <button css={styles.accountButton} type="button" onClick={login} >
+                </a>
+                <a css={styles.accountButton} href="/login" >
                   Login
-                </button>
+                </a>
             </div>
         );
     }

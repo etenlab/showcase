@@ -18,6 +18,7 @@ import Tab1 from './pages/DataSetsTab';
 import Tab2 from './pages/UtilityTab';
 import Tab3 from './pages/UserTab';
 import LoginPage  from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 // import UserPage from './pages/UserPage';
 import ProtectedPage from './pages/ProtectedPage';
 
@@ -60,6 +61,7 @@ const App: React.FC = () => (
             <Tab3 />
           </Route>
           <Route path="/login" component={LoginPage} />
+          <Route path="/register" component={RegisterPage} />
           <PrivateRoute roles={['showcase-user']} path="/protected" component={ProtectedPage} />
           <Route exact path="/">
             <Redirect to="/tab1" />

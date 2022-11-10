@@ -7,7 +7,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import "./styles.css";
 
-var darkMode = localStorage.getItem('dark-mode');
+var darkMode = JSON.parse(localStorage.getItem('dark-mode')!);
 if(darkMode){
   document.body.classList.toggle('dark');
 }
