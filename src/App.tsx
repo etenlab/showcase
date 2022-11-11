@@ -12,12 +12,14 @@ import {
 // import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from "ionicons/icons";
 
-import Tab1 from "./pages/DataSetsTab";
-import Tab2 from "./pages/UtilityTab";
-import Tab3 from "./pages/UserTab";
-import LoginPage from "./pages/LoginPage";
-import { Discussion } from "./components/discussion";
-import { FileUploadPage } from "./components/fileUpload";
+import Tab1 from './pages/DataSetsTab';
+import Tab2 from './pages/UtilityTab';
+import Tab3 from './pages/UserTab';
+import LoginPage  from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import { Discussion } from './components/discussion';
+import { FileUploadPage } from './components/fileUpload';
+
 // import UserPage from './pages/UserPage';
 import ProtectedPage from "./pages/ProtectedPage";
 
@@ -60,6 +62,7 @@ const App: React.FC = () => (
             <Tab3 />
           </Route>
           <Route path="/login" component={LoginPage} />
+          <Route path="/register" component={RegisterPage} />
           <Route path="/discussion/:table_name/:row" component={Discussion} />
           <Route path="/file-upload" component={FileUploadPage} />
           <PrivateRoute
