@@ -57,7 +57,6 @@ export function AccountMenu() {
     }
     else{
         return (
-            
             <div css={styles.accountMenuWrapper}>
                 <IonButton onClick={toggleTheme}>
                     <IonIcon icon={!darkTheme?moonOutline:moonSharp} />

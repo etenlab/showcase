@@ -43,6 +43,14 @@ export const styles = {
       color: '#000',
       backgroundColor: '#fff',
       margin: '0px 2px'
+    }),
+    errorMessage: css({
+      fontSize: '14px',
+      color: 'red'
+    }),
+    successMessage: css({
+      fontSize: '14px',
+      color: 'green'
     })
 }
 
