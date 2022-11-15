@@ -2,7 +2,11 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 const { createUploadLink } = require("apollo-upload-client");
 
 export const client = new ApolloClient({
-  link: createUploadLink({ uri: "http://localhost:3002/graphql" }),
+  link: createUploadLink({
+    uri:
+      process.env.REACT_APP_FILE_API_SERVER_URL ||
+      "http://localhost:3002/graphql",
+  }),
   cache: new InMemoryCache(),
 
   // Provide some optional constructor fields

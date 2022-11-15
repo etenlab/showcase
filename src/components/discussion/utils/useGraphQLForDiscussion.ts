@@ -34,12 +34,10 @@ import {
   recalcDiscusionWithDeletedReactionId,
 } from "./helpers";
 
-import { DefaultDiscussion } from "./constants";
-
 interface UseGraphQLForDiscussion {
   error: boolean;
   loading: boolean;
-  discussion: IDiscussion;
+  discussion: IDiscussion | null;
   reactQuill: {
     quillText: string;
     setQuillText: Dispatch<SetStateAction<string>>;
@@ -57,7 +55,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
   const [error, setError] = useState<boolean>(false);
   const { table_name, row } = useParams<DiscussionRouteQuizParams>();
 
-  const [discussion, setDiscussion] = useState<IDiscussion>(DefaultDiscussion);
+  const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [quillText, setQuillText] = useState<string>("");
   const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
 
@@ -81,7 +79,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     useSubscription<ReactionDeletedData>(REACTION_DELETED_SUBSCRIPTION, {
       client,
     });
-  const [createDiscussion, { error: createDiscussionError }] = useMutation(
+  const [createDiscussion, { error: createDiscussionError, data: newDiscusionData }] = useMutation(
     CREATE_DISCUSSION,
     { client }
   );
@@ -118,6 +116,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     if (table_name === undefined || row === undefined) {
       setError(true);
     } else {
+      setDiscussion(null);
       getDiscussionsByTableNameAndRow({
         variables: {
           table_name,
@@ -174,12 +173,18 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     if (discussionCreatedData === undefined || discussionCreatedError) {
       return;
     }
-
     const newDiscussion = discussionCreatedData.discussionCreated;
     if (newDiscussion.table_name === table_name && newDiscussion.row === +row) {
+      console.log("setDiscussion by subscription", newDiscussion);
       setDiscussion(newDiscussion);
     }
   }, [discussionCreatedData, discussionCreatedError, table_name, row]);
+
+  useEffect(() => {
+    if (newDiscusionData) {
+      setDiscussion(newDiscusionData.createDiscussion);
+    }
+  }, [newDiscusionData]);
 
   // Sync 'discussion' with 'postCreated' subscription
   useEffect(() => {
@@ -187,8 +192,10 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
       return;
     }
 
-    setDiscussion((discussion) =>
-      recalcDiscusionWithNewPost(discussion, postCreatedData.postCreated)
+    setDiscussion(
+      (discussion) =>
+        discussion &&
+        recalcDiscusionWithNewPost(discussion, postCreatedData.postCreated)
     );
   }, [postCreatedData, postCreatedError]);
 
@@ -198,8 +205,13 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
       return;
     }
 
-    setDiscussion((discussion) =>
-      recalcDiscussionWithDeletedPostId(discussion, postDeletedData.postDeleted)
+    setDiscussion(
+      (discussion) =>
+        discussion &&
+        recalcDiscussionWithDeletedPostId(
+          discussion,
+          postDeletedData.postDeleted
+        )
     );
   }, [postDeletedData, postDeletedError]);
 
@@ -210,8 +222,9 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     }
 
     const newReaction = reactionCreatedData.reactionCreated;
-    setDiscussion((discussion) =>
-      recalcDiscussionWithNewReation(discussion, newReaction)
+    setDiscussion(
+      (discussion) =>
+        discussion && recalcDiscussionWithNewReation(discussion, newReaction)
     );
   }, [reactionCreatedData, reactionCreatedError, setDiscussion]);
 
@@ -222,8 +235,10 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     }
 
     const reactionId = reactionDeletedData.reactionDeleted;
-    setDiscussion((discussion) =>
-      recalcDiscusionWithDeletedReactionId(discussion, reactionId)
+    setDiscussion(
+      (discussion) =>
+        discussion &&
+        recalcDiscusionWithDeletedReactionId(discussion, reactionId)
     );
   }, [reactionDeletedData, reactionDeletedError]);
 
@@ -274,7 +289,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
 
   return {
     error,
-    loading: discussionLoading && discussionCalled,
+    loading: (discussionLoading && discussionCalled) || discussion === null,
     discussion,
     reactQuill: {
       quillText,

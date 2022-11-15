@@ -73,7 +73,7 @@ export function Discussion() {
       createPost({
         variables: {
           post: {
-            discussion_id: discussion.id,
+            discussion_id: discussion!.id,
             plain_text: "",
             postgres_language: "simple",
             quill_text: quillText,
