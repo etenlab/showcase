@@ -15,7 +15,7 @@ export interface IDiscussionDB {
 export interface IPostDB {
   id: number;
   discussion: IDiscussionDB;
-  user_id: string;
+  user_id: number;
   quill_text: string;
   plain_text: string;
   postgres_language: string;
@@ -25,7 +25,7 @@ export interface IPostDB {
 export interface IReactionDB {
   id: number;
   post: IPostDB;
-  user_id: string;
+  user_id: number;
   content: string;
 }
 

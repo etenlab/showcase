@@ -23,12 +23,11 @@ import { ReactQuill } from "src/common/ReactQuill";
 import { EmojiClickData } from "emoji-picker-react";
 import { EmojiPicker } from "src/common/EmojiPicker";
 
-import { UESERID } from "./utils/constants";
-
 import type { IPost, EmojiPopoverState, SnackbarState } from "./utils/types";
 
 import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
 import { Post } from "./Post";
+import { MockLoginForm } from "./MockLoginForm";
 
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
@@ -52,6 +51,7 @@ export function Discussion() {
     message: "This is a success message!",
     severity: "success",
   });
+  const [mockUserId, setMockUserId] = useState<number | null>(null);
   const discussionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export function Discussion() {
   };
 
   const handleKeyEvent = async (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey && mockUserId) {
       createPost({
         variables: {
           post: {
@@ -77,7 +77,7 @@ export function Discussion() {
             plain_text: "",
             postgres_language: "simple",
             quill_text: quillText,
-            user_id: UESERID,
+            user_id: mockUserId,
           },
         },
       });
@@ -97,7 +97,7 @@ export function Discussion() {
   const handleAddReaction = useCallback(
     async (
       post_id: number,
-      user_id: string,
+      user_id: number,
       content: string
     ): Promise<void> => {
       createReaction({
@@ -144,12 +144,12 @@ export function Discussion() {
 
   const handleEmojiClick = useCallback(
     (emojiData: EmojiClickData) => {
-      if (popoverState) {
+      if (popoverState && mockUserId) {
         handleCloseEmojiPicker();
-        handleAddReaction(popoverState.postId, UESERID, emojiData.unified);
+        handleAddReaction(popoverState.postId, mockUserId, emojiData.unified);
       }
     },
-    [popoverState, handleCloseEmojiPicker, handleAddReaction]
+    [popoverState, handleCloseEmojiPicker, handleAddReaction, mockUserId]
   );
 
   const openEmojiPicker = Boolean(popoverState?.anchorEl);
@@ -176,6 +176,11 @@ export function Discussion() {
             </Button>
           </Stack>
         </DiscussionHeader>
+
+        <MockLoginForm 
+          mockUserId={mockUserId}
+          setMockUserId={(userId: number) => setMockUserId(userId) }
+        />
 
         <DiscussionContainer ref={discussionRef}>
           {discussion?.posts?.map((post: IPost) => (

@@ -56,6 +56,19 @@ export const CREATE_DISCUSSION = gql`
       org
       table_name
       row
+      posts {
+        id
+        user_id
+        plain_text
+        quill_text
+        postgres_language
+        created_at
+        reactions {
+          id
+          user_id
+          content
+        }
+      }
     }
   }
 `;
@@ -250,5 +263,13 @@ export const DELETE_REACTION = gql`
 export const REACTION_DELETED_SUBSCRIPTION = gql`
   subscription OnReactionDeleted {
     reactionDeleted
+  }
+`;
+
+export const CREATE_USER = gql`
+  mutation CreateUser($email: String!) {
+    createUser(email: $email) {
+      user_id
+    }
   }
 `;
