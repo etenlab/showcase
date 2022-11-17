@@ -1,0 +1,1 @@
+export { NotifiRow } from "./NotificationRow";

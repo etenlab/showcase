@@ -29,6 +29,8 @@ import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
 import { Post } from "./Post";
 import { MockLoginForm } from "./MockLoginForm";
 
+import { Notification } from 'src/components/notification';
+
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
  * The responsibility is to control Discussion Page and interact with server such as fetching, saving, deleting discussion data.
@@ -167,19 +169,22 @@ export function Discussion() {
             alignItems="center"
           >
             <span>Discussion</span>
-            <Button
-              onClick={() => {
-                history.goBack();
-              }}
-            >
-              Go Back
-            </Button>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Notification />
+              <Button
+                onClick={() => {
+                  history.goBack();
+                }}
+              >
+                Go Back
+              </Button>
+            </Stack>
           </Stack>
         </DiscussionHeader>
 
-        <MockLoginForm 
+        <MockLoginForm
           mockUserId={mockUserId}
-          setMockUserId={(userId: number) => setMockUserId(userId) }
+          setMockUserId={(userId: number) => setMockUserId(userId)}
         />
 
         <DiscussionContainer ref={discussionRef}>
