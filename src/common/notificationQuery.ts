@@ -16,15 +16,7 @@ export const GET_NOTIFICATIONS = gql`
 
 export const SET_ACKNOWLEDGED_NOTIFICATION = gql`
   mutation SetAcknowledgedNotification($id: Int!) {
-    acknowledgedNotification(id: $id) {
-      id
-      user_id
-      table_name
-      row
-      acknowledged
-      content
-      created_at
-    }
+    acknowledgedNotification(id: $id)
   }
 `;
 
@@ -37,5 +29,19 @@ export const DELETE_NOTIFICATION = gql`
 export const DELETE_NOTIFICATION_BY_USERID = gql`
   mutation DeleteNotificationsByUserId($userId: Int!) {
     deleteNotificationsByUserId(userId: $userId)
+  }
+`;
+
+export const NOTIFICATION_ADDED_SUBSCRIPTION = gql`
+  subscription OnNotificationAdded($userId: Int!) {
+    notificationAdded(userId: $userId) {
+      id
+      user_id
+      table_name
+      row
+      acknowledged
+      content
+      created_at
+    }
   }
 `;
