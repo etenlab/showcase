@@ -7,7 +7,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:44:46.330Z"),
   },
   {
@@ -16,7 +16,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:45:03.265Z"),
   },
   {
@@ -25,7 +25,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:45:03.265Z"),
   },
   {
@@ -34,7 +34,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:48:24.869Z"),
   },
   {
@@ -43,7 +43,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:48:24.869Z"),
   },
   {
@@ -52,7 +52,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:48:44.935Z"),
   },
   {
@@ -60,8 +60,8 @@ export const mockNotifications: INotification[] = [
     user_id: 105,
     table_name: "example",
     row: 1,
-    acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    acknowledged: true,
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:48:44.935Z"),
   },
   {
@@ -70,7 +70,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:49:03.314Z"),
   },
   {
@@ -78,8 +78,8 @@ export const mockNotifications: INotification[] = [
     user_id: 105,
     table_name: "example",
     row: 1,
-    acknowledged: false,
-    content: '{"type":"POST","operation":"INSERT","summary":""}',
+    acknowledged: true,
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:49:03.314Z"),
   },
   {
@@ -88,7 +88,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"POST","operation":"DELETE","summary":""}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:49:15.373Z"),
   },
   {
@@ -96,8 +96,8 @@ export const mockNotifications: INotification[] = [
     user_id: 105,
     table_name: "example",
     row: 1,
-    acknowledged: false,
-    content: '{"type":"REACTION","operation":"INSERT","summary":"1f643"}',
+    acknowledged: true,
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:50:37.471Z"),
   },
   {
@@ -106,7 +106,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"REACTION","operation":"INSERT","summary":"1f604"}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:51:10.289Z"),
   },
   {
@@ -115,7 +115,7 @@ export const mockNotifications: INotification[] = [
     table_name: "example",
     row: 1,
     acknowledged: false,
-    content: '{"type":"REACTION","operation":"INSERT","summary":"1f976"}',
+    content: '{"type":"POST","operation":"INSERT","operator":"106","summary":"This is sample post"}',
     created_at: new Date("2022-11-17T21:51:17.370Z"),
   },
 ];

@@ -1,15 +1,21 @@
+import { Link } from "react-router-dom";
 import {
   ListItem,
   ListItemButton,
   ListItemText,
   Divider,
-  Typography,
+  IconButton,
 } from "@mui/material";
 
+import CloseIcon from "@mui/icons-material/Close";
+
+import { DotDiv } from "./styled";
 import { INotification } from "../utils/types";
 
 type NotifiRowProps = {
   notification: INotification;
+  setAcknowledged(): void;
+  deleteNotification(): void;
 };
 
 function transformOperation(operation: string): string {
@@ -30,36 +36,71 @@ function transformType(notifyType: string): string {
   return mapTy[notifyType];
 }
 
-export function NotifiRow({ notification }: NotifiRowProps) {
-  const { user_id, content } =
-    notification;
-  const { type: notifyType, operation, summary } = JSON.parse(content);
+export function NotifiRow({
+  notification,
+  setAcknowledged,
+  deleteNotification,
+}: NotifiRowProps) {
+  const { content, created_at, acknowledged, table_name, row } = notification;
+  const {
+    type: notifyType,
+    operation,
+    summary,
+    operator,
+  } = JSON.parse(content);
+
+  const notifiHeader = (
+    <>
+      {`${operator ? operator + " " : ""}${transformOperation(
+        operation
+      )} ${transformType(notifyType)} - `}
+      <small>{created_at.toDateString()}</small>
+    </>
+  );
+
+  const sxObj = acknowledged ? { p: 1, paddingLeft: "32px" } : {};
+  const listItemText = (
+    <ListItemText
+      sx={sxObj}
+      primary={notifiHeader}
+      secondary={
+        <>
+          {summary}{" "}
+          <Link to={`/discussion/${table_name}/${row}`}>
+            <small>Go to...</small>
+          </Link>
+        </>
+      }
+    />
+  );
 
   return (
-    <>
+    <div
+      style={{
+        position: "relative",
+        background: acknowledged ? "inherit" : "rgb(198 255 221 / 25%)",
+      }}
+    >
       <ListItem alignItems="flex-start" disablePadding>
-        <ListItemButton>
-          <ListItemText
-            primary={`${transformType(notifyType)} ${transformOperation(
-              operation
-            )}`}
-            secondary={
-              <>
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  {user_id}
-                </Typography>
-                {`- ${summary}`}
-              </>
-            }
-          />
-        </ListItemButton>
+        {acknowledged ? (
+          listItemText
+        ) : (
+          <ListItemButton
+            sx={{ paddingLeft: "32px" }}
+            onClick={setAcknowledged}
+          >
+            {listItemText}
+          </ListItemButton>
+        )}
       </ListItem>
+      <IconButton
+        sx={{ position: "absolute", bottom: "16px", right: "16px" }}
+        onClick={deleteNotification}
+      >
+        <CloseIcon sx={{ fontSize: "1rem" }}  />
+      </IconButton>
+      {!acknowledged && <DotDiv />}
       <Divider />
-    </>
+    </div>
   );
 }

@@ -5,9 +5,15 @@ import { NotifiRow } from "../NotificationRow";
 
 type NotifiListProps = {
   notifications: INotification[];
+  setAcknowledged(id: number): void;
+  deleteNotification(id: number): void;
 };
 
-export function NotifiList({ notifications }: NotifiListProps) {
+export function NotifiList({
+  notifications,
+  setAcknowledged,
+  deleteNotification,
+}: NotifiListProps) {
   return (
     <List
       sx={{
@@ -17,7 +23,16 @@ export function NotifiList({ notifications }: NotifiListProps) {
       }}
     >
       {notifications.map((notifi) => (
-        <NotifiRow key={notifi.id} notification={notifi} />
+        <NotifiRow
+          key={notifi.id}
+          notification={notifi}
+          setAcknowledged={() => {
+            setAcknowledged(notifi.id);
+          }}
+          deleteNotification={() => {
+            deleteNotification(notifi.id);
+          }}
+        />
       ))}
     </List>
   );
