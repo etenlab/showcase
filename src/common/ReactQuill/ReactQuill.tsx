@@ -5,7 +5,7 @@ import ReactQuill from "react-quill";
 type ReactQuillProps = {
   value: string;
   onKeyUp(event: any): void;
-  onChange(text: string): void;
+  onChange(quill: string, plain: string): void;
 }
 
 export function CustomReactQuill({value, onKeyUp, onChange}: ReactQuillProps) {
@@ -22,7 +22,12 @@ export function CustomReactQuill({value, onKeyUp, onChange}: ReactQuillProps) {
         }
       });
     }
-  }, [])
+  }, []);
+
+  const handleChange = (value: string, delta: any, source: any, editor: any) => {
+    const text = editor.getText(value);
+    onChange(value, text);
+  }
 
   return (
     <ReactQuill
@@ -30,7 +35,7 @@ export function CustomReactQuill({value, onKeyUp, onChange}: ReactQuillProps) {
       theme="snow"
       value={value}
       onKeyUp={onKeyUp}
-      onChange={onChange}
+      onChange={handleChange}
     />
   );
 }

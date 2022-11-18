@@ -29,7 +29,7 @@ import { useGraphQLForDiscussion } from "./utils/useGraphQLForDiscussion";
 import { Post } from "./Post";
 import { MockLoginForm } from "./MockLoginForm";
 
-import { Notification } from 'src/components/notification';
+import { Notification } from "src/components/notification";
 
 /**
  * This component will mount once users route to '/tab1/discussion/:table_name/:row'.
@@ -41,7 +41,13 @@ export function Discussion() {
     error,
     loading,
     discussion,
-    reactQuill: { quillText, setQuillText, setPrevQuillText },
+    reactQuill: {
+      quillText,
+      setQuillText,
+      quillPlain,
+      setQuillPlain,
+      setPrevQuillText,
+    },
     graphQLAPIs: { createPost, deletePost, createReaction, deleteReaction },
   } = useGraphQLForDiscussion();
   const [popoverState, setPopoverState] = useState<EmojiPopoverState>({
@@ -66,8 +72,9 @@ export function Discussion() {
     }
   }, [error]);
 
-  const handleQuillChange = (text: string) => {
-    setQuillText(text);
+  const handleQuillChange = (quill: string, plain: string) => {
+    setQuillText(quill);
+    setQuillPlain(plain);
   };
 
   const handleKeyEvent = async (event: KeyboardEvent<HTMLElement>) => {
@@ -76,7 +83,7 @@ export function Discussion() {
         variables: {
           post: {
             discussion_id: discussion!.id,
-            plain_text: "",
+            plain_text: quillPlain,
             postgres_language: "simple",
             quill_text: quillText,
             user_id: mockUserId,
@@ -170,7 +177,7 @@ export function Discussion() {
           >
             <span>Discussion</span>
             <Stack direction="row" alignItems="center" spacing={2}>
-              <Notification />
+              {mockUserId && <Notification userId={mockUserId} />}
               <Button
                 onClick={() => {
                   history.goBack();

@@ -9,6 +9,8 @@ import {
 
 import CloseIcon from "@mui/icons-material/Close";
 
+import { Emoji, EmojiStyle } from "emoji-picker-react";
+
 import { DotDiv } from "./styled";
 import { INotification } from "../utils/types";
 
@@ -54,7 +56,7 @@ export function NotifiRow({
       {`${operator ? operator + " " : ""}${transformOperation(
         operation
       )} ${transformType(notifyType)} - `}
-      <small>{created_at.toDateString()}</small>
+      <small>{new Date(created_at).toDateString()}</small>
     </>
   );
 
@@ -65,7 +67,15 @@ export function NotifiRow({
       primary={notifiHeader}
       secondary={
         <>
-          {summary}{" "}
+          {notifyType !== "REACTION" ? (
+            summary.length > 60 ? (
+              `${summary.substring(0, 60)}...`
+            ) : (
+              summary
+            )
+          ) : (
+            <Emoji unified={summary} emojiStyle={EmojiStyle.APPLE} size={17} />
+          )}
           <Link to={`/discussion/${table_name}/${row}`}>
             <small>Go to...</small>
           </Link>
@@ -97,7 +107,7 @@ export function NotifiRow({
         sx={{ position: "absolute", bottom: "16px", right: "16px" }}
         onClick={deleteNotification}
       >
-        <CloseIcon sx={{ fontSize: "1rem" }}  />
+        <CloseIcon sx={{ fontSize: "1rem" }} />
       </IconButton>
       {!acknowledged && <DotDiv />}
       <Divider />

@@ -4,12 +4,17 @@ import { Popover } from "@mui/material";
 
 import { NotifiButton } from "./NotificationButton";
 import { NotifiList } from "./NotificationList";
-import { mockNotifications } from "./utils/contants";
-import { INotification } from "./utils/types";
+import { useGraphQLForNotification } from "./utils/useGraphQLForNotification";
 
-export function Notification() {
-  const [notifications, setNotifications] =
-    useState<INotification[]>(mockNotifications);
+type NotificationProps = {
+  userId: number;
+}
+
+export function Notification({ userId }: NotificationProps) {
+  const {
+    notifications,
+    graphQLAPIs: { deleteNotification, setAcknowledged },
+  } = useGraphQLForNotification(userId);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleSetAnchorEl = (elem: HTMLButtonElement) => {
@@ -21,26 +26,33 @@ export function Notification() {
   };
 
   const handleSetAcknowledged = (id: number) => {
-    setNotifications((notifications) =>
-      notifications.map((notifi) => ({
-        ...notifi,
-        acknowledged: notifi.id === id ? true : notifi.acknowledged,
-      }))
-    );
+    setAcknowledged({
+      variables: {
+        id,
+      },
+    });
   };
 
   const handleDeleteNotification = (id: number) => {
-    setNotifications((notifications) =>
-      notifications.filter((notifi) => notifi.id !== id)
-    );
+    deleteNotification({
+      variables: {
+        id,
+      },
+    });
   };
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+  const unreadedNotifis = notifications.filter(
+    (notifi) => !notifi.acknowledged
+  ).length;
 
   return (
     <>
-      <NotifiButton unreadNotifis={5} setAnchorEl={handleSetAnchorEl} />
+      <NotifiButton
+        unreadNotifis={unreadedNotifis}
+        setAnchorEl={handleSetAnchorEl}
+      />
       <Popover
         id={id}
         open={open}

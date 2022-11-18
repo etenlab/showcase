@@ -41,6 +41,8 @@ interface UseGraphQLForDiscussion {
   reactQuill: {
     quillText: string;
     setQuillText: Dispatch<SetStateAction<string>>;
+    quillPlain: string;
+    setQuillPlain: Dispatch<SetStateAction<string>>;
     setPrevQuillText: Dispatch<SetStateAction<string | null>>;
   };
   graphQLAPIs: {
@@ -57,6 +59,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
 
   const [discussion, setDiscussion] = useState<IDiscussion | null>(null);
   const [quillText, setQuillText] = useState<string>("");
+  const [quillPlain, setQuillPlain] = useState<string>("");
   const [prevQuillText, setPrevQuillText] = useState<string | null>(null);
 
   const { data: discussionCreatedData, error: discussionCreatedError } =
@@ -294,6 +297,8 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     reactQuill: {
       quillText,
       setQuillText,
+      quillPlain,
+      setQuillPlain,
       setPrevQuillText,
     },
     graphQLAPIs: {
