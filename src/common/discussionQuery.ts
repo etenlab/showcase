@@ -150,8 +150,8 @@ export const CREATE_POST = gql`
 `;
 
 export const POST_CREATED_SUBSCRIPTION = gql`
-  subscription OnPostCreated {
-    postCreated {
+  subscription OnPostCreated($discussionId: Int!) {
+    postCreated(discussionId: $discussionId) {
       id
       discussion {
         id

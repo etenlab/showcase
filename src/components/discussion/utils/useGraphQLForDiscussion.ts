@@ -68,6 +68,9 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     });
   const { data: postCreatedData, error: postCreatedError } =
     useSubscription<PostCreatedData>(POST_CREATED_SUBSCRIPTION, {
+      variables: {
+        discussionId: (discussion) ? discussion.id : -1
+      },
       client,
     });
   const { data: postDeletedData, error: postDeletedError } =
@@ -178,7 +181,6 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     }
     const newDiscussion = discussionCreatedData.discussionCreated;
     if (newDiscussion.table_name === table_name && newDiscussion.row === +row) {
-      console.log("setDiscussion by subscription", newDiscussion);
       setDiscussion(newDiscussion);
     }
   }, [discussionCreatedData, discussionCreatedError, table_name, row]);
@@ -225,6 +227,7 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     }
 
     const newReaction = reactionCreatedData.reactionCreated;
+    console.log('newReaciton', newReaction);
     setDiscussion(
       (discussion) =>
         discussion && recalcDiscussionWithNewReation(discussion, newReaction)
