@@ -171,8 +171,8 @@ export const POST_CREATED_SUBSCRIPTION = gql`
 `;
 
 export const DELETE_POST = gql`
-  mutation DeletePost($id: Int!) {
-    deletePost(id: $id)
+  mutation DeletePost($id: Int!, $userId: Int!) {
+    deletePost(id: $id, userId: $userId)
   }
 `;
 
@@ -255,8 +255,8 @@ export const REACTION_CREATED_SUBSCRIPTION = gql`
 `;
 
 export const DELETE_REACTION = gql`
-  mutation DeleteReaction($id: Int!) {
-    deleteReaction(id: $id)
+  mutation DeleteReaction($id: Int!, $userId: Int!) {
+    deleteReaction(id: $id, userId: $userId)
   }
 `;
 

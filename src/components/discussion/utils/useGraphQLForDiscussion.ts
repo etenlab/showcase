@@ -227,7 +227,6 @@ export function useGraphQLForDiscussion(): UseGraphQLForDiscussion {
     }
 
     const newReaction = reactionCreatedData.reactionCreated;
-    console.log('newReaciton', newReaction);
     setDiscussion(
       (discussion) =>
         discussion && recalcDiscussionWithNewReation(discussion, newReaction)

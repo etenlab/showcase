@@ -96,9 +96,14 @@ export function Discussion() {
   };
 
   const handleDeletePost = async (post_id: number): Promise<void> => {
+    if (!mockUserId) {
+      return;
+    }
+
     deletePost({
       variables: {
         id: post_id,
+        userId: mockUserId
       },
     });
   };
@@ -123,9 +128,14 @@ export function Discussion() {
   );
 
   const handleDeleteReaction = async (reaction_id: number): Promise<void> => {
+    if (!mockUserId) {
+      return;
+    }
+    
     deleteReaction({
       variables: {
         id: reaction_id,
+        userId: mockUserId,
       },
     });
   };
