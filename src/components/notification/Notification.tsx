@@ -8,12 +8,17 @@ import { useGraphQLForNotification } from "./utils/useGraphQLForNotification";
 
 type NotificationProps = {
   userId: number;
-}
+};
 
 export function Notification({ userId }: NotificationProps) {
   const {
     notifications,
-    graphQLAPIs: { deleteNotification, setAcknowledged },
+    graphQLAPIs: {
+      deleteNotification,
+      setAcknowledged,
+      deleteNotificationsAll,
+      setAcknowledgedsAll,
+    },
   } = useGraphQLForNotification(userId);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -37,6 +42,30 @@ export function Notification({ userId }: NotificationProps) {
     deleteNotification({
       variables: {
         id,
+      },
+    });
+  };
+
+  const handleSetAcknowledgedAll = () => {
+    if (!userId) {
+      return;
+    }
+
+    setAcknowledgedsAll({
+      variables: {
+        userId,
+      },
+    });
+  };
+
+  const handleDeleteNotificationsAll = () => {
+    if (!userId) {
+      return;
+    }
+
+    deleteNotificationsAll({
+      variables: {
+        userId,
       },
     });
   };
@@ -71,6 +100,8 @@ export function Notification({ userId }: NotificationProps) {
           notifications={notifications}
           setAcknowledged={handleSetAcknowledged}
           deleteNotification={handleDeleteNotification}
+          setAcknowledgedsAll={handleSetAcknowledgedAll}
+          deleteNotificationsAll={handleDeleteNotificationsAll}
         />
       </Popover>
     </>

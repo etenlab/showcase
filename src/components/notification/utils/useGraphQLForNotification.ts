@@ -7,6 +7,8 @@ import {
   SET_ACKNOWLEDGED_NOTIFICATION,
   DELETE_NOTIFICATION,
   NOTIFICATION_ADDED_SUBSCRIPTION,
+  DELETE_NOTIFICATIONS_BY_USERID,
+  SET_ACKNOWLEDGED_NOTIFICATIONS_BY_USERID,
 } from "src/common/notificationQuery";
 
 import type { INotification } from "./types";
@@ -16,6 +18,8 @@ interface UseGraphQLForDiscussion {
   graphQLAPIs: {
     setAcknowledged: any;
     deleteNotification: any;
+    setAcknowledgedsAll: any;
+    deleteNotificationsAll: any;
   };
 }
 
@@ -39,6 +43,16 @@ export function useGraphQLForNotification(
   );
   const [setAcknowledged, { data: acknowledgedNotification }] = useMutation(
     SET_ACKNOWLEDGED_NOTIFICATION,
+    {
+      client,
+    }
+  );
+  const [deleteNotificationsAll, { data: deletedAll }] = useMutation(
+    DELETE_NOTIFICATIONS_BY_USERID,
+    { client }
+  );
+  const [setAcknowledgedsAll, { data: acknowledgedAll }] = useMutation(
+    SET_ACKNOWLEDGED_NOTIFICATIONS_BY_USERID,
     {
       client,
     }
@@ -76,23 +90,41 @@ export function useGraphQLForNotification(
   }, [deletedNotification]);
 
   useEffect(() => {
+    if (deletedAll?.deleteNotificationsByUserId) {
+      setNotifications([]);
+    }
+  }, [deletedAll]);
+
+  useEffect(() => {
     if (acknowledgedNotification) {
       const notifyId = acknowledgedNotification.acknowledgedNotification;
       setNotifications((notifications) =>
         notifications.map((notify) => ({
           ...notify,
-          acknowledged:
-          notifyId === notify.id ? true : notify.acknowledged,
+          acknowledged: notifyId === notify.id ? true : notify.acknowledged,
         }))
       );
     }
   }, [acknowledgedNotification]);
+
+  useEffect(() => {
+    if (acknowledgedAll?.setAcknowledgedNotificationsByUserId === true) {
+      setNotifications((notifications) =>
+        notifications.map((notify) => ({
+          ...notify,
+          acknowledged: true,
+        }))
+      );
+    }
+  }, [acknowledgedAll]);
 
   return {
     notifications,
     graphQLAPIs: {
       deleteNotification,
       setAcknowledged,
+      deleteNotificationsAll,
+      setAcknowledgedsAll,
     },
   };
 }

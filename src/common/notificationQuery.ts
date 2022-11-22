@@ -20,9 +20,21 @@ export const SET_ACKNOWLEDGED_NOTIFICATION = gql`
   }
 `;
 
+export const SET_ACKNOWLEDGED_NOTIFICATIONS_BY_USERID = gql`
+  mutation SetAcknowledgedNotificationsByUserId($userId: Int!) {
+    setAcknowledgedNotificationsByUserId(userId: $userId)
+  }
+`;
+
 export const DELETE_NOTIFICATION = gql`
   mutation DeleteNotification($id: Int!) {
     deleteNotification(id: $id)
+  }
+`;
+
+export const DELETE_NOTIFICATIONS_BY_USERID = gql`
+  mutation DeleteNotificationsByUserId($userId: Int!) {
+    deleteNotificationsByUserId(userId: $userId)
   }
 `;
 
