@@ -17,8 +17,7 @@ import Tab2 from "./pages/UtilityTab";
 import Tab3 from "./pages/UserTab";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-// import { Discussion } from './components/discussion';
-import { DiscussionPage } from "./components/Discussion2";
+import { DiscussionPage } from "./components/Discussion";
 import { FileUploadPage } from "./components/fileUpload";
 
 // import UserPage from './pages/UserPage';
