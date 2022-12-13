@@ -1,4 +1,4 @@
-import { BrowserRouter as Router,  Redirect, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -7,12 +7,10 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
-  setupIonicReact
+  setupIonicReact,
 } from '@ionic/react';
 // import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
-
-
 
 import Tab1 from './DataSetsTab';
 import Tab2 from './UtilityTab';
@@ -43,7 +41,6 @@ import '../theme/variables.css';
 setupIonicReact();
 
 const HomePage: React.FC = () => (
-  
   <IonApp>
     <Router>
       <IonTabs>

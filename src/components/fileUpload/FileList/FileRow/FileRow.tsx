@@ -1,20 +1,20 @@
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
-import { FileData } from "../../utils/types";
+import { FileData } from '../../utils/types';
 import {
   IconButton,
   ListItem,
   ListItemButton,
   ListItemText,
-} from "@mui/material";
-import { FileRowIdSx, FileRowNameSx, FileRowUrlSx } from "../../utils/sxObj";
+} from '@mui/material';
+import { FileRowIdSx, FileRowNameSx, FileRowUrlSx } from '../../utils/sxObj';
 
 type FileRowProps = {
   file: FileData;
 };
 export function FileRow({ file }: FileRowProps) {
   const handleDownload = () => {
-    let hiddenElement = document.createElement("a");
+    let hiddenElement = document.createElement('a');
     hiddenElement.href = encodeURI(file.url);
     hiddenElement.download = file.filename;
     hiddenElement.click();

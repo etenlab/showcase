@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useDropzone } from "react-dropzone";
-import { FileUploaderContainer } from "./styled";
+import { useEffect } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { FileUploaderContainer } from './styled';
 
 type FileUploaderProps = {
   onChangeFile(file: File): void;

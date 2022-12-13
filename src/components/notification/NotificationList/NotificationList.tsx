@@ -1,10 +1,10 @@
-import { List, ListSubheader, Stack, Button } from "@mui/material";
+import { List, ListSubheader, Stack, Button } from '@mui/material';
 
-import CheckIcon from "@mui/icons-material/Check";
+import CheckIcon from '@mui/icons-material/Check';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
-import { INotification } from "../utils/types";
-import { NotifiRow } from "../NotificationRow";
+import { INotification } from '../utils/types';
+import { NotifiRow } from '../NotificationRow';
 
 type NotifiListProps = {
   notifications: INotification[];
@@ -19,22 +19,25 @@ export function NotifiList({
   setAcknowledged,
   deleteNotification,
   setAcknowledgedsAll,
-  deleteNotificationsAll
+  deleteNotificationsAll,
 }: NotifiListProps) {
   return (
     <List
       sx={{
-        width: "360px",
-        maxHeight: "calc(100vh - 150px)",
-        bgcolor: "background.paper",
+        width: '360px',
+        maxHeight: 'calc(100vh - 150px)',
+        bgcolor: 'background.paper',
       }}
     >
-      <ListSubheader sx={{ background: "#e2e2e2" }}>
+      <ListSubheader sx={{ background: '#e2e2e2' }}>
         <Stack direction="row" justifyContent="space-between">
           <Button startIcon={<CheckIcon />} onClick={setAcknowledgedsAll}>
             Check All
           </Button>
-          <Button startIcon={<ClearOutlinedIcon />} onClick={deleteNotificationsAll}>
+          <Button
+            startIcon={<ClearOutlinedIcon />}
+            onClick={deleteNotificationsAll}
+          >
             Remove All
           </Button>
         </Stack>

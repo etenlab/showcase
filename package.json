@@ -34,6 +34,8 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-table": "^7.7.12",
+    "ag-grid-community": "^28.2.1",
+    "ag-grid-react": "^28.2.1",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
@@ -79,7 +81,9 @@
     "test": "react-app-rewired test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.yml",
-    "generate": "graphql-codegen --config codegen.js"
+    "generate": "graphql-codegen --config codegen.js",
+    "format": "prettier --write \"src/**/*.{js,ts,json,jsx,tsx}\"",
+    "check-format": "prettier --check \"src/**/*.{js,ts,json,jsx,tsx}\""
   },
   "eslintConfig": {
     "extends": [
@@ -117,6 +121,7 @@
     "apollo": "^2.34.0",
     "babel-plugin-direct-import": "^1.0.0",
     "customize-cra": "^1.0.0",
+    "prettier": "^2.8.1",
     "react-app-rewired": "^2.2.1",
     "source-map-explorer": "^2.5.3"
   },

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { Popover } from "@mui/material";
+import { Popover } from '@mui/material';
 
-import { NotifiButton } from "./NotificationButton";
-import { NotifiList } from "./NotificationList";
-import { useGraphQLForNotification } from "./utils/useGraphQLForNotification";
+import { NotifiButton } from './NotificationButton';
+import { NotifiList } from './NotificationList';
+import { useGraphQLForNotification } from './utils/useGraphQLForNotification';
 
 type NotificationProps = {
   userId: number;
@@ -71,7 +71,7 @@ export function Notification({ userId }: NotificationProps) {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const id = open ? 'simple-popover' : undefined;
   const unreadedNotifis = notifications.filter(
     (notifi) => !notifi.acknowledged
   ).length;
@@ -88,12 +88,12 @@ export function Notification({ userId }: NotificationProps) {
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right',
         }}
       >
         <NotifiList

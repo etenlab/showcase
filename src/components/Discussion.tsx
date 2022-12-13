@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router";
-import { useParams } from "react-router";
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import { useParams } from 'react-router';
 
-import { IonContent } from "@ionic/react";
+import { IonContent } from '@ionic/react';
 
-import { Stack, Button } from "@mui/material";
+import { Stack, Button } from '@mui/material';
 
-import { Notification } from "src/components/notification";
+import { Notification } from 'src/components/notification';
 
 import {
   Discussion,
   DiscussionHeader,
   MockLoginForm,
   DiscussionRouteQuizParams,
-} from "@eten-lab/discussion-box";
+} from '@eten-lab/discussion-box';
 
 function existsAll(
   userId: number | null,
@@ -37,13 +37,13 @@ export function DiscussionPage() {
   const [mockUserId, setMockUserId] = useState<number | null>(null);
 
   const tableName = table_name || null;
-  const rowId = (row && row.length > 0) ? +row : null;
+  const rowId = row && row.length > 0 ? +row : null;
 
   return (
     <IonContent>
       <Stack
         justifyContent="space-between"
-        sx={{ height: "calc(100vh - 75px)", padding: "0px 20px" }}
+        sx={{ height: 'calc(100vh - 75px)', padding: '0px 20px' }}
       >
         <DiscussionHeader>
           <Stack
@@ -71,7 +71,11 @@ export function DiscussionPage() {
         />
 
         {existsAll(mockUserId, tableName, rowId) && (
-          <Discussion userId={mockUserId!} tableName={tableName!} rowId={rowId!} />
+          <Discussion
+            userId={mockUserId!}
+            tableName={tableName!}
+            rowId={rowId!}
+          />
         )}
       </Stack>
     </IonContent>

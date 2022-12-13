@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useSubscription, useMutation, useQuery } from "@apollo/client";
+import { useEffect, useState } from 'react';
+import { useSubscription, useMutation, useQuery } from '@apollo/client';
 
-import { client } from "src/common/notificationGrapql";
+import { client } from 'src/common/notificationGrapql';
 import {
   GET_NOTIFICATIONS,
   SET_ACKNOWLEDGED_NOTIFICATION,
@@ -9,9 +9,9 @@ import {
   NOTIFICATION_ADDED_SUBSCRIPTION,
   DELETE_NOTIFICATIONS_BY_USERID,
   SET_ACKNOWLEDGED_NOTIFICATIONS_BY_USERID,
-} from "src/common/notificationQuery";
+} from 'src/common/notificationQuery';
 
-import type { INotification } from "./types";
+import type { INotification } from './types';
 
 interface UseGraphQLForDiscussion {
   notifications: INotification[] | [];
@@ -61,7 +61,7 @@ export function useGraphQLForNotification(
     variables: {
       userId,
     },
-    fetchPolicy: "no-cache",
+    fetchPolicy: 'no-cache',
     client,
   });
 

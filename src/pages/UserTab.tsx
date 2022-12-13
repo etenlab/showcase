@@ -1,4 +1,11 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons } from '@ionic/react';
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+} from '@ionic/react';
 import { AccountMenu } from '../common/AccountMenu';
 // import ExploreContainer from '../components/ExploreContainer';
 
@@ -13,9 +20,7 @@ const Tab3: React.FC = () => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-
-      </IonContent>
+      <IonContent fullscreen></IonContent>
     </IonPage>
   );
 };

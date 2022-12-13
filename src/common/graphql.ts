@@ -8,7 +8,7 @@ var link = new HttpLink({
   uri: 'http://localhost:8081/v1/graphql',
 });
 
-if(process.env.NODE_ENV === "production"){
+if (process.env.NODE_ENV === 'production') {
   link = new HttpLink({
     uri: 'https://fast-heron-34.hasura.app/v1/graphql',
   });
