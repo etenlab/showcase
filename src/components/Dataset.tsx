@@ -1,5 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
+import { jsx } from '@emotion/react';
 import { useParams } from 'react-router';
 import { IonContent } from '@ionic/react';
 import { client } from '../common/graphql';
