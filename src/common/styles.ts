@@ -5,6 +5,11 @@ export const StyledWrap = styled.div`
   padding: 60px 20px 60px 20px;
 `;
 
+export const StyledWrapFullHeight = styled.div`
+  padding: 60px 20px 60px 20px;
+  height: 100%;
+`;
+
 export const StyledH3 = styled.h3`
   color: cornflowerblue;
 `;
