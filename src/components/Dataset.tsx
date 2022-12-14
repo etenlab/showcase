@@ -61,6 +61,8 @@ export function Dataset() {
         <TableLoader
           columns={TablesMeta[tName].fields}
           doQuery={doQuery}
+          eager
+          loadPageSize={10000}
         ></TableLoader>
       </StyledWrapFullHeight>
     </IonContent>
