@@ -7,8 +7,8 @@ import { StyledH3, StyledWrapFullHeight } from '../common/styles';
 import { buildQuery } from '../common/query';
 import { TablesMeta } from '../common/DataTableObjects';
 
-import { TableLoader } from '../tempEilDataTable/index';
-// import TableLoader from '@eten-lab/eil-data-table';
+// import { TableLoader } from '../tempEilDataTable/index';
+import { TableLoader } from '@eten-lab/data-table';
 
 export function Dataset() {
   type ObjectKey = keyof typeof TablesMeta;
@@ -19,7 +19,11 @@ export function Dataset() {
   const tName: ObjectKey = table;
   let tableFields = TablesMeta[tName].fields.map((value) => value.field);
 
-  const buildQueryFromParams = (query: { page: number; search: string }) => {
+  const buildQueryFromParams = (query: {
+    pageSize: number;
+    pageNumber: number;
+    search: string;
+  }) => {
     var gqlQuery = buildQuery({
       tableNames: [tableName],
       aggregateTable: tableName,
@@ -27,14 +31,18 @@ export function Dataset() {
       filterColumns: TablesMeta[tName].searchFields,
       filterValue: query.search + '%',
       getRow: false,
-      limit: 25,
-      offset: query.page * 25,
+      limit: query.pageSize,
+      offset: query.pageNumber * query.pageSize,
     });
 
     return gqlQuery;
   };
 
-  const doQuery = async (params: { page: number; search: string }) => {
+  const doQuery = async (params: {
+    pageSize: number;
+    pageNumber: number;
+    search: string;
+  }) => {
     const query = buildQueryFromParams(params);
 
     const response = await client.query({ query });
@@ -50,7 +58,6 @@ export function Dataset() {
       <StyledWrapFullHeight>
         <StyledH3>{TablesMeta[tName].title}</StyledH3>
         <TableLoader
-          identifier={tName}
           columns={TablesMeta[tName].fields}
           doQuery={doQuery}
         ></TableLoader>

@@ -13,6 +13,7 @@
     "@capacitor/status-bar": "4.0.1",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@eten-lab/data-table": "^0.4.3",
     "@eten-lab/discussion-box": "^0.0.5",
     "@ionic/react": "^6.2.6",
     "@ionic/react-router": "^6.2.6",
