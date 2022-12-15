@@ -1,1 +1,1 @@
-export { NotifiRow } from "./NotificationRow";
+export { NotifiRow } from './NotificationRow';

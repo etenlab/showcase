@@ -4,25 +4,25 @@ import {
   ApolloClient,
   InMemoryCache,
   from,
-} from "@apollo/client";
-import { getMainDefinition } from "@apollo/client/utilities";
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { onError } from "@apollo/client/link/error";
-import { createClient } from "graphql-ws";
+} from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { onError } from '@apollo/client/link/error';
+import { createClient } from 'graphql-ws';
 
-import { typeDefs } from "./discussionQuery";
+import { typeDefs } from './discussionQuery';
 
 const httpLink = new HttpLink({
   uri:
     process.env.REACT_APP_DISCUSSION_API_SERVER_URL ||
-    "http://localhost:3001/graphql",
+    'http://localhost:3001/graphql',
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
     url:
       process.env.REACT_APP_DISCUSSION_API_SUBSCRIPTION_SERVER_URL ||
-      "ws://localhost:3001/graphql",
+      'ws://localhost:3001/graphql',
   })
 );
 
@@ -41,8 +41,8 @@ const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
     return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
     );
   },
   wsLink,
@@ -54,12 +54,12 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
 
   // Provide some optional constructor fields
-  name: "react-web-client",
-  version: "1.3",
+  name: 'react-web-client',
+  version: '1.3',
   queryDeduplication: false,
   defaultOptions: {
     watchQuery: {
-      fetchPolicy: "cache-and-network",
+      fetchPolicy: 'cache-and-network',
     },
   },
   typeDefs,

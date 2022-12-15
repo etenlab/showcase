@@ -1,18 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import {
   ListItem,
   ListItemButton,
   ListItemText,
   Divider,
   IconButton,
-} from "@mui/material";
+} from '@mui/material';
 
-import CloseIcon from "@mui/icons-material/Close";
+import CloseIcon from '@mui/icons-material/Close';
 
-import { Emoji, EmojiStyle } from "emoji-picker-react";
+import { Emoji, EmojiStyle } from 'emoji-picker-react';
 
-import { DotDiv } from "./styled";
-import { INotification } from "../utils/types";
+import { DotDiv } from './styled';
+import { INotification } from '../utils/types';
 
 type NotifiRowProps = {
   notification: INotification;
@@ -22,18 +22,18 @@ type NotifiRowProps = {
 
 function transformOperation(operation: string): string {
   const mapOp: { [key: string]: string } = {
-    INSERT: "Created",
-    DELETE: "Deleted",
-    UPDATE: "Updated",
+    INSERT: 'Created',
+    DELETE: 'Deleted',
+    UPDATE: 'Updated',
   };
   return mapOp[operation];
 }
 
 function transformType(notifyType: string): string {
   const mapTy: { [key: string]: string } = {
-    POST: "Post",
-    REACTION: "Reaction",
-    DISCUSSION: "Discussion",
+    POST: 'Post',
+    REACTION: 'Reaction',
+    DISCUSSION: 'Discussion',
   };
   return mapTy[notifyType];
 }
@@ -53,21 +53,21 @@ export function NotifiRow({
 
   const notifiHeader = (
     <>
-      {`${operator ? operator + " " : ""}${transformOperation(
+      {`${operator ? operator + ' ' : ''}${transformOperation(
         operation
       )} ${transformType(notifyType)} - `}
       <small>{new Date(created_at).toDateString()}</small>
     </>
   );
 
-  const sxObj = acknowledged ? { p: 1, paddingLeft: "32px" } : {};
+  const sxObj = acknowledged ? { p: 1, paddingLeft: '32px' } : {};
   const listItemText = (
     <ListItemText
       sx={sxObj}
       primary={notifiHeader}
       secondary={
         <>
-          {notifyType !== "REACTION" ? (
+          {notifyType !== 'REACTION' ? (
             summary.length > 60 ? (
               `${summary.substring(0, 60)}...`
             ) : (
@@ -87,8 +87,8 @@ export function NotifiRow({
   return (
     <div
       style={{
-        position: "relative",
-        background: acknowledged ? "inherit" : "rgb(198 255 221 / 25%)",
+        position: 'relative',
+        background: acknowledged ? 'inherit' : 'rgb(198 255 221 / 25%)',
       }}
     >
       <ListItem alignItems="flex-start" disablePadding>
@@ -96,7 +96,7 @@ export function NotifiRow({
           listItemText
         ) : (
           <ListItemButton
-            sx={{ paddingLeft: "32px" }}
+            sx={{ paddingLeft: '32px' }}
             onClick={setAcknowledged}
           >
             {listItemText}
@@ -104,10 +104,10 @@ export function NotifiRow({
         )}
       </ListItem>
       <IconButton
-        sx={{ position: "absolute", bottom: "16px", right: "16px" }}
+        sx={{ position: 'absolute', bottom: '16px', right: '16px' }}
         onClick={deleteNotification}
       >
-        <CloseIcon sx={{ fontSize: "1rem" }} />
+        <CloseIcon sx={{ fontSize: '1rem' }} />
       </IconButton>
       {!acknowledged && <DotDiv />}
       <Divider />

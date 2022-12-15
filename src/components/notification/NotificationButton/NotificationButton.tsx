@@ -1,7 +1,7 @@
-import { MouseEventHandler } from "react";
-import { IconButton, Badge } from "@mui/material";
+import { MouseEventHandler } from 'react';
+import { IconButton, Badge } from '@mui/material';
 
-import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
+import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 
 type NotificationButtonProps = {
   unreadNotifis: number;

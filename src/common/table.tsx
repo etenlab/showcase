@@ -1,7 +1,7 @@
-import { Component } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
-import MaterialTable from "material-table";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { Component } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import MaterialTable from 'material-table';
+import { ThemeProvider, createTheme } from '@mui/material';
 
 interface AppProps {
   columns: any;
@@ -21,7 +21,7 @@ class Table extends Component<AppRouterProps, any> {
 
   constructor(props: AppRouterProps) {
     super(props);
-    this.state = { value: "" };
+    this.state = { value: '' };
   }
 
   handleRowClick(event: any, rowData: any) {
@@ -35,7 +35,7 @@ class Table extends Component<AppRouterProps, any> {
     const defaultMaterialTheme = createTheme();
     //const cloneData = structuredClone(this.props.data);
     return (
-      <div style={{ maxWidth: "100%" }}>
+      <div style={{ maxWidth: '100%' }}>
         <ThemeProvider theme={defaultMaterialTheme}>
           <link
             rel="stylesheet"
@@ -50,11 +50,11 @@ class Table extends Component<AppRouterProps, any> {
                 paging: true,
                 pageSize: 25,
                 pageSizeOptions: [25, 50, 75],
-                detailPanelType: "single",
+                detailPanelType: 'single',
               }}
               data={this.props.remoteData!}
               detailPanel={(rowData: any) => {
-                console.log("INSIDE TABLE COMPONENT REMOTE SUBDATA");
+                console.log('INSIDE TABLE COMPONENT REMOTE SUBDATA');
                 // console.log(this.props.dataLoaded)
                 // if(!this.props.dataLoaded){
                 return this.props.remoteSubData(rowData) || false;

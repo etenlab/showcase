@@ -1,144 +1,70 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from '@emotion/react'
-import { useEffect, useState, ReactNode } from 'react';
+import { jsx } from '@emotion/react';
 import { useParams } from 'react-router';
 import { IonContent } from '@ionic/react';
-import Table from '../common/table'
-import { client } from '../common/graphql'
-import { StyledWrap, StyledH3, StyledTable, styles } from '../common/styles';
-import { buildQuery } from '../common/query'
+import { client } from '../common/graphql';
+import { StyledH3, StyledWrapFullHeight } from '../common/styles';
+import { buildQuery } from '../common/query';
 import { TablesMeta } from '../common/DataTableObjects';
 
-interface tableFields{
-    [key: string]: string[]
-}
+// import { TableLoader } from '../tempEilDataTable/index';
+import { TableLoader } from '@eten-lab/data-table';
 
 export function Dataset() {
+  type ObjectKey = keyof typeof TablesMeta;
 
-    const [loading,setLoading]=useState(false); 
-    const [namesHtml,setNamesHtml]=useState<ReactNode>(); 
-    const [data,setData]=useState<any>(); 
+  let { table } = useParams<{ table: string }>();
 
-    type ObjectKey = keyof typeof TablesMeta;
+  let tableName = table.toString().replaceAll('-', '_');
+  const tName: ObjectKey = table;
+  let tableFields = TablesMeta[tName].fields.map((value) => value.field);
 
-    let { table } = useParams<{ table: string }>();
-    
-    let tableName = table.toString().replaceAll("-","_");
-    const tName: ObjectKey = table;
-    let tableFields = TablesMeta[tName].fields.map(value => value.field);
+  const buildQueryFromParams = (query: {
+    pageSize: number;
+    pageNumber: number;
+    search: string;
+  }) => {
+    var gqlQuery = buildQuery({
+      tableNames: [tableName],
+      aggregateTable: tableName,
+      fields: { [tableName]: tableFields },
+      filterColumns: TablesMeta[tName].searchFields,
+      filterValue: query.search + '%',
+      getRow: false,
+      limit: query.pageSize,
+      offset: query.pageNumber * query.pageSize,
+    });
 
-    const remoteData = (query: { page: number; search: string; }) => {
-        var gqlQuery = buildQuery({
-            tableNames: [tableName],
-            aggregateTable: tableName,
-            fields: {[tableName]: tableFields},
-            filterColumns: TablesMeta[tName].searchFields,
-            filterValue: query.search + "%",
-            getRow: false,
-            limit: 25,
-            offset: query.page * 25
-        });    
-        console.log(gqlQuery.loc?.source.body);
-        return client.query({
-            query: gqlQuery
-        }).then((res) => {
-            console.log(res)
-            return {
-                data: res.data[tableName],
-                page: query.page,
-                totalCount: res.data[tableName+'_aggregate'].aggregate.count
-            }
-        })
-    }
+    return gqlQuery;
+  };
 
-    useEffect(() => {
-        console.log("inuseEffect")
-        console.log(data)
-        if(data){
-            if(TablesMeta[tName].detailsPanel){
-                setLoading(true)
-                let fieldsA: tableFields = {};
-                // console.log(TablesMeta[tName].detailsPanel!.tableNames);
-                TablesMeta[tName].detailsPanel!.tableNames!.forEach(tbl => {
-                    fieldsA[tbl] = TablesMeta[tbl.replaceAll("_","-")].fields.map(value => value.field);
-                });
-                // console.log(fieldsA);                
-                const detailsPanelQuery = buildQuery({
-                    tableNames: TablesMeta[tName].detailsPanel!.tableNames!, // ["iso_639_3_names", "iso_639_3_retirements", "progress_bible_language_details", "uf_languages", "glottolog_language"],
-                    fields: fieldsA!, 
-                    getRow: true,
-                    getRowField: TablesMeta[tName].detailsPanel!.getRowField,
-                    getRowValue: data[tableName]
-                });
+  const doQuery = async (params: {
+    pageSize: number;
+    pageNumber: number;
+    search: string;
+  }) => {
+    const query = buildQueryFromParams(params);
 
-                client.query({
-                    query: detailsPanelQuery,
-                }).then((res) => {
-                    let html: ReactNode;
-                    var subDataTables = [];
-                    for (var i = 0; i < TablesMeta[tName].detailsPanel!.tableNames!.length; i++) {
-                        if(res.data[TablesMeta[tName].detailsPanel!.tableNames![i]].length > 0){
-                            let tableData = res.data[TablesMeta[tName].detailsPanel!.tableNames![i]][0];
-                            subDataTables.push(
-                                <div css={styles.detailsPanelBox} key={i}>
-                                    <h4>{TablesMeta[TablesMeta[tName].detailsPanel!.tableNames![i].replaceAll("_","-")].title}</h4>
-                                    <table>
-                                        <tr>
-                                            { TablesMeta[TablesMeta[tName].detailsPanel!.tableNames![i].replaceAll("_","-")].fields.map(_field => (
-                                                <th>{_field.title}</th>
-                                            ))} 
-                                        </tr>
-                                        <tr>
-                                            { TablesMeta[TablesMeta[tName].detailsPanel!.tableNames![i].replaceAll("_","-")].fields.map(_field => (
-                                                <th>{ tableData[_field.field] }</th>
-                                            ))}
-                                        </tr>
-                                    </table>
-                                </div>
-                            )
-                        }
-                    }
-                    html = (
-                        <StyledTable>
-                            <div className='details-wrapper' css={styles.detailsPanelWrapper}>
-                                { subDataTables }
-                            </div>
-                        </StyledTable>
-                    );
-                    setNamesHtml(html);
-                    setLoading(false);
-                });
-                
-            }
-        }
-    }, [data, tName, tableName]);
+    const response = await client.query({ query });
 
-    const remoteSubData =  (rowData: any) => {
-        
-        setData(rowData)
-        if(loading) {
-            return (
-                <div>
-                    <h1>Loading...</h1>
-                </div>
-            );
-        }
-        else{
-            return (
-                <div>{ namesHtml }</div>
-            );
-        }
-    }
+    let totalCount = response.data[tableName + '_aggregate'].aggregate.count;
+    let rows = response.data[tableName];
 
-    return (
-        <IonContent>
-            <StyledWrap>
-                <StyledH3>{ TablesMeta[tName].title }</StyledH3>
-                <div style={{ maxWidth: "100%" }}>
-                    <Table title={ TablesMeta[tName].title } columns={TablesMeta[tName].fields}  remoteData={remoteData} detailsPanel={TablesMeta[tName].detailsPanel?true:false}  remoteSubData={remoteSubData} ></Table>
-                </div>
-            </StyledWrap>
-        </IonContent> 
-    );
+    return { totalCount, rows };
+  };
+
+  return (
+    <IonContent>
+      <StyledWrapFullHeight>
+        <StyledH3>{TablesMeta[tName].title}</StyledH3>
+        <TableLoader
+          columns={TablesMeta[tName].fields}
+          doQuery={doQuery}
+          eager
+          loadPageSize={10000}
+        ></TableLoader>
+      </StyledWrapFullHeight>
+    </IonContent>
+  );
 }

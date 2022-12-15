@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "types": ["@emotion/core", "@emotion/react/types/css-prop", "jest", "node", "webpack-env"],
+    "types": [
+      "@emotion/core",
+      "@emotion/react/types/css-prop",
+      "jest",
+      "node",
+      "webpack-env"
+    ],
     "target": "es5",
     "lib": [
       "dom",
