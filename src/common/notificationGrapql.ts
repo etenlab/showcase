@@ -12,8 +12,7 @@ import { createClient } from 'graphql-ws';
 
 const httpLink = new HttpLink({
   uri:
-    process.env.REACT_APP_NOTIFICATION_API_SERVER_URL ||
-    'http://localhost:3003/graphql',
+    process.env.REACT_APP_NOTIFICATION_API || 'http://localhost:3003/graphql',
 });
 
 const wsLink = new GraphQLWsLink(

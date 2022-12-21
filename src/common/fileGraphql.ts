@@ -3,9 +3,7 @@ const { createUploadLink } = require('apollo-upload-client');
 
 export const client = new ApolloClient({
   link: createUploadLink({
-    uri:
-      process.env.REACT_APP_FILE_API_SERVER_URL ||
-      'http://localhost:3002/graphql',
+    uri: process.env.REACT_APP_FILE_API || 'http://localhost:3002/graphql',
   }),
   cache: new InMemoryCache(),
 
