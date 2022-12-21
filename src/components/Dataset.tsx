@@ -7,13 +7,14 @@ import { client } from '../common/graphql';
 import { StyledH3, StyledWrapFullHeight } from '../common/styles';
 import { buildQuery } from '../common/query';
 import { TablesMeta } from '../common/DataTableObjects';
-import { Box } from '@mui/material';
 import ForumIcon from '@mui/icons-material/Forum';
 
 // import { TableLoader } from '../tempEilDataTable/index';
 import { TableLoader } from '@eten-lab/data-table';
 
-// import { Discussion } from '@eten-lab/discussion-box';
+import { Discussion } from '@eten-lab/discussion-box';
+
+const USER_ID_STUB = 1;
 
 export function Dataset() {
   type ObjectKey = keyof typeof TablesMeta;
@@ -70,7 +71,13 @@ export function Dataset() {
           detailHandlers={{
             id: {
               endIcon: ForumIcon,
-              detailRenderer: () => <Box>DISCUSSION PLACEHOLDER</Box>,
+              detailRenderer: (row: any) => (
+                <Discussion
+                  rowId={row.id} // TODO: determine row keys somehow if row has no id
+                  tableName={tableName}
+                  userId={USER_ID_STUB} // TODO: configure auth
+                />
+              ),
             },
           }}
         ></TableLoader>
