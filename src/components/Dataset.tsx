@@ -1,7 +1,7 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import { IonContent } from '@ionic/react';
 import { client } from '../common/graphql';
 import { StyledH3, StyledWrapFullHeight } from '../common/styles';
@@ -15,6 +15,7 @@ export function Dataset() {
   type ObjectKey = keyof typeof TablesMeta;
 
   let { table } = useParams<{ table: string }>();
+  const history = useHistory();
 
   let tableName = table.toString().replaceAll('-', '_');
   const tName: ObjectKey = table;
@@ -54,6 +55,10 @@ export function Dataset() {
     return { totalCount, rows };
   };
 
+  const handleRowClick = ({ rowData, rowIndex }: { rowData: unknown, rowIndex: number }) => {
+    history.push(`/discussion/${table}/${rowIndex}`);
+  }
+
   return (
     <IonContent>
       <StyledWrapFullHeight>
@@ -63,6 +68,7 @@ export function Dataset() {
           doQuery={doQuery}
           eager
           loadPageSize={10000}
+          onRowClicked={handleRowClick}
         ></TableLoader>
       </StyledWrapFullHeight>
     </IonContent>
