@@ -7,9 +7,13 @@ import { client } from '../common/graphql';
 import { StyledH3, StyledWrapFullHeight } from '../common/styles';
 import { buildQuery } from '../common/query';
 import { TablesMeta } from '../common/DataTableObjects';
+import { Box } from '@mui/material';
+import ForumIcon from '@mui/icons-material/Forum';
 
 // import { TableLoader } from '../tempEilDataTable/index';
 import { TableLoader } from '@eten-lab/data-table';
+
+// import { Discussion } from '@eten-lab/discussion-box';
 
 export function Dataset() {
   type ObjectKey = keyof typeof TablesMeta;
@@ -63,6 +67,12 @@ export function Dataset() {
           doQuery={doQuery}
           eager
           loadPageSize={10000}
+          detailHandlers={{
+            id: {
+              endIcon: ForumIcon,
+              detailRenderer: () => <Box>DISCUSSION PLACEHOLDER</Box>,
+            },
+          }}
         ></TableLoader>
       </StyledWrapFullHeight>
     </IonContent>
