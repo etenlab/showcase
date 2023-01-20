@@ -7,9 +7,14 @@ import { client } from '../common/graphql';
 import { StyledH3, StyledWrapFullHeight } from '../common/styles';
 import { buildQuery } from '../common/query';
 import { TablesMeta } from '../common/DataTableObjects';
+import ForumIcon from '@mui/icons-material/Forum';
 
 // import { TableLoader } from '../tempEilDataTable/index';
 import { TableLoader } from '@eten-lab/data-table';
+
+import { Discussion } from '@eten-lab/discussion-box';
+
+const USER_ID_STUB = 1;
 
 export function Dataset() {
   type ObjectKey = keyof typeof TablesMeta;
@@ -55,9 +60,15 @@ export function Dataset() {
     return { totalCount, rows };
   };
 
-  const handleRowClick = ({ rowData, rowIndex }: { rowData: unknown, rowIndex: number }) => {
+  const handleRowClick = ({
+    rowData,
+    rowIndex,
+  }: {
+    rowData: unknown;
+    rowIndex: number;
+  }) => {
     history.push(`/discussion/${table}/${rowIndex}`);
-  }
+  };
 
   return (
     <IonContent>
@@ -68,6 +79,18 @@ export function Dataset() {
           doQuery={doQuery}
           eager
           loadPageSize={10000}
+          // detailHandlers={{
+          //   id: {
+          //     endIcon: ForumIcon,
+          //     detailRenderer: (row: any) => (
+          //       <Discussion
+          //         rowId={row.id} // TODO: determine row keys somehow if row has no id
+          //         tableName={tableName}
+          //         userId={USER_ID_STUB} // TODO: configure auth
+          //       />
+          //     ),
+          //   },
+          // }}
           onRowClicked={handleRowClick}
         ></TableLoader>
       </StyledWrapFullHeight>
