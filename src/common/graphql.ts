@@ -1,4 +1,9 @@
 import { ApolloClient } from 'apollo-client';
+import {
+  ApolloClient as ApolloClient2,
+  HttpLink as HttpLink2,
+  InMemoryCache as InMemoryCache2,
+} from '@apollo/client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 
@@ -35,11 +40,14 @@ if (!AGGREGATION_API_URL) {
   throw new Error('AGGREGATION_API_URL is not defined');
 }
 
-export const aggregationClient = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: new HttpLink({
+export const aggregationClient = new ApolloClient2({
+  cache: new InMemoryCache2(),
+
+  link: new HttpLink2({
     uri: AGGREGATION_API_URL,
   }),
+
+  uri: AGGREGATION_API_URL,
 
   // Provide some optional constructor fields
   name: 'react-web-client',

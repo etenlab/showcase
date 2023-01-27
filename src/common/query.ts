@@ -1553,3 +1553,44 @@ export function buildQuery(request: RequestArgs) {
     ${gqlQuery}
   `;
 }
+
+export const booksQuery = gql`
+  query Books {
+    books {
+      id
+      name
+    }
+  }
+`;
+
+export const bookInfoQuery = gql`
+  query Books($bookId: String!) {
+    book(id: $bookId) {
+      id
+      name
+    }
+  }
+`;
+
+export const BookWordStrongsQuery = gql`
+  query Book(
+    $bookId: String!
+    $search: String!
+    $pageNumber: Int!
+    $pageSize: Int!
+  ) {
+    book(id: $bookId) {
+      wordsCount(search: $search)
+      words(search: $search, pageNumber: $pageNumber, pageSize: $pageSize) {
+        id
+        text
+        strongsWordRelationId
+        strongsWord {
+          id
+          strongsDef
+          strongsId
+        }
+      }
+    }
+  }
+`;

@@ -10,7 +10,7 @@ import {
   setupIonicReact,
 } from '@ionic/react';
 // import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
+import { book, ellipse, square, triangle } from 'ionicons/icons';
 
 import Tab1 from './pages/DataSetsTab';
 import Tab2 from './pages/UtilityTab';
@@ -44,6 +44,8 @@ import './theme/variables.css';
 import './styles.css';
 
 import { PrivateRoute } from './utils/PrivateRoute';
+import { BookStrongsWords } from './components/BookStrongsWords';
+import { Books } from './components/books';
 
 setupIonicReact();
 
@@ -58,9 +60,10 @@ const App: React.FC = () => (
           <Route exact path="/tab2">
             <Tab2 />
           </Route>
-          <Route path="/tab3">
-            <Tab3 />
+          <Route path="/books">
+            <Books />
           </Route>
+          <Route path="/book/:id" component={BookStrongsWords} />
           <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegisterPage} />
           <Route
@@ -86,6 +89,10 @@ const App: React.FC = () => (
           <IonTabButton tab="tab2" href="/tab2">
             <IonIcon icon={ellipse} />
             <IonLabel>Utility</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="books" href="/books">
+            <IonIcon icon={book} />
+            <IonLabel>Books</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab3" href="/tab3">
             <IonIcon icon={square} />

@@ -10,6 +10,11 @@ export const StyledWrapFullHeight = styled.div`
   height: 100%;
 `;
 
+export const BookFullHeight = styled.div`
+  padding: 20px 10px 20px 10px;
+  height: 100%;
+`;
+
 export const StyledH3 = styled.h3`
   color: cornflowerblue;
 `;
