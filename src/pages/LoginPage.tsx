@@ -1,64 +1,39 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { styles } from '../common/styles';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-const querystring = require('query-string');
-
 const LoginPage = () => {
   const history = useHistory();
-  const keycloakUrl = `${process.env.REACT_APP_KEYCLOAK_URL}/realms/${process.env.REACT_APP_KEYCLOAK_REALM}/protocol/openid-connect`;
+  const apiUrl = `${process.env.REACT_APP_DATABASE_API_URL}/users/login?realm=${process.env.REACT_APP_KEYCLOAK_REALM}`;
   const [loginMessage, setLoginMessage] = useState('');
 
-  let userName: string;
-  let password: string;
+  const [userName, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const setUsername = (e: any) => {
-    userName = e.target.value;
-  };
-
-  const setPassword = (e: any) => {
-    password = e.target.value;
-  };
-
-  const handleLogin = async () => {
-    console.log(userName);
-    console.log(password);
-
+  const handleLogin = useCallback(async () => {
     await axios
-      .post(
-        `${keycloakUrl}/token`,
-        querystring.stringify({
-          client_id: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
-          client_secret: process.env.REACT_APP_KEYCLOAK_CLIENT_SECRET,
-          username: userName,
-          password: password,
-          grant_type: 'password', //'client_credentials'
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      )
+      .post(apiUrl, {
+        login: userName,
+        password: password,
+      })
       .then(async (response) => {
-        console.log('response.data.access_token');
-        console.log(response.data.access_token);
         localStorage.setItem(
           'authToken',
           JSON.stringify(response.data.access_token)
         );
+        localStorage.setItem('userId', response.data.user_id);
         history.push('/protected');
       })
       .catch((er) => {
         if (er.message) {
-          setLoginMessage(er.response?.data.error_description);
+          setLoginMessage(er.message);
         }
       });
-  };
+  }, [apiUrl, userName, password, history]);
 
   return (
     <div css={styles.loginFormWrapper}>
@@ -77,7 +52,13 @@ const LoginPage = () => {
           <label>Username</label>
         </div>
         <div>
-          <input onInput={setUsername} type="text" />
+          <input
+            defaultValue={userName}
+            onChange={(e: any) => {
+              setUsername(e.target.value);
+            }}
+            type="text"
+          />
         </div>
       </div>
 
@@ -86,11 +67,21 @@ const LoginPage = () => {
           <label>Password</label>
         </div>
         <div>
-          <input onInput={setPassword} type="password" />
+          <input
+            defaultValue={password}
+            onChange={(e: any) => {
+              setPassword(e.target.value);
+            }}
+            type="password"
+          />
         </div>
       </div>
 
-      <button css={styles.formButton} type="button" onClick={handleLogin}>
+      <button
+        css={styles.formButton}
+        type="button"
+        onClick={() => handleLogin()}
+      >
         Login
       </button>
     </div>
