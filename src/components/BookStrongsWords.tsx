@@ -51,13 +51,12 @@ const fields: {
 
 export function BookStrongsWords() {
   let { id } = useParams<{ id: string }>();
+  const userId = localStorage.getItem('userId') as string;
 
   const bookInfoResponse = useQuery(bookInfoQuery, {
     client: aggregationClient,
     variables: { bookId: id },
   });
-
-  const userId = 1; // TODO: Manage authorization
 
   const doQuery = async (variables: {
     pageSize: number;
@@ -122,7 +121,7 @@ export function BookStrongsWords() {
                     <div>Login to discuss</div>
                   ) : (
                     <Discussion
-                      userId={userId}
+                      userId={Number(userId)}
                       rowId={Number(row.strongsWordRelationId)}
                       tableName="relationships"
                     />
