@@ -7,17 +7,17 @@ import {
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
+if (!SERVER_URL) {
+  throw new Error('SERVER_URL is not defined');
+}
+
 // Instantiate required constructor fields
 const cache = new InMemoryCache();
 var link = new HttpLink({
-  uri: 'http://localhost:8081/v1/graphql',
+  uri: SERVER_URL,
 });
-
-if (process.env.NODE_ENV === 'production') {
-  link = new HttpLink({
-    uri: 'https://fast-heron-34.hasura.app/v1/graphql',
-  });
-}
 
 export const client = new ApolloClient({
   // Provide required constructor fields
