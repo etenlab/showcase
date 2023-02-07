@@ -28,5 +28,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_GITHUB_S3_PUSHER_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
 
-      - name: Deploy static site to S3 bucket
-        run: aws s3 sync build/ s3://showcase.dev.lab.eten.bible
+      - uses: dkershner6/aws-ssm-getparameters-action@v1
+        with:
+          parameterPairs: '/dev/deploy/showcase/access-key = AWS_ACCESS_KEY_ID,
+            /dev/deploy/showcase/secret-access-key = AWS_SECRET_ACCESS_KEY,
+            /dev/deploy/showcase/s3-bucket-name = AWS_S3_BUCKET,
+            /dev/deploy/showcase/cloudfront-distribution-id = DISTRIBUTION_ID'
+          withDecryption: 'true' # defaults to true
+
+      - uses: TimekillerTK/s3-sync-action@master
+        with:
+          args: --follow-symlinks --delete
+        env:
+          AWS_REGION: us-east-2
+          SOURCE_DIR: 'build'
