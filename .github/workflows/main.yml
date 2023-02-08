@@ -31,6 +31,7 @@ jobs:
             /dev/deploy/showcase/access-key = AWS_ACCESS_KEY_ID,
             /dev/deploy/showcase/secret-access-key = AWS_SECRET_ACCESS_KEY,
             /dev/deploy/showcase/s3-bucket-name = AWS_S3_BUCKET,
+            /dev/deploy/showcase/cloudfront-distribution-id = DISTRIBUTION_ID,
             /dev/deploy/showcase/react-app-server-url = REACT_APP_SERVER_URL,
             /dev/deploy/showcase/react-app-database-api-url = REACT_APP_DATABASE_API_URL,
             /dev/deploy/showcase/react-app-keycloak-url = REACT_APP_KEYCLOAK_URL,
