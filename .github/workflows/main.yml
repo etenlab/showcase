@@ -18,9 +18,17 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_GITHUB_S3_PUSHER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_GITHUB_S3_PUSHER_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
       - uses: dkershner6/aws-ssm-getparameters-action@v1
         with:
-          parameterPairs: '/dev/deploy/showcase/access-key = AWS_ACCESS_KEY_ID,
+          parameterPairs: '
+            /dev/deploy/showcase/access-key = AWS_ACCESS_KEY_ID,
             /dev/deploy/showcase/secret-access-key = AWS_SECRET_ACCESS_KEY,
             /dev/deploy/showcase/s3-bucket-name = AWS_S3_BUCKET,
             /dev/deploy/showcase/react-app-server-url = REACT_APP_SERVER_URL,
@@ -49,13 +57,6 @@ jobs:
         #   # REACT_APP_NOTIFICATION_SUBSCRIPTION_WS_API: wss://db-api.dev.lab.eten.bible:3010/graphql
         #   # REACT_APP_NOTIFICATION_SUBSCRIPTION_API: wss://db-api.dev.lab.eten.bible:3010/graphql
         run: ionic build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_GITHUB_S3_PUSHER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_GITHUB_S3_PUSHER_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2
 
       - uses: TimekillerTK/s3-sync-action@master
         with:
