@@ -1,5 +1,9 @@
 name: Upload Website to S3
-on: [push]
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
