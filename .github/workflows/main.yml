@@ -33,14 +33,14 @@ jobs:
           ${{ env.ENV }}
           EOF
 
+      - name: Load .env file
+        uses: xom9ikk/dotenv@v2
+
       - name: npm ci --force
         run: npm ci --force
 
       - name: npm run build
         run: npm run build
-
-      - name: Load .env file
-        uses: xom9ikk/dotenv@v2
 
       - uses: TimekillerTK/s3-sync-action@master
         with:
