@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  color-scheme: light;
+  --black: #1B1B1B;
+  --gray: #5C6673;
+  --middle-gray: #C2CBD7;
+  --light-blue: #E3EAF3;
+  --green: #4ABE95;
+  --light-green: #DAF2EA;
+  --red: #E04E4E;
+  --light-red: #FFE4E4;
+  --ion-toolbar-color: var(--gray);
+  --ion-font-family: 'Inter', sans-serif;
+  --data-padding: 11.5px 9px;
+}
+
+.bottom-tab-bar {
+  display: none;
+}
+
+ion-app {
+  --ion-color-success: var(--green);
+  --ion-color-medium: var(--gray);
+  background: #fff;
+}
+
+ion-header::after {
+  content: none !important;
+}
+
+ion-toolbar {
+  --min-height: 62px;
+}
+ion-toolbar ion-title {
+  --color: var(--black);
+  font-size: 18px;
+  font-weight: 600;
+}
+ion-toolbar ion-buttons {
+  margin-right: 11px;
+}
+
+ion-content {
+  --color: var(--black);
+}
+
+ion-button {
+  --box-shadow: none;
+  --border-radius: 6px;
+}
+
+.input-item > ion-label {
+  color: inherit !important;
+  font-weight: 400 !important;
+  margin: 0 !important;
+}
+.input-item::part(native) {
+  padding-left: 0 !important;
+  background: none !important;
+  --inner-padding-end: 0;
+}
+.input-item input {
+  background: none !important;
+}
+
+.input-item,
+.dropdown > button {
+  background: #fff !important;
+  height: 48px;
+  border-radius: 10px !important;
+  border: 1px solid var(--middle-gray) !important;
+  width: 100%;
+  color: var(--gray);
+  text-align: left;
+  font-size: 14px !important;
+  padding: 0px 16px !important;
+}
+
+.input-item.item-disabled,
+.dropdown > button:disabled {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.dropdown > button {
+  padding-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+.dropdown > button > ion-icon {
+  font-size: 22px;
+}
+.dropdown-popover ion-item.ion-color-light::part(native) {
+  --ion-color-base: var(--light-blue);
+}
+.dropdown-popover {
+  --box-shadow: none;
+}
+.dropdown-popover::part(content) {
+  border: 1px solid var(--middle-gray);
+}
+
+.content-header {
+  padding: 0px 14px 5px;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.content-title {
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+.content-header > ion-button {
+  width: 36px;
+  --padding-start: 4.5px;
+  --padding-end: 4.5px;
+}
+.content-header ion-buttons ion-button {
+  color: var(--middle-gray);
+  --padding-start: 4.5px;
+  --padding-end: 4.5px;
+}
+.content-header ion-button.active {
+  color: var(--gray);
+}
+
+.section-header {
+  background-color: var(--light-blue) !important;
+  font-weight: 700;
+  color: var(--gray);
+  padding: var(--data-padding);
+}
+.section-content {
+  padding: 20px 10px;
+  line-height: 1.43;
+}
+
+.original-label,
+.original-label span {
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+}
+.original-label.active::before,
+.original-label:hover::before {
+  position: absolute;
+  content: '';
+  background-color: #FFF1CE;
+  top: -1px;
+  right: -4px;
+  bottom: -3px;
+  left: -4px;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+}
+.original-label-popover {
+  --box-shadow: none;
+}
+.original-label-popover::part(content) {
+  width: 95vw;
+  border: 1px solid var(--middle-gray);
+  --offset-y: 8px;
+}
+.original-label-popover ion-content {
+  --background: var(--light-blue);
+  --color: var(--gray);
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 20px;
+}
+.original-label-popover ion-content h6 {
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+}
+.original-label-popover ion-content ion-grid {
+  padding: 0;
+  margin-bottom: 16px;
+}
+.original-label-popover ion-content ion-row {
+  margin: 0 -10px;
+}
+.original-label-popover ion-content ion-col {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.original-label-popover ion-content ion-button {
+  height: 42px;
+  --border-radius: 10px;
+  text-transform: none;
+  margin: 0;
+}
+.original-label-popover ion-content ion-button + ion-button {
+  margin-top: 6px;
+}
+.original-label-popover ion-content ion-button[color=medium] {
+  height: 36px;
+}
+.original-label-popover ion-label {
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 3px;
+}
+
+.node-data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  line-height: initial;
+}
+.node-data-badges {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.node-data--col {
+  flex-direction: column;
+  align-items: start;
+}
+.node-data--col strong {
+  margin-bottom: 8px;
+}
+.node-data strong {
+  margin-right: 20px;
+  white-space: nowrap;
+}
+.node-data .votes + .discussion {
+  margin-left: 11px;
+}
+
+.votes {
+  display: flex;
+  font-weight: 700;
+  font-size: 12px;
+}
+.vote {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 0px 9px;
+  height: 24px;
+}
+.vote + .vote {
+  margin-left: 10px;
+}
+.vote svg {
+  margin-right: 4px;
+}
+.vote--up {
+  background-color: var(--light-green);
+  color: var(--green);
+}
+.vote--down {
+  background-color: var(--light-red);
+  color: var(--red);
+}
+
+.discussion {
+  border-radius: 4px;
+  background-color: var(--light-blue);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray);
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 4px;
+}
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 8px;
+}
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 12px;
+}

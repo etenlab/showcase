@@ -1,0 +1,7 @@
+.row-view {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.row-view-inner {
+  width: fit-content;
+}

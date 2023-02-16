@@ -1,0 +1,35 @@
+.layout-header {
+  min-height: 68px;
+  background: var(--light-blue);
+  padding: 20px;
+}
+.layout-header > h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+}
+.layout-header > h3 + * {
+  margin-top: 16px;
+}
+.layout-header ion-grid {
+  padding: 0;
+}
+.layout-header ion-row {
+  margin: 0 -7.5px;
+}
+.layout-header ion-col {
+  padding: 0 7.5px;
+}
+
+.layout-content {
+  padding: 16px 10.5px;
+  font-size: 14px;
+  color: #1E1E1E;
+}
+.layout-content strong {
+  font-weight: 600;
+}

@@ -1,0 +1,7 @@
+.line-break-view .section + .section {
+  border-top: 1px solid var(--middle-gray);
+  padding-top: 20px;
+}
+.line-break-view p {
+  margin: 0 0 10px;
+}

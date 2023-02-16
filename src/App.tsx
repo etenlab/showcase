@@ -19,6 +19,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import { DiscussionPage } from './components/Discussion';
 import { FileUploadPage } from './components/fileUpload';
+import { VersificationPage } from './pages/Versification';
 
 // import UserPage from './pages/UserPage';
 import ProtectedPage from './pages/ProtectedPage';
@@ -80,11 +81,14 @@ const App: React.FC = () => (
             path="/protected"
             component={ProtectedPage}
           />
+          <Route path="/versification">
+            <VersificationPage />
+          </Route>
           <Route exact path="/">
             <Redirect to="/tab1" />
           </Route>
         </IonRouterOutlet>
-        <IonTabBar slot="bottom">
+        <IonTabBar slot="bottom" className="bottom-tab-bar">
           <IonTabButton tab="tab1" href="/tab1">
             <IonIcon icon={triangle} />
             <IonLabel>Data Sets</IonLabel>
