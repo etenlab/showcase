@@ -27,13 +27,13 @@ jobs:
         with:
           parameterPairs: '/dev/deploy/showcase/env = ENV'
 
-      - name: save env to .env
+      - name: store env
         run: |
           cat << EOF > .env
           ${{ env.ENV }}
           EOF
 
-      - name: Load .env file
+      - name: Load env
         uses: xom9ikk/dotenv@v2
 
       - name: npm ci --force
