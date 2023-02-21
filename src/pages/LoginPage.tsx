@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const LoginPage = () => {
   const history = useHistory();
-  const apiUrl = `${process.env.REACT_APP_DATABASE_API_URL}/users/login?realm=${process.env.REACT_APP_KEYCLOAK_REALM}`;
+  const apiUrl = `${process.env.REACT_APP_DATABASE_API_URL}/users/login?client-id=${process.env.REACT_APP_KEYCLOAK_CLIENT_ID}`;
   const [loginMessage, setLoginMessage] = useState('');
 
   const [userName, setUsername] = useState('');
