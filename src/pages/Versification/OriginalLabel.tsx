@@ -8,7 +8,8 @@ import {
 } from '@ionic/react';
 import { useEffect, useRef, useState, CSSProperties } from 'react';
 
-import { useVersificationContext, VersificationConfig } from '.';
+import { VersificationConfig } from './types';
+import { useVersificationContext } from '.';
 
 export function OriginalLabel({
   value,
@@ -19,18 +20,10 @@ export function OriginalLabel({
   config: VersificationConfig;
   style?: CSSProperties;
 }) {
-  const { books, onIdentifierAdd } = useVersificationContext();
+  const { onIdentifierAdd } = useVersificationContext();
   const popoverRef = useRef<HTMLIonPopoverElement>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [input, setInput] = useState('');
-  const book = books.find(({ node_id }) => node_id === config.bookId)!;
-  const chapter = book.chapters.find(
-    ({ node_id }) => node_id === config.chapterId
-  )!;
-  const node =
-    config.type === 'CHAPTER'
-      ? chapter
-      : chapter.verses.find(({ node_id }) => node_id === config.verseId)!;
   const label = `# ${config.type.charAt(0)}${config.type
     .slice(1)
     .toLowerCase()}`;
@@ -112,15 +105,8 @@ export function OriginalLabel({
               </div>
               <div>
                 <IonLabel style={{ marginRight: 5 }}>Translations:</IonLabel>
-                {node.versification
-                  .map(
-                    (item, index) =>
-                      `${label} ${
-                        'verse-identifier' in item
-                          ? item['verse-identifier']
-                          : item['chapter-identifier']
-                      }`
-                  )
+                {config.values
+                  .map((value, index) => `${label} ${value}`)
                   .join(', ')}
               </div>
             </div>

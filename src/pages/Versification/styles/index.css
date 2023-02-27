@@ -2,14 +2,14 @@
 
 :root {
   color-scheme: light;
-  --black: #1B1B1B;
-  --gray: #5C6673;
-  --middle-gray: #C2CBD7;
-  --light-blue: #E3EAF3;
-  --green: #4ABE95;
-  --light-green: #DAF2EA;
-  --red: #E04E4E;
-  --light-red: #FFE4E4;
+  --black: #1b1b1b;
+  --gray: #5c6673;
+  --middle-gray: #c2cbd7;
+  --light-blue: #e3eaf3;
+  --green: #4abe95;
+  --light-green: #daf2ea;
+  --red: #e04e4e;
+  --light-red: #ffe4e4;
   --ion-toolbar-color: var(--gray);
   --ion-font-family: 'Inter', sans-serif;
   --data-padding: 11.5px 9px;
@@ -152,7 +152,7 @@ ion-button {
 .original-label:hover::before {
   position: absolute;
   content: '';
-  background-color: #FFF1CE;
+  background-color: #fff1ce;
   top: -1px;
   right: -4px;
   bottom: -3px;
@@ -203,7 +203,7 @@ ion-button {
 .original-label-popover ion-content ion-button + ion-button {
   margin-top: 6px;
 }
-.original-label-popover ion-content ion-button[color=medium] {
+.original-label-popover ion-content ion-button[color='medium'] {
   height: 36px;
 }
 .original-label-popover ion-label {
@@ -219,12 +219,6 @@ ion-button {
   justify-content: space-between;
   line-height: initial;
 }
-.node-data-badges {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
 .node-data--col {
   flex-direction: column;
   align-items: start;
@@ -236,46 +230,36 @@ ion-button {
   margin-right: 20px;
   white-space: nowrap;
 }
-.node-data .votes + .discussion {
-  margin-left: 11px;
-}
-
-.votes {
+.node-data-badges {
   display: flex;
-  font-weight: 700;
-  font-size: 12px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
-.vote {
+.node-data-badge {
   display: flex;
   align-items: center;
   border-radius: 4px;
   padding: 0px 9px;
   height: 24px;
+  background-color: var(--light-blue);
+  color: var(--gray);
+  font-weight: 700;
+  font-size: 12px;
 }
-.vote + .vote {
+.node-data-badge svg + span {
+  margin-left: 4px;
+}
+.node-data-badge + .node-data-badge {
   margin-left: 10px;
 }
-.vote svg {
-  margin-right: 4px;
-}
-.vote--up {
+.node-data-badge--success {
   background-color: var(--light-green);
   color: var(--green);
 }
-.vote--down {
+.node-data-badge--danger {
   background-color: var(--light-red);
   color: var(--red);
-}
-
-.discussion {
-  border-radius: 4px;
-  background-color: var(--light-blue);
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gray);
 }
 
 .inline-flex {
@@ -290,4 +274,7 @@ ion-button {
 }
 .space-y-3 > :not([hidden]) ~ :not([hidden]) {
   margin-top: 12px;
+}
+.divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-top: 1px solid #e3eaf3;
 }

@@ -6,7 +6,9 @@ import './styles/index.css';
 import './styles/rowView.css';
 import './styles/columnView.css';
 import './styles/lineBreakView.css';
-import { Book, VersificationConfig, useVersificationContext } from '.';
+
+import { Bible, Book, VersificationConfig } from './types';
+import { useVersificationContext } from '.';
 import { Layout } from './Layout';
 import { RowViewIcon, ColumnViewIcon, LineBreakViewIcon } from './icons';
 import { Dropdown } from './Dropdown';
@@ -20,9 +22,24 @@ const views = [
 ];
 
 export function BookPage() {
-  const { bookId } = useParams<{ bookId: string }>();
-  const { books } = useVersificationContext();
-  const book = books.find(({ node_id }) => node_id === +bookId)!;
+  const { bibleId, bookId } = useParams<{ bibleId: string; bookId: string }>();
+  const { bibles } = useVersificationContext();
+  const bible = bibles.find(({ node_id }) => node_id.toString() === bibleId)!;
+
+  return !bible ? null : <Content bible={bible} bookId={bookId} />;
+}
+
+function Content({ bible, bookId }: { bible: Bible; bookId: string }) {
+  const bibleName =
+    bible.propertyKeys.find(({ property_key }) => property_key === 'name')
+      ?.values[0]?.property_value.value || 'Bible';
+  const { toNode: book } = bible.nestedRelationships.find(
+    ({ toNode: { node_id } }) => node_id.toString() === bookId
+  )!;
+  const bookName =
+    book.propertyKeys.find(({ property_key }) => property_key === 'name')
+      ?.values[0]?.property_value.value || 'Book';
+  const chapters = book.nestedRelationships.map(({ toNode }) => toNode);
   const [activeViewName, setActiveViewName] = useState(views[0].name);
   const { View } = views.find(({ name }) => name === activeViewName)!;
   const [filteredChapterId, setFilteredChapterId] = useState<null | string>(
@@ -30,22 +47,26 @@ export function BookPage() {
   );
   const [filteredVerseId, setFilteredVerseId] = useState<null | string>(null);
   const filteredChapter = filteredChapterId
-    ? book.chapters.find(
-        ({ node_id }) => node_id.toString() === filteredChapterId
-      )
+    ? chapters.find(({ node_id }) => node_id.toString() === filteredChapterId)
     : null;
   const filteredBook = filteredChapterId
     ? {
         ...book,
-        chapters: book.chapters
-          .filter(({ node_id }) => node_id.toString() === filteredChapterId)
-          .map((chapter) => ({
-            ...chapter,
-            verses: filteredVerseId
-              ? chapter.verses.filter(
-                  ({ node_id }) => node_id.toString() === filteredVerseId
-                )
-              : chapter.verses,
+        nestedRelationships: book.nestedRelationships
+          .filter(
+            ({ toNode: { node_id } }) =>
+              node_id.toString() === filteredChapterId
+          )
+          .map(({ toNode }) => ({
+            toNode: {
+              ...toNode,
+              nestedRelationships: filteredVerseId
+                ? toNode.nestedRelationships.filter(
+                    ({ toNode: { node_id } }) =>
+                      node_id.toString() === filteredVerseId
+                  )
+                : toNode.nestedRelationships,
+            },
           })),
       }
     : book;
@@ -53,7 +74,7 @@ export function BookPage() {
   return (
     <Layout
       backRoute="/versification"
-      breadcrumb={`#${book.node_id} ${book.properties.name}`}
+      breadcrumb={`#${book.node_id} ${bibleName}: ${bookName}`}
       headerContent={
         <IonGrid>
           <IonRow>
@@ -65,9 +86,13 @@ export function BookPage() {
                   setFilteredVerseId(null);
                   setFilteredChapterId(value);
                 }}
-                options={book.chapters.map(({ node_id, properties }) => ({
+                options={chapters.map(({ node_id, propertyKeys }) => ({
                   value: node_id.toString(),
-                  text: properties['chapter-identifier'],
+                  text:
+                    propertyKeys.find(
+                      ({ property_key }) =>
+                        property_key === 'chapter-identifier'
+                    )?.values[0].property_value.value || '',
                 }))}
               />
             </IonCol>
@@ -79,10 +104,17 @@ export function BookPage() {
                 onChange={setFilteredVerseId}
                 options={
                   filteredChapter
-                    ? filteredChapter.verses.map(({ node_id, properties }) => ({
-                        value: node_id.toString(),
-                        text: properties['verse-identifier'],
-                      }))
+                    ? filteredChapter.nestedRelationships.map(
+                        ({ toNode: { node_id, propertyKeys } }) => ({
+                          value: node_id.toString(),
+
+                          text:
+                            propertyKeys.find(
+                              ({ property_key }) =>
+                                property_key === 'verse-identifier'
+                            )?.values[0].property_value.value || '',
+                        })
+                      )
                     : []
                 }
               />
@@ -107,20 +139,24 @@ export function BookPage() {
           ))}
         </IonButtons>
       </div>
-      <View book={filteredBook} />
+      <View bible={bible} book={filteredBook} />
     </Layout>
   );
 }
 
-function RowView({ book }: { book: Book }) {
+function RowView({ bible, book }: { bible: Bible; book: Book }) {
   return (
     <div className="row-view">
       <div className="row-view-inner">
         <div className="section">
           <div className="section-header">Original</div>
           <div className="section-content">
-            {book.chapters.map((chapter) => {
-              const value = `Ch. ${chapter.properties['chapter-identifier']}`;
+            {book.nestedRelationships.map(({ toNode: chapter }) => {
+              const { propertyKeys, nestedRelationships } = chapter;
+              const { values } = propertyKeys.find(
+                ({ property_key }) => property_key === 'chapter-identifier'
+              )!;
+              const value = `Ch. ${values[0].property_value.value}`;
 
               return (
                 <Fragment key={chapter.node_id}>
@@ -128,13 +164,34 @@ function RowView({ book }: { book: Book }) {
                     value={value}
                     config={{
                       type: 'CHAPTER',
-                      value: chapter.properties['chapter-identifier'],
+                      value: values[0].property_value.value,
+                      values: values.map(
+                        ({ property_value: { value } }) => value
+                      ),
+                      bibleId: bible.node_id,
                       bookId: book.node_id,
                       chapterId: chapter.node_id,
                     }}
                   />
-                  {chapter.verses.map((verse) => {
-                    const value = `v${verse.properties['verse-identifier']}`;
+                  {nestedRelationships.map(({ toNode: verse }) => {
+                    const { propertyKeys, nestedRelationships } = verse;
+                    const { values } = propertyKeys.find(
+                      ({ property_key }) => property_key === 'verse-identifier'
+                    )!;
+                    const value = `v${values[0].property_value.value}`;
+                    const text = nestedRelationships
+                      .map(({ toNode: wordSequence }) =>
+                        wordSequence.nestedRelationships
+                          .map(
+                            ({ toNode: word }) =>
+                              word.propertyKeys.find(
+                                ({ property_key }) =>
+                                  property_key === 'word_name'
+                              )!.values[0].property_value.value
+                          )
+                          .join(' ')
+                      )
+                      .join(' ');
 
                     return (
                       <Fragment key={verse.node_id}>
@@ -142,14 +199,18 @@ function RowView({ book }: { book: Book }) {
                           value={value}
                           config={{
                             type: 'VERSE',
-                            value: verse.properties['verse-identifier'],
+                            value: values[0].property_value.value,
+                            values: values.map(
+                              ({ property_value: { value } }) => value
+                            ),
+                            bibleId: bible.node_id,
                             bookId: book.node_id,
                             chapterId: chapter.node_id,
                             verseId: verse.node_id,
                           }}
                           style={{ margin: '0 10px' }}
                         />
-                        <span>{verse.text}</span>
+                        <span>{text}</span>
                       </Fragment>
                     );
                   })}
@@ -161,44 +222,100 @@ function RowView({ book }: { book: Book }) {
         <div className="section">
           <div className="section-header">Translation</div>
           <div className="section-content">
-            {book.chapters.map((chapter) => (
-              <Fragment key={chapter.node_id}>
-                {chapter.versification.map((item, index) => (
-                  <NodeData
-                    key={index}
-                    inline
-                    {...(index && { style: { marginLeft: 20 } })}
-                    label={`Ch. ${item['chapter-identifier']}`}
-                    config={{
-                      type: 'CHAPTER',
-                      value: chapter.properties['chapter-identifier'],
-                      bookId: book.node_id,
-                      chapterId: chapter.node_id,
-                    }}
-                  />
-                ))}
-                {chapter.verses.map((verse) => (
-                  <Fragment key={verse.node_id}>
-                    {verse.versification.map((item, index) => (
+            {book.nestedRelationships.map(({ toNode: chapter }) => {
+              const { propertyKeys, nestedRelationships } = chapter;
+              const { values } = propertyKeys.find(
+                ({ property_key }) => property_key === 'chapter-identifier'
+              )!;
+
+              return (
+                <Fragment key={chapter.node_id}>
+                  {values.map(
+                    (
+                      { upVotes, downVotes, posts, property_value: { value } },
+                      index
+                    ) => (
                       <NodeData
                         key={index}
                         inline
-                        style={{ marginLeft: 20 }}
-                        label={`v${item['verse-identifier']}`}
+                        {...(index && { style: { marginLeft: 20 } })}
+                        label={`Ch. ${value}`}
+                        upVotes={upVotes}
+                        downVotes={downVotes}
+                        posts={posts.length}
                         config={{
-                          type: 'VERSE',
-                          value: verse.properties['verse-identifier'],
+                          type: 'CHAPTER',
+                          value: values[0].property_value.value,
+                          values: values.map(
+                            ({ property_value: { value } }) => value
+                          ),
+                          bibleId: bible.node_id,
                           bookId: book.node_id,
                           chapterId: chapter.node_id,
-                          verseId: verse.node_id,
                         }}
                       />
-                    ))}
-                    <span style={{ marginLeft: 15 }}>{verse.text}</span>
-                  </Fragment>
-                ))}
-              </Fragment>
-            ))}
+                    )
+                  )}
+                  {nestedRelationships.map(({ toNode: verse }) => {
+                    const { propertyKeys, nestedRelationships } = verse;
+                    const { values } = propertyKeys.find(
+                      ({ property_key }) => property_key === 'verse-identifier'
+                    )!;
+                    const text = nestedRelationships
+                      .map(({ toNode: wordSequence }) =>
+                        wordSequence.nestedRelationships
+                          .map(
+                            ({ toNode: word }) =>
+                              word.propertyKeys.find(
+                                ({ property_key }) =>
+                                  property_key === 'word_name'
+                              )!.values[0].property_value.value
+                          )
+                          .join(' ')
+                      )
+                      .join(' ');
+
+                    return (
+                      <Fragment key={verse.node_id}>
+                        {values.map(
+                          (
+                            {
+                              upVotes,
+                              downVotes,
+                              posts,
+                              property_value: { value },
+                            },
+                            index
+                          ) => (
+                            <NodeData
+                              key={index}
+                              inline
+                              style={{ marginLeft: 20 }}
+                              label={`v${value}`}
+                              upVotes={upVotes}
+                              downVotes={downVotes}
+                              posts={posts.length}
+                              config={{
+                                type: 'VERSE',
+                                value: values[0].property_value.value,
+                                values: values.map(
+                                  ({ property_value: { value } }) => value
+                                ),
+                                bibleId: bible.node_id,
+                                bookId: book.node_id,
+                                chapterId: chapter.node_id,
+                                verseId: verse.node_id,
+                              }}
+                            />
+                          )
+                        )}
+                        <span style={{ marginLeft: 15 }}>{text}</span>
+                      </Fragment>
+                    );
+                  })}
+                </Fragment>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -206,45 +323,67 @@ function RowView({ book }: { book: Book }) {
   );
 }
 
-function ColumnView({ book }: { book: Book }) {
+function ColumnView({ bible, book }: { bible: Bible; book: Book }) {
   const buildItems = (original = true) => {
     const list: {
       type: 'CHAPTER_NUMBER' | 'VERSE_NUMBER' | 'WORD';
       value: string;
+      upVotes?: number;
+      downVotes?: number;
+      posts?: number;
       config?: VersificationConfig;
     }[] = [];
 
-    for (const chapter of book.chapters) {
-      const { node_id, properties, versification, verses } = chapter;
-      const numberSources = original ? [properties] : versification;
+    for (const { toNode: chapter } of book.nestedRelationships) {
+      const { node_id, propertyKeys, nestedRelationships } = chapter;
+      const { values } = propertyKeys.find(
+        ({ property_key }) => property_key === 'chapter-identifier'
+      )!;
+      const numberSources = original ? [values[0]] : values;
 
       for (const numberSource of numberSources) {
-        const value = `Chapter ${numberSource['chapter-identifier']}`;
+        const { upVotes, downVotes, posts, property_value } = numberSource;
+        const value = `Chapter ${property_value.value}`;
 
         list.push({
           type: 'CHAPTER_NUMBER' as const,
           value,
+          upVotes,
+          downVotes,
+          posts: posts.length,
           config: {
             type: 'CHAPTER',
-            value: properties['chapter-identifier'],
+            value: values[0].property_value.value,
+            values: values.map(({ property_value: { value } }) => value),
+            bibleId: bible.node_id,
             bookId: book.node_id,
             chapterId: node_id,
           },
         });
       }
 
-      for (const { node_id, properties, versification, text } of verses) {
-        const numberSources = original ? [properties] : versification;
+      for (const { toNode: verse } of nestedRelationships) {
+        const { node_id, propertyKeys, nestedRelationships } = verse;
+        const { values } = propertyKeys.find(
+          ({ property_key }) => property_key === 'verse-identifier'
+        )!;
+        const numberSources = original ? [values[0]] : values;
 
         for (const numberSource of numberSources) {
-          const value = `Verse ${numberSource['verse-identifier']}`;
+          const { upVotes, downVotes, posts, property_value } = numberSource;
+          const value = `Verse ${property_value.value}`;
 
           list.push({
             type: 'VERSE_NUMBER' as const,
             value,
+            upVotes,
+            downVotes,
+            posts: posts.length,
             config: {
               type: 'VERSE',
-              value: properties['verse-identifier'],
+              value: values[0].property_value.value,
+              values: values.map(({ property_value: { value } }) => value),
+              bibleId: bible.node_id,
               bookId: book.node_id,
               chapterId: chapter.node_id,
               verseId: node_id,
@@ -252,11 +391,20 @@ function ColumnView({ book }: { book: Book }) {
           });
         }
 
-        for (const word of text.split(' ')) {
-          list.push({
-            type: 'WORD' as const,
-            value: word,
-          });
+        for (const { toNode: wordSequence } of nestedRelationships) {
+          const { nestedRelationships } = wordSequence;
+
+          for (const { toNode: word } of nestedRelationships) {
+            const { propertyKeys } = word;
+            const { values } = propertyKeys.find(
+              ({ property_key }) => property_key === 'word_name'
+            )!;
+
+            list.push({
+              type: 'WORD' as const,
+              value: values[0].property_value.value,
+            });
+          }
         }
       }
     }
@@ -304,6 +452,9 @@ function ColumnView({ book }: { book: Book }) {
                         <NodeData
                           col
                           label={translationItem.value}
+                          upVotes={translationItem.upVotes!}
+                          downVotes={translationItem.downVotes!}
+                          posts={translationItem.posts!}
                           config={translationItem.config}
                         />
                       )}
@@ -319,14 +470,18 @@ function ColumnView({ book }: { book: Book }) {
   );
 }
 
-function LineBreakView({ book }: { book: Book }) {
+function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
   return (
     <div className="line-break-view">
       <div className="section">
         <div className="section-header">Original</div>
         <div className="section-content space-y-2">
-          {book.chapters.map((chapter) => {
-            const value = `Ch. ${chapter.properties['chapter-identifier']}`;
+          {book.nestedRelationships.map(({ toNode: chapter }) => {
+            const { propertyKeys, nestedRelationships } = chapter;
+            const { values } = propertyKeys.find(
+              ({ property_key }) => property_key === 'chapter-identifier'
+            )!;
+            const value = `Ch. ${values[0].property_value.value}`;
 
             return (
               <Fragment key={chapter.node_id}>
@@ -335,14 +490,34 @@ function LineBreakView({ book }: { book: Book }) {
                     value={value}
                     config={{
                       type: 'CHAPTER',
-                      value: chapter.properties['chapter-identifier'],
+                      value: values[0].property_value.value,
+                      values: values.map(
+                        ({ property_value: { value } }) => value
+                      ),
+                      bibleId: bible.node_id,
                       bookId: book.node_id,
                       chapterId: chapter.node_id,
                     }}
                   />
                 </div>
-                {chapter.verses.map((verse) => {
-                  const value = `v${verse.properties['verse-identifier']}`;
+                {nestedRelationships.map(({ toNode: verse }) => {
+                  const { propertyKeys, nestedRelationships } = verse;
+                  const { values } = propertyKeys.find(
+                    ({ property_key }) => property_key === 'verse-identifier'
+                  )!;
+                  const value = `v${values[0].property_value.value}`;
+                  const text = nestedRelationships
+                    .map(({ toNode: wordSequence }) =>
+                      wordSequence.nestedRelationships
+                        .map(
+                          ({ toNode: word }) =>
+                            word.propertyKeys.find(
+                              ({ property_key }) => property_key === 'word_name'
+                            )!.values[0].property_value.value
+                        )
+                        .join(' ')
+                    )
+                    .join(' ');
 
                   return (
                     <div key={verse.node_id}>
@@ -350,13 +525,17 @@ function LineBreakView({ book }: { book: Book }) {
                         value={value}
                         config={{
                           type: 'VERSE',
-                          value: verse.properties['verse-identifier'],
+                          value: values[0].property_value.value,
+                          values: values.map(
+                            ({ property_value: { value } }) => value
+                          ),
+                          bibleId: bible.node_id,
                           bookId: book.node_id,
                           chapterId: chapter.node_id,
                           verseId: verse.node_id,
                         }}
                       />
-                      <span> {verse.text}</span>
+                      <span> {text}</span>
                     </div>
                   );
                 })}
@@ -368,44 +547,99 @@ function LineBreakView({ book }: { book: Book }) {
       <div className="section">
         <div className="section-header">Translation</div>
         <div className="section-content space-y-2">
-          {book.chapters.map((chapter) => (
-            <Fragment key={chapter.node_id}>
-              {chapter.versification.map((item, index) => (
-                <div key={index}>
-                  <NodeData
-                    inline
-                    label={`Ch. ${item['chapter-identifier']}`}
-                    config={{
-                      type: 'CHAPTER',
-                      value: chapter.properties['chapter-identifier'],
-                      bookId: book.node_id,
-                      chapterId: chapter.node_id,
-                    }}
-                  />
-                </div>
-              ))}
-              {chapter.verses.map((verse) => (
-                <Fragment key={verse.node_id}>
-                  {verse.versification.map((item, index) => (
+          {book.nestedRelationships.map(({ toNode: chapter }) => {
+            const { propertyKeys, nestedRelationships } = chapter;
+            const { values } = propertyKeys.find(
+              ({ property_key }) => property_key === 'chapter-identifier'
+            )!;
+
+            return (
+              <Fragment key={chapter.node_id}>
+                {values.map(
+                  (
+                    { upVotes, downVotes, posts, property_value: { value } },
+                    index
+                  ) => (
                     <div key={index}>
                       <NodeData
                         inline
-                        label={`v${item['verse-identifier']}`}
+                        label={`Ch. ${value}`}
+                        upVotes={upVotes}
+                        downVotes={downVotes}
+                        posts={posts.length}
                         config={{
-                          type: 'VERSE',
-                          value: verse.properties['verse-identifier'],
+                          type: 'CHAPTER',
+                          value: values[0].property_value.value,
+                          values: values.map(
+                            ({ property_value: { value } }) => value
+                          ),
+                          bibleId: bible.node_id,
                           bookId: book.node_id,
                           chapterId: chapter.node_id,
-                          verseId: verse.node_id,
                         }}
                       />
                     </div>
-                  ))}
-                  <div>{verse.text}</div>
-                </Fragment>
-              ))}
-            </Fragment>
-          ))}
+                  )
+                )}
+                {nestedRelationships.map(({ toNode: verse }) => {
+                  const { propertyKeys, nestedRelationships } = verse;
+                  const { values } = propertyKeys.find(
+                    ({ property_key }) => property_key === 'verse-identifier'
+                  )!;
+                  const text = nestedRelationships
+                    .map(({ toNode: wordSequence }) =>
+                      wordSequence.nestedRelationships
+                        .map(
+                          ({ toNode: word }) =>
+                            word.propertyKeys.find(
+                              ({ property_key }) => property_key === 'word_name'
+                            )!.values[0].property_value.value
+                        )
+                        .join(' ')
+                    )
+                    .join(' ');
+
+                  return (
+                    <Fragment key={verse.node_id}>
+                      {values.map(
+                        (
+                          {
+                            upVotes,
+                            downVotes,
+                            posts,
+                            property_value: { value },
+                          },
+                          index
+                        ) => (
+                          <div key={index}>
+                            <NodeData
+                              inline
+                              label={`v${value}`}
+                              upVotes={upVotes}
+                              downVotes={downVotes}
+                              posts={posts.length}
+                              config={{
+                                type: 'VERSE',
+                                value: values[0].property_value.value,
+                                values: values.map(
+                                  ({ property_value: { value } }) => value
+                                ),
+                                bibleId: bible.node_id,
+                                bookId: book.node_id,
+                                chapterId: chapter.node_id,
+                                verseId: verse.node_id,
+                              }}
+                            />
+                          </div>
+                        )
+                      )}
+                      <div>{text}</div>
+                    </Fragment>
+                  );
+                })}
+              </Fragment>
+            );
+          })}
         </div>
       </div>
     </div>
