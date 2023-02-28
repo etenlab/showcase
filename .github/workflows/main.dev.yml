@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - learn/*
 
 jobs:
   deploy:
@@ -25,7 +26,7 @@ jobs:
 
       - uses: dkershner6/aws-ssm-getparameters-action@v1
         with:
-          parameterPairs: '/dev/deploy/showcase/env = ENV'
+          parameterPairs: '/dev/deploy/showcase-test/env = ENV'
 
       - name: store env
         run: |
