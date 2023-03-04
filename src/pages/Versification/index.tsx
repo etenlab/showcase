@@ -1,12 +1,21 @@
 import { IonRouterOutlet } from '@ionic/react';
 import { Route } from 'react-router-dom';
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import axios from 'axios';
 
-import { buildNodesByNodeTypeQuery } from './graphql';
+import {
+  buildNodesByNodeTypeQuery,
+  buildCreateNodePropertyValueMutation,
+} from './graphql';
 import { BookListPage } from './BookListPage';
 import { BookPage } from './BookPage';
-import { Bible, Chapter, Verse, VersificationConfig } from './types';
+import { Bible, VersificationConfig } from './types';
 
 type VersificationContextType = {
   bibles: Bible[];
@@ -25,6 +34,14 @@ export function useVersificationContext() {
 export function VersificationPage() {
   const [bibles, setBibles] = useState<Bible[]>([]);
 
+  const fetchBibles = useCallback(() => {
+    axios
+      .post(process.env.REACT_APP_GRAPHQL_URL!, {
+        query: buildNodesByNodeTypeQuery('bible'),
+      })
+      .then((response) => setBibles(response.data.data.nodesByNodeType));
+  }, []);
+
   function handleIdentifierAdd({
     identifier,
     config,
@@ -32,92 +49,19 @@ export function VersificationPage() {
     identifier: string;
     config: VersificationConfig;
   }) {
-    function addValue(
-      propertyKeys: Chapter['propertyKeys'] | Verse['propertyKeys'],
-      name: string
-    ) {
-      return propertyKeys.map((propertyKey) => {
-        if (propertyKey.property_key !== name) return propertyKey;
-
-        return {
-          ...propertyKey,
-          values: [
-            ...propertyKey.values,
-            {
-              property_value: {
-                value: identifier,
-              },
-              upVotes: 0,
-              downVotes: 0,
-              posts: [],
-            },
-          ],
-        };
-      });
-    }
-
-    setBibles(
-      bibles.map((bible) => {
-        if (bible.node_id !== config.bibleId) return bible;
-
-        return {
-          ...bible,
-          nestedRelationships: bible.nestedRelationships.map((rel) => {
-            if (rel.toNode.node_id !== config.bookId) return rel;
-
-            return {
-              toNode: {
-                ...rel.toNode,
-                nestedRelationships: rel.toNode.nestedRelationships.map(
-                  (rel) => {
-                    if (rel.toNode.node_id !== config.chapterId) return rel;
-
-                    return {
-                      toNode: {
-                        ...rel.toNode,
-                        ...(config.type === 'CHAPTER'
-                          ? {
-                              propertyKeys: addValue(
-                                rel.toNode.propertyKeys,
-                                'chapter-identifier'
-                              ),
-                            }
-                          : {
-                              nestedRelationships:
-                                rel.toNode.nestedRelationships.map((rel) => {
-                                  if (rel.toNode.node_id !== config.verseId)
-                                    return rel;
-
-                                  return {
-                                    toNode: {
-                                      ...rel.toNode,
-                                      propertyKeys: addValue(
-                                        rel.toNode.propertyKeys,
-                                        'verse-identifier'
-                                      ),
-                                    },
-                                  };
-                                }),
-                            }),
-                      },
-                    };
-                  }
-                ),
-              },
-            };
-          }),
-        };
+    axios
+      .post(process.env.REACT_APP_GRAPHQL_URL!, {
+        query: buildCreateNodePropertyValueMutation(
+          config.node_property_key_id,
+          identifier
+        ),
       })
-    );
+      .then(() => fetchBibles());
   }
 
   useEffect(() => {
-    axios
-      .post(process.env.REACT_APP_GRAPHQL_URL!, {
-        query: buildNodesByNodeTypeQuery('bible'),
-      })
-      .then((response) => setBibles(response.data.data.nodesByNodeType));
-  }, []);
+    fetchBibles();
+  }, [fetchBibles]);
 
   return (
     <IonRouterOutlet>

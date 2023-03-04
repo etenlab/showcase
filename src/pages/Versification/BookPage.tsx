@@ -153,7 +153,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
           <div className="section-content">
             {book.nestedRelationships.map(({ toNode: chapter }) => {
               const { propertyKeys, nestedRelationships } = chapter;
-              const { values } = propertyKeys.find(
+              const { node_property_key_id, values } = propertyKeys.find(
                 ({ property_key }) => property_key === 'chapter-identifier'
               )!;
               const value = `Ch. ${values[0].property_value.value}`;
@@ -164,6 +164,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
                     value={value}
                     config={{
                       type: 'CHAPTER',
+                      node_property_key_id,
                       value: values[0].property_value.value,
                       values: values.map(
                         ({ property_value: { value } }) => value
@@ -175,7 +176,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
                   />
                   {nestedRelationships.map(({ toNode: verse }) => {
                     const { propertyKeys, nestedRelationships } = verse;
-                    const { values } = propertyKeys.find(
+                    const { node_property_key_id, values } = propertyKeys.find(
                       ({ property_key }) => property_key === 'verse-identifier'
                     )!;
                     const value = `v${values[0].property_value.value}`;
@@ -199,6 +200,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
                           value={value}
                           config={{
                             type: 'VERSE',
+                            node_property_key_id,
                             value: values[0].property_value.value,
                             values: values.map(
                               ({ property_value: { value } }) => value
@@ -224,7 +226,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
           <div className="section-content">
             {book.nestedRelationships.map(({ toNode: chapter }) => {
               const { propertyKeys, nestedRelationships } = chapter;
-              const { values } = propertyKeys.find(
+              const { node_property_key_id, values } = propertyKeys.find(
                 ({ property_key }) => property_key === 'chapter-identifier'
               )!;
 
@@ -245,6 +247,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
                         posts={posts.length}
                         config={{
                           type: 'CHAPTER',
+                          node_property_key_id,
                           value: values[0].property_value.value,
                           values: values.map(
                             ({ property_value: { value } }) => value
@@ -258,7 +261,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
                   )}
                   {nestedRelationships.map(({ toNode: verse }) => {
                     const { propertyKeys, nestedRelationships } = verse;
-                    const { values } = propertyKeys.find(
+                    const { node_property_key_id, values } = propertyKeys.find(
                       ({ property_key }) => property_key === 'verse-identifier'
                     )!;
                     const text = nestedRelationships
@@ -297,6 +300,7 @@ function RowView({ bible, book }: { bible: Bible; book: Book }) {
                               posts={posts.length}
                               config={{
                                 type: 'VERSE',
+                                node_property_key_id,
                                 value: values[0].property_value.value,
                                 values: values.map(
                                   ({ property_value: { value } }) => value
@@ -336,7 +340,7 @@ function ColumnView({ bible, book }: { bible: Bible; book: Book }) {
 
     for (const { toNode: chapter } of book.nestedRelationships) {
       const { node_id, propertyKeys, nestedRelationships } = chapter;
-      const { values } = propertyKeys.find(
+      const { node_property_key_id, values } = propertyKeys.find(
         ({ property_key }) => property_key === 'chapter-identifier'
       )!;
       const numberSources = original ? [values[0]] : values;
@@ -353,6 +357,7 @@ function ColumnView({ bible, book }: { bible: Bible; book: Book }) {
           posts: posts.length,
           config: {
             type: 'CHAPTER',
+            node_property_key_id,
             value: values[0].property_value.value,
             values: values.map(({ property_value: { value } }) => value),
             bibleId: bible.node_id,
@@ -364,7 +369,7 @@ function ColumnView({ bible, book }: { bible: Bible; book: Book }) {
 
       for (const { toNode: verse } of nestedRelationships) {
         const { node_id, propertyKeys, nestedRelationships } = verse;
-        const { values } = propertyKeys.find(
+        const { node_property_key_id, values } = propertyKeys.find(
           ({ property_key }) => property_key === 'verse-identifier'
         )!;
         const numberSources = original ? [values[0]] : values;
@@ -381,6 +386,7 @@ function ColumnView({ bible, book }: { bible: Bible; book: Book }) {
             posts: posts.length,
             config: {
               type: 'VERSE',
+              node_property_key_id,
               value: values[0].property_value.value,
               values: values.map(({ property_value: { value } }) => value),
               bibleId: bible.node_id,
@@ -478,7 +484,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
         <div className="section-content space-y-2">
           {book.nestedRelationships.map(({ toNode: chapter }) => {
             const { propertyKeys, nestedRelationships } = chapter;
-            const { values } = propertyKeys.find(
+            const { node_property_key_id, values } = propertyKeys.find(
               ({ property_key }) => property_key === 'chapter-identifier'
             )!;
             const value = `Ch. ${values[0].property_value.value}`;
@@ -490,6 +496,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
                     value={value}
                     config={{
                       type: 'CHAPTER',
+                      node_property_key_id,
                       value: values[0].property_value.value,
                       values: values.map(
                         ({ property_value: { value } }) => value
@@ -502,7 +509,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
                 </div>
                 {nestedRelationships.map(({ toNode: verse }) => {
                   const { propertyKeys, nestedRelationships } = verse;
-                  const { values } = propertyKeys.find(
+                  const { node_property_key_id, values } = propertyKeys.find(
                     ({ property_key }) => property_key === 'verse-identifier'
                   )!;
                   const value = `v${values[0].property_value.value}`;
@@ -525,6 +532,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
                         value={value}
                         config={{
                           type: 'VERSE',
+                          node_property_key_id,
                           value: values[0].property_value.value,
                           values: values.map(
                             ({ property_value: { value } }) => value
@@ -549,7 +557,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
         <div className="section-content space-y-2">
           {book.nestedRelationships.map(({ toNode: chapter }) => {
             const { propertyKeys, nestedRelationships } = chapter;
-            const { values } = propertyKeys.find(
+            const { node_property_key_id, values } = propertyKeys.find(
               ({ property_key }) => property_key === 'chapter-identifier'
             )!;
 
@@ -569,6 +577,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
                         posts={posts.length}
                         config={{
                           type: 'CHAPTER',
+                          node_property_key_id,
                           value: values[0].property_value.value,
                           values: values.map(
                             ({ property_value: { value } }) => value
@@ -583,7 +592,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
                 )}
                 {nestedRelationships.map(({ toNode: verse }) => {
                   const { propertyKeys, nestedRelationships } = verse;
-                  const { values } = propertyKeys.find(
+                  const { node_property_key_id, values } = propertyKeys.find(
                     ({ property_key }) => property_key === 'verse-identifier'
                   )!;
                   const text = nestedRelationships
@@ -620,6 +629,7 @@ function LineBreakView({ bible, book }: { bible: Bible; book: Book }) {
                               posts={posts.length}
                               config={{
                                 type: 'VERSE',
+                                node_property_key_id,
                                 value: values[0].property_value.value,
                                 values: values.map(
                                   ({ property_value: { value } }) => value

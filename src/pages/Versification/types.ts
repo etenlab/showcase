@@ -2,6 +2,7 @@ type Node<T> = {
   node_id: number;
   node_type: T;
   propertyKeys: {
+    node_property_key_id: number;
     property_key: string;
     values: {
       property_value: {
@@ -35,6 +36,7 @@ type VersificationChapterConfig = {
   bibleId: number;
   bookId: number;
   chapterId: number;
+  node_property_key_id: number;
 };
 type VersificationVerseConfig = {
   type: 'VERSE';
@@ -44,6 +46,7 @@ type VersificationVerseConfig = {
   bookId: number;
   chapterId: number;
   verseId: number;
+  node_property_key_id: number;
 };
 export type VersificationConfig =
   | VersificationChapterConfig
